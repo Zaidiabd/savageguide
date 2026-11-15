@@ -4,6 +4,7 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+  touch-action: none;
 }
 
 #viewport-container canvas {
@@ -11,4 +12,5 @@
   width: 100%;
   height: 100%;
   outline: none;
+  touch-action: none;
 }

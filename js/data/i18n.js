@@ -19,6 +19,9 @@ const LOCALES = {
       startBtn: 'START EXPEDITION',
       pointerNote:
         'Click to enter first-person mode. If pointer lock is unavailable, drag with the mouse to look around.',
+      pointerNoteTouch:
+        'Touch controls enabled: use the left thumbstick to walk, swipe the screen to look around, and tap prompts to interact.',
+      sprintBtn: 'SPRINT',
       langLabel: 'LANGUAGE',
       destLabel: 'DESTINATION',
       quickJumpDefault: 'Quick Jump...',
@@ -372,6 +375,9 @@ const LOCALES = {
       startBtn: 'MULAKAN EKSPEDISI',
       pointerNote:
         'Klik untuk masuk ke mod orang pertama. Jika kunci tetikus tidak disokong, seret tetikus untuk melihat sekeliling.',
+      pointerNoteTouch:
+        'Kawalan sentuh diaktifkan: guna kayu ria kiri untuk berjalan, leret skrin untuk melihat sekeliling, dan ketik butang interaksi.',
+      sprintBtn: 'PECUT',
       langLabel: 'BAHASA',
       destLabel: 'DESTINASI',
       quickJumpDefault: 'Lompat Terus...',
@@ -725,6 +731,9 @@ const LOCALES = {
       startBtn: 'JOM MULA EKSPEDISI',
       pointerNote:
         'Klik untuk masuk mode first-person. Kalau pointer lock tak jalan, drag je mouse untuk pusing pandangan.',
+      pointerNoteTouch:
+        'Mode sentuh aktif: guna joystick kiri untuk jalan, swipe skrin untuk pusing kamera, dan tap je prompt bila dekat.',
+      sprintBtn: 'LARI',
       langLabel: 'BAHASA',
       destLabel: 'LOKASI',
       quickJumpDefault: 'Terus Teleport...',

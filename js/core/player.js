@@ -21,6 +21,12 @@ export class PlayerController {
     this.enabled = false;
     this.isDraggingFallback = false;
     this.lastPointer = { x: 0, y: 0 };
+    this.lookTouchId = null;
+    this.lastTouch = { x: 0, y: 0 };
+    this.isTouchDevice =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      Boolean(window.matchMedia?.('(pointer: coarse)').matches);
 
     this.keys = {
       forward: false,
@@ -29,6 +35,8 @@ export class PlayerController {
       right: false,
       sprint: false
     };
+    this.analogMove = { x: 0, z: 0 };
+    this.touchSprint = false;
 
     this.velocity = new THREE.Vector3();
     this.direction = new THREE.Vector3();
@@ -46,6 +54,7 @@ export class PlayerController {
   }
 
   lockPointer() {
+    if (this.isTouchDevice) return;
     try {
       this.controls.lock();
     } catch {
@@ -63,8 +72,20 @@ export class PlayerController {
     this.enabled = active;
     if (!active) {
       this.resetKeys();
+      this.analogMove.x = 0;
+      this.analogMove.z = 0;
+      this.lookTouchId = null;
       this.velocity.set(0, 0, 0);
     }
+  }
+
+  setAnalogMove(x, z) {
+    this.analogMove.x = Math.max(-1, Math.min(1, x));
+    this.analogMove.z = Math.max(-1, Math.min(1, z));
+  }
+
+  setTouchSprint(active) {
+    this.touchSprint = Boolean(active);
   }
 
   resetKeys() {
@@ -88,13 +109,17 @@ export class PlayerController {
     if (!this.enabled) return;
 
     const dt = Math.min(delta, 0.05);
-    const speed = this.keys.sprint ? SPRINT_SPEED : WALK_SPEED;
+    const analogSprint = Math.hypot(this.analogMove.x, this.analogMove.z) > 0.88;
+    const speed = this.keys.sprint || this.touchSprint || analogSprint ? SPRINT_SPEED : WALK_SPEED;
 
-    const moveZ = Number(this.keys.forward) - Number(this.keys.backward);
-    const moveX = Number(this.keys.right) - Number(this.keys.left);
+    const keyZ = Number(this.keys.forward) - Number(this.keys.backward);
+    const keyX = Number(this.keys.right) - Number(this.keys.left);
+
+    const moveX = keyX !== 0 ? keyX : this.analogMove.x;
+    const moveZ = keyZ !== 0 ? keyZ : this.analogMove.z;
 
     this.direction.set(moveX, 0, moveZ);
-    if (this.direction.lengthSq() > 0) {
+    if (this.direction.lengthSq() > 1) {
       this.direction.normalize();
     }
 
@@ -202,5 +227,56 @@ export class PlayerController {
     window.addEventListener('mouseup', () => {
       this.isDraggingFallback = false;
     });
+
+    // Multi-touch look on canvas (supports simultaneous left-thumb joystick + right-thumb look)
+    this.domElement.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!this.enabled || this.lookTouchId !== null) return;
+        const touch = e.changedTouches[0];
+        if (!touch) return;
+        this.lookTouchId = touch.identifier;
+        this.lastTouch.x = touch.clientX;
+        this.lastTouch.y = touch.clientY;
+      },
+      { passive: true }
+    );
+
+    this.domElement.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!this.enabled || this.lookTouchId === null) return;
+        for (const touch of e.changedTouches) {
+          if (touch.identifier === this.lookTouchId) {
+            const dx = touch.clientX - this.lastTouch.x;
+            const dy = touch.clientY - this.lastTouch.y;
+            this.lastTouch.x = touch.clientX;
+            this.lastTouch.y = touch.clientY;
+
+            this.euler.setFromQuaternion(this.camera.quaternion);
+            this.euler.y -= dx * 0.0046;
+            this.euler.x = Math.max(
+              -Math.PI / 2 + 0.08,
+              Math.min(Math.PI / 2 - 0.08, this.euler.x - dy * 0.0042)
+            );
+            this.camera.quaternion.setFromEuler(this.euler);
+            e.preventDefault();
+            break;
+          }
+        }
+      },
+      { passive: false }
+    );
+
+    const endTouchLook = (e) => {
+      for (const touch of e.changedTouches) {
+        if (touch.identifier === this.lookTouchId) {
+          this.lookTouchId = null;
+          break;
+        }
+      }
+    };
+    this.domElement.addEventListener('touchend', endTouchLook, { passive: true });
+    this.domElement.addEventListener('touchcancel', endTouchLook, { passive: true });
   }
 }

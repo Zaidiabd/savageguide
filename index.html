@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>THE ISLE — EXPEDITION</title>
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/environment.css" />
@@ -49,10 +49,18 @@
     <!-- Center Crosshair -->
     <div id="crosshair" class="crosshair" aria-hidden="true"></div>
 
-    <!-- Bottom Center: Interaction Prompt -->
-    <div id="interact-prompt" class="interact-prompt hidden" role="status">
+    <!-- Bottom Center: Tappable Interaction Prompt -->
+    <button id="interact-prompt" class="interact-prompt hidden" type="button" role="status">
       <span class="key-badge">E</span>
       <span id="interact-label">INTERACT</span>
+    </button>
+
+    <!-- Mobile Touch Controls (auto-shown on touch devices) -->
+    <div id="touch-controls" class="touch-controls" aria-hidden="true">
+      <div id="touch-joystick" class="touch-joystick">
+        <div id="touch-joystick-knob" class="touch-joystick-knob"></div>
+      </div>
+      <button id="btn-touch-sprint" class="touch-sprint-btn" type="button">SPRINT</button>
     </div>
   </div>
 

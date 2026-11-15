@@ -18,9 +18,13 @@ export class InterfaceController {
 
     this.currentModalIndex = -1;
     this.currentNpcPageId = 'greeting';
+    this.currentActiveStation = null;
     this.isModalOpen = false;
     this.isNpcDialogOpen = false;
     this.hasEnteredWorld = false;
+    this.joystickTouchId = null;
+
+    document.body.classList.toggle('touch-device', Boolean(player.isTouchDevice));
 
     this.els = {
       hud: document.getElementById('hud'),
@@ -36,6 +40,9 @@ export class InterfaceController {
       crosshair: document.getElementById('crosshair'),
       interactPrompt: document.getElementById('interact-prompt'),
       interactLabel: document.getElementById('interact-label'),
+      touchJoystick: document.getElementById('touch-joystick'),
+      touchJoystickKnob: document.getElementById('touch-joystick-knob'),
+      btnTouchSprint: document.getElementById('btn-touch-sprint'),
       welcomeOverlay: document.getElementById('welcome-overlay'),
       welcomeEyebrow: document.getElementById('welcome-eyebrow'),
       welcomeTagline: document.getElementById('welcome-tagline'),
@@ -110,7 +117,8 @@ export class InterfaceController {
     this.els.ctrlInteract.textContent = u.ctrlInteract;
     this.els.ctrlEsc.textContent = u.ctrlEsc;
     this.els.btnStart.textContent = u.startBtn;
-    this.els.pointerNote.textContent = u.pointerNote;
+    this.els.pointerNote.textContent = this.player.isTouchDevice ? u.pointerNoteTouch : u.pointerNote;
+    this.els.btnTouchSprint.textContent = u.sprintBtn;
 
     // HUD strings
     this.els.hudLangLabel.textContent = u.langLabel;
@@ -188,6 +196,16 @@ export class InterfaceController {
       this.enterWorld();
     });
 
+    // Tappable interaction prompt for mobile & non-pointer-lock play
+    this.els.interactPrompt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (this.currentActiveStation && !this.hasOpenOverlay) {
+        this.openInteraction(this.currentActiveStation);
+      }
+    });
+
+    this._bindTouchControls();
+
     this.els.btnControlsHelp.addEventListener('click', () => {
       this.showWelcome();
     });
@@ -244,6 +262,85 @@ export class InterfaceController {
     });
   }
 
+  _bindTouchControls() {
+    const joy = this.els.touchJoystick;
+    const knob = this.els.touchJoystickKnob;
+    if (!joy || !knob) return;
+
+    const maxRadius = 38;
+
+    const updateStick = (clientX, clientY) => {
+      const rect = joy.getBoundingClientRect();
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
+      let dx = clientX - cx;
+      let dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > maxRadius) {
+        dx = (dx / dist) * maxRadius;
+        dy = (dy / dist) * maxRadius;
+      }
+      knob.style.transform = `translate(${dx}px, ${dy}px)`;
+      this.player.setAnalogMove(dx / maxRadius, -dy / maxRadius);
+    };
+
+    const resetStick = () => this._resetTouchStick();
+    this._resetStickFn = () => {
+      this.joystickTouchId = null;
+      knob.style.transform = 'translate(0px, 0px)';
+      this.player.setAnalogMove(0, 0);
+    };
+
+    joy.addEventListener(
+      'touchstart',
+      (e) => {
+        if (this.joystickTouchId !== null) return;
+        const t = e.changedTouches[0];
+        if (!t) return;
+        this.joystickTouchId = t.identifier;
+        updateStick(t.clientX, t.clientY);
+        e.preventDefault();
+      },
+      { passive: false }
+    );
+
+    joy.addEventListener(
+      'touchmove',
+      (e) => {
+        for (const t of e.changedTouches) {
+          if (t.identifier === this.joystickTouchId) {
+            updateStick(t.clientX, t.clientY);
+            e.preventDefault();
+            break;
+          }
+        }
+      },
+      { passive: false }
+    );
+
+    const endStick = (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier === this.joystickTouchId) {
+          resetStick();
+          break;
+        }
+      }
+    };
+    joy.addEventListener('touchend', endStick, { passive: true });
+    joy.addEventListener('touchcancel', endStick, { passive: true });
+
+    this.els.btnTouchSprint.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const next = !this.player.touchSprint;
+      this.player.setTouchSprint(next);
+      this.els.btnTouchSprint.classList.toggle('active', next);
+    });
+  }
+
+  _resetTouchStick() {
+    if (this._resetStickFn) this._resetStickFn();
+  }
+
   enterWorld() {
     this.hasEnteredWorld = true;
     this.els.welcomeOverlay.classList.add('hidden');
@@ -253,12 +350,14 @@ export class InterfaceController {
   }
 
   showWelcome() {
+    this._resetTouchStick();
     this.player.unlockPointer();
     this.player.setEnabled(false);
     this.els.welcomeOverlay.classList.remove('hidden');
   }
 
   openInteraction(target) {
+    this._resetTouchStick();
     if (target.isNpc) {
       this.openNpcDialog();
     } else {
@@ -357,6 +456,7 @@ export class InterfaceController {
   }
 
   updateHud({ activeStation, nearestZone }) {
+    this.currentActiveStation = activeStation;
     const b = this._bundle();
 
     if (nearestZone) {

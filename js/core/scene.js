@@ -11,11 +11,16 @@ export function createSceneContext(container) {
   scene.background = fogColor;
   scene.fog = new THREE.FogExp2(fogColor.getHex(), 0.0155);
 
+  const isTouchDevice =
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    Boolean(window.matchMedia?.('(pointer: coarse)').matches);
+
   const renderer = new THREE.WebGLRenderer({
-    antialias: true,
+    antialias: !isTouchDevice,
     powerPreference: 'high-performance'
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouchDevice ? 1.5 : 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -33,7 +38,8 @@ export function createSceneContext(container) {
   const sunLight = new THREE.DirectionalLight(0xffe9c4, 1.85);
   sunLight.position.set(42, 64, 28);
   sunLight.castShadow = true;
-  sunLight.shadow.mapSize.set(2048, 2048);
+  const shadowSize = isTouchDevice ? 1024 : 2048;
+  sunLight.shadow.mapSize.set(shadowSize, shadowSize);
   sunLight.shadow.camera.near = 5;
   sunLight.shadow.camera.far = 160;
   const shadowBounds = 68;
