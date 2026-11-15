@@ -1,0 +1,1068 @@
+export const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'ms', label: 'Bahasa Melayu' },
+  { code: 'kl', label: 'Kecek KL' }
+];
+
+const LOCALES = {
+  en: {
+    ui: {
+      eyebrow: 'PREHISTORIC PLAYER ONBOARDING — SKELETON PROTOTYPE',
+      tagline: 'YOUR JOURNEY INTO THE ISLE BEGINS HERE.',
+      welcomeDesc:
+        'Explore the research outpost in first-person and test the five interactive onboarding stations. This skeleton prototype validates movement, terrain collision, and station interaction before full tutorial content is added.',
+      ctrlMove: 'Move',
+      ctrlLook: 'Look Around',
+      ctrlSprint: 'Sprint',
+      ctrlInteract: 'Interact at Station',
+      ctrlEsc: 'Release Mouse / Close Panel',
+      startBtn: 'START EXPEDITION',
+      pointerNote:
+        'Click to enter first-person mode. If pointer lock is unavailable, drag with the mouse to look around.',
+      langLabel: 'LANGUAGE',
+      destLabel: 'DESTINATION',
+      quickJumpDefault: 'Quick Jump...',
+      controlsBtn: 'CONTROLS',
+      statusLabel: 'EXPEDITION STATUS',
+      objectiveDefault: 'Explore the outpost and approach any station.',
+      hudHint: 'Click viewport to lock mouse • ESC to release cursor',
+      trailsZone: 'OUTPOST TRAILS — MESOZOIC FOREST',
+      closeEsc: 'CLOSE [ESC]',
+      prevStation: 'Previous Station',
+      nextStation: 'Next Station',
+      returnOutpost: 'Return to Outpost',
+      skeletonTag: 'SKELETON STATION PREVIEW',
+      functionalTag: 'FUNCTIONAL TERMINAL — PROGRESS SAVED',
+      arrivedStation: (title) => `Arrived at ${title}. Press [E] to inspect.`,
+      arrivedNpc: (title) => `Arrived at ${title}. Press [E] to talk.`,
+      inspecting: (title) => `Inspecting ${title}`,
+      speakingWith: 'Speaking with SavageZed — Primeval Malaysia Guide',
+      npcCommunityTag: 'PRIMEVAL MALAYSIA COMMUNITY',
+      npcByeEsc: 'GOODBYE [ESC]',
+      npcBtnWhatToDo: 'What should I do here?',
+      npcBtnGreeting: 'Back to Welcome',
+      npcBtnJumpSteam: 'Go to Steam Station',
+      npcBtnBye: 'Thank you, SavageZed!',
+      npcMenuLabel: '★ SavageZed (Camp Guide)'
+    },
+    npc: {
+      zoneLabel: 'LOCATION 01 — CENTRAL EXPEDITION CAMP (SAVAGEZED)',
+      title: 'SavageZed',
+      promptLabel: 'Talk to SavageZed',
+      pages: {
+        greeting: {
+          speaker: 'SavageZed',
+          role: 'Primeval Malaysia Community Guide',
+          text:
+            'Selamat datang and warm greetings, fellow survivor! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
+          hint: 'Use the buttons below to ask what to do here, or press ESC anytime to continue exploring.'
+        },
+        'what-to-do': {
+          speaker: 'SavageZed',
+          role: 'Outpost Orientation',
+          text:
+            'Here is what you can do around our camp to get ready for The Isle: Evrima:\n' +
+            '1. Inspect the Welcome Centre Noticeboard right behind me for hardware tips & camp basics.\n' +
+            '2. Visit the Steam & Easy Anti-Cheat Terminal to the northwest to learn how to switch to the Evrima branch and verify EAC.\n' +
+            '3. Check the Community Directory Board to the northeast for verified community portals & rules.\n' +
+            '4. Drop by the Companion Application Desk to the southeast for official companion setup guidance.\n' +
+            '5. Walk through the Expedition Departure Gate up north when you are ready for your final checklist!',
+          hint: 'Tip: You can walk the forest trails using WASD + Shift, or use the top-right DESTINATION menu to quick-jump.'
+        }
+      }
+    },
+    destinations: {
+      'welcome-centre': {
+        badge: 'DESTINATION 01',
+        zoneLabel: 'LOCATION 01 — CENTRAL EXPEDITION CAMP',
+        title: 'Welcome Centre & Noticeboard',
+        subtitle: 'Orientation to The Isle: Evrima and the five expedition stations.',
+        promptLabel: 'Inspect Welcome Noticeboard',
+        summary:
+          'Central starting hub introducing The Isle: Evrima, basic PC expectations, and the layout of the expedition outpost.',
+        plannedSections: [
+          'Introduction to The Isle & the Evrima branch',
+          'Overview of all five onboarding destinations',
+          'Minimum & recommended PC hardware expectations',
+          'Expedition navigation guide'
+        ],
+        callout: 'Skeleton Notice: Full orientation cards and START EXPEDITION tracking will be populated in Milestone 4.'
+      },
+      'steam-station': {
+        badge: 'DESTINATION 02',
+        zoneLabel: 'LOCATION 02 — STEAM INSTALLATION STATION',
+        title: 'Steam & Easy Anti-Cheat Terminal',
+        subtitle: 'Step-by-step Steam install, Evrima branch switch, and EAC repair.',
+        promptLabel: 'Access Steam Terminal'
+      },
+      'community-outpost': {
+        badge: 'DESTINATION 03',
+        zoneLabel: 'LOCATION 03 — COMMUNITY OUTPOST',
+        title: 'Community Directory Board',
+        subtitle: 'Verified community portals, Discord sources, and access policies.',
+        promptLabel: 'Read Community Directory',
+        summary:
+          'Timber directory board showcasing verified community listings loaded from a modular configuration file.',
+        plannedSections: [
+          'IsleLink — Official Discord source with strict 18+ age-restriction gating',
+          'Obsidian Isle — Official Discord source, server info, and companion app instructions',
+          'Searchable & filterable community cards driven by serverDirectory.js'
+        ],
+        callout: 'Skeleton Notice: Age-verification gating and live community cards will be integrated in Milestone 4.'
+      },
+      'companion-station': {
+        badge: 'DESTINATION 04',
+        zoneLabel: 'LOCATION 04 — COMPANION APPLICATION STATION',
+        title: 'Companion Application Desk',
+        subtitle: 'Official distribution sources, setup steps, and safety checks.',
+        promptLabel: 'Inspect Companion Desk',
+        summary:
+          'Dedicated field workstation explaining community companion utilities, verified Discord distribution channels, and safety rules.',
+        plannedSections: [
+          'Supported companion application overview & features',
+          'Official Discord-only distribution guidance (Obsidian Isle)',
+          'Installation checklist & source verification warnings'
+        ],
+        callout: 'Skeleton Notice: Detailed companion app checklists and troubleshooting notes will be added in Milestone 4.'
+      },
+      'expedition-departure': {
+        badge: 'DESTINATION 05',
+        zoneLabel: 'LOCATION 05 — EXPEDITION DEPARTURE',
+        title: 'Expedition Departure Gate',
+        subtitle: 'Final pre-launch readiness checklist before entering The Isle.',
+        promptLabel: 'Open Departure Checklist',
+        summary:
+          'Forest departure archway housing the final readiness checklist covering Steam, Evrima, Easy Anti-Cheat, community rules, and companion setup.',
+        plannedSections: [
+          '11-point interactive readiness checklist (including EAC verification items)',
+          'LocalStorage progress persistence across sessions',
+          'Completion state: EXPEDITION PREPARATION COMPLETE'
+        ],
+        callout: 'Skeleton Notice: Interactive persistent checklist tracking will be wired in Milestone 4.'
+      }
+    },
+    steam: {
+      tabs: {
+        walkthrough: (done, total) => `WALKTHROUGH (${done}/${total})`,
+        eac: 'EAC SYSTEM VERIFICATION',
+        troubleshooting: 'TROUBLESHOOTING',
+        checklist: 'CHECKLIST'
+      },
+      illustrationCaption: 'INTERFACE ILLUSTRATION — NOT AN ACTUAL SCREENSHOT',
+      stepOf: (curr, total) => `STEP ${String(curr).padStart(2, '0')} OF ${String(total).padStart(2, '0')}`,
+      throughWalkthrough: (pct) => `${pct}% THROUGH WALKTHROUGH`,
+      stepCompleted: 'Step Completed',
+      markComplete: 'Mark Complete',
+      prevStep: '← Previous Step',
+      nextStep: 'Next Step →',
+      reviewChecklist: 'Review Checklist →',
+      openEacTabBtn: 'Open EAC System Verification Terminal →',
+      openSteamBtn: 'Open Official Steam Store Page',
+      steps: [
+        {
+          number: 'STEP 01',
+          title: 'Obtain The Isle through Steam',
+          summary:
+            'Ensure you have a Steam account with the Steam desktop client installed, then purchase or access The Isle on the official Steam Store.',
+          instructions: [
+            'Open the official Steam desktop client (or sign in to Steam in your browser).',
+            'Visit the official Steam Store page for The Isle using the verified link below.',
+            'Purchase and add The Isle to your Steam account if you do not already own it.'
+          ]
+        },
+        {
+          number: 'STEP 02',
+          title: 'Locate The Isle in Steam Library',
+          summary: 'Open your Steam Library and find The Isle in your installed or owned games list.',
+          instructions: [
+            'Launch the Steam desktop application and click the LIBRARY tab at the top.',
+            'Type "The Isle" in the library search bar on the left sidebar.',
+            'Select "The Isle" from your games list to view its library entry.'
+          ]
+        },
+        {
+          number: 'STEP 03',
+          title: 'Access Game Properties',
+          summary: 'Open the game configuration window so you can switch from the legacy branch to Evrima.',
+          instructions: [
+            'Right-click "The Isle" in your Steam Library sidebar (or click the gear Manage icon).',
+            'Select "Properties..." from the context menu.',
+            'Keep the Properties window open for the branch selection step next.'
+          ]
+        },
+        {
+          number: 'STEP 04',
+          title: 'Select the Evrima Game Branch',
+          summary: 'Evrima is the active development branch of The Isle and is accessed through Steam’s Betas / Game Versions menu.',
+          instructions: [
+            'In the Properties window, click the "Betas" (or "Game Versions & Betas") tab.',
+            'Open the "Beta Participation" dropdown menu.',
+            'Select "evrima - EVRIMA Public Branch" where available, then close the Properties window.'
+          ],
+          notice: 'Selecting Evrima queues the Evrima branch files through Steam automatically.'
+        },
+        {
+          number: 'STEP 05',
+          title: 'Download and Install the Game Files',
+          summary: 'Allow Steam to download or update all required Evrima game files onto an SSD with sufficient free storage.',
+          instructions: [
+            'Click "Install" or "Update" on The Isle in your Steam Library.',
+            'Confirm your installation drive (an SSD is recommended for smoother loading).',
+            'Wait for the Steam Downloads queue to reach 100% completion.'
+          ]
+        },
+        {
+          number: 'STEP 06',
+          title: 'Understand Easy Anti-Cheat',
+          summary:
+            'Easy Anti-Cheat (EAC) is the anti-cheat component used by The Isle: Evrima. It is bundled directly with the game’s installation files through Steam.',
+          instructions: [
+            'Steam normally handles installing the required Easy Anti-Cheat components automatically.',
+            'You generally do NOT need to download a separate EAC installer from any external website.',
+            'Only run manual repair steps if the game reports that Easy Anti-Cheat is missing or not installed.'
+          ],
+          notice:
+            'Easy Anti-Cheat is included with The Isle: Evrima. A separate download is normally unnecessary. If the game reports that EAC is missing or not installed, follow the repair instructions below.'
+        },
+        {
+          number: 'STEP 07',
+          title: 'Install or Repair Easy Anti-Cheat if Necessary',
+          summary:
+            'If Evrima reports missing EAC on launch, use the official bundled installer inside your local game folder (Option A) or verify game files through Steam (Option B).',
+          instructions: [
+            'First attempt launching the game normally—if it launches cleanly, manual EAC installation is NOT required.',
+            'If an EAC error appears, open the "EAC SYSTEM VERIFICATION" tab above and follow Option A (Local Installer / Repair).',
+            'Only run official files located inside your verified Steam installation directory—never download replacement EAC files from third-party websites.'
+          ],
+          notice:
+            'File names and folder structures (such as InstallAntiCheat.bat, EasyAntiCheat folder, or EasyAntiCheat_Setup.exe) may differ between game builds. If no installer is present, proceed to Option B / Step 08.'
+        },
+        {
+          number: 'STEP 08',
+          title: 'Verify Game Files',
+          summary: 'Use Steam’s built-in file verification whenever game or bundled anti-cheat files are missing or corrupted.',
+          instructions: [
+            'Open Steam Library, right-click "The Isle", and select "Properties...".',
+            'Navigate to the "Installed Files" section.',
+            'Click "Verify integrity of game files" and wait for Steam to scan and replace any missing or corrupted components.'
+          ],
+          notice:
+            'If an EAC error still persists after verification, consult The Isle’s official support channels rather than downloading unofficial anti-cheat installers.'
+        },
+        {
+          number: 'STEP 09',
+          title: 'Launch The Isle: Evrima',
+          summary: 'Launch The Isle from Steam and approve any standard Windows or Easy Anti-Cheat startup prompt.',
+          instructions: [
+            'Click the green "Play" button for The Isle in your Steam Library.',
+            'Allow Easy Anti-Cheat to initialize if prompted.',
+            'Confirm you reach the Evrima main menu cleanly.'
+          ]
+        },
+        {
+          number: 'STEP 10',
+          title: 'Confirm Successful Installation',
+          summary: 'Verify your Evrima build is active and check off your Steam & EAC preparation before visiting the Community Outpost.',
+          instructions: [
+            'Confirm the main menu displays the Evrima title screen and server browser works.',
+            'Review the Steam & EAC Checklist tab to ensure all applicable items are checked.',
+            'Return to the outpost and proceed to Location 03 — Community Outpost.'
+          ],
+          notice: 'Once you confirm the game launches successfully (or EAC verification passes), Easy Anti-Cheat is considered ready.'
+        }
+      ],
+      eacTerminal: {
+        ledLabel: 'FIELD EQUIPMENT VERIFICATION TERMINAL',
+        title: 'EASY ANTI-CHEAT — SYSTEM VERIFICATION',
+        tagline: '"Ensuring your game installation is ready."',
+        noticeBanner:
+          'Easy Anti-Cheat is included with The Isle: Evrima. A separate download is normally unnecessary. If the game reports that EAC is missing or not installed, follow Option A or Option B below.',
+        optionA: {
+          code: 'OPTION A',
+          title: 'LOCAL INSTALLER / REPAIR',
+          confirmBtn: 'Confirm Local Check Complete',
+          completionMessage: 'EAC INSTALLATION CHECK COMPLETE',
+          buildVarianceWarning:
+            'Important: File names and directory structures may differ between game builds. Do not assume every installation contains all listed filenames. If no official installer is present, proceed directly to Option B.',
+          officialOnlyWarning:
+            'Only use files inside your verified official Steam game directory. Never download replacement EAC executables or batch files from unofficial websites.',
+          steps: [
+            'Open Steam Library.',
+            'Right-click The Isle.',
+            'Select Properties.',
+            'Navigate to Installed Files.',
+            'Click Browse to open the local game installation directory.',
+            'Locate Easy Anti-Cheat installation files if present (examples depending on build: InstallAntiCheat.bat, EasyAntiCheat folder, or EasyAntiCheat_Setup.exe).',
+            'Run the official game-bundled installation/repair script or executable and choose Install or Repair (approve Windows administrator elevation if requested).',
+            'Wait for the installation or repair process to complete.',
+            'Return to Steam and launch The Isle.'
+          ]
+        },
+        optionB: {
+          code: 'OPTION B',
+          title: 'VERIFY GAME FILES',
+          confirmBtn: 'Confirm File Verification Complete',
+          completionMessage: 'GAME FILE VERIFICATION COMPLETE',
+          fallbackWarning:
+            'If the EAC error persists after verification, consult The Isle’s official support channels rather than downloading unofficial anti-cheat installers.',
+          steps: [
+            'Open Steam Library.',
+            'Right-click The Isle.',
+            'Select Properties.',
+            'Open Installed Files.',
+            'Select "Verify integrity of game files".',
+            'Wait for Steam to complete the verification process.',
+            'Allow Steam to identify and replace missing or corrupted game files, including bundled anti-cheat components where applicable.',
+            'Once verification is complete, launch The Isle again.'
+          ]
+        }
+      },
+      troubleshooting: [
+        {
+          code: 'ISSUE 01',
+          title: 'Easy Anti-Cheat Not Installed',
+          action:
+            'Check the local game installation directory for the official EAC installer (Option A). If unavailable, verify the game files through Steam (Option B).'
+        },
+        {
+          code: 'ISSUE 02',
+          title: 'EAC Installer Missing',
+          action: 'Use Steam’s "Verify integrity of game files" function under Properties → Installed Files so Steam restores bundled files.'
+        },
+        {
+          code: 'ISSUE 03',
+          title: 'EAC Installation Fails',
+          action: 'Restart Steam, verify game files, and retry the official installation or repair process with administrator approval when prompted.'
+        },
+        {
+          code: 'ISSUE 04',
+          title: 'Game Still Cannot Launch',
+          action: 'Consult The Isle’s official support resources and provide the exact error message. Never attempt to bypass, disable, or circumvent Easy Anti-Cheat.'
+        }
+      ],
+      troublePolicy:
+        'Official Policy: Never bypass, disable, or circumvent Easy Anti-Cheat, and never download EAC installers from unofficial websites.',
+      checklistHeading: 'STEAM & EAC PREPARATION CHECKLIST',
+      checklistCountSuffix: (done, total) => `${done} / ${total} Checked (Saved Automatically)`,
+      checklistNote:
+        'Note: Easy Anti-Cheat is marked checked automatically once you confirm The Isle launches successfully or complete Steam file verification—manual EAC installation is not required unless an error occurs.',
+      checklistItems: {
+        steamObtained: 'The Isle obtained through Steam',
+        evrimaSelected: 'Evrima branch selected in Steam Properties',
+        filesDownloaded: 'Game files downloaded successfully',
+        eacChecked: 'Easy Anti-Cheat installation checked',
+        eacRepaired: 'EAC repaired if required (skip if Steam handled automatically)',
+        filesVerified: 'Game file verification completed if necessary',
+        gameLaunched: 'The Isle: Evrima successfully launched'
+      }
+    }
+  },
+
+  ms: {
+    ui: {
+      eyebrow: 'PANDUAN PEMAIN BAHARU PRASEJARAH — PROTOTIP RANGKA',
+      tagline: 'PERJALANAN ANDA KE DALAM THE ISLE BERMULA DI SINI.',
+      welcomeDesc:
+        'Terokai pos penyelidikan ini dalam mod orang pertama dan cuba lima stesen interaktif yang tersedia. Prototip rangka ini menguji pergerakan, perlanggaran objek, dan interaksi stesen sebelum kandungan penuh ditambah.',
+      ctrlMove: 'Bergerak',
+      ctrlLook: 'Lihat Sekeliling',
+      ctrlSprint: 'Lari Pecut',
+      ctrlInteract: 'Berinteraksi di Stesen',
+      ctrlEsc: 'Lepaskan Tetikus / Tutup Panel',
+      startBtn: 'MULAKAN EKSPEDISI',
+      pointerNote:
+        'Klik untuk masuk ke mod orang pertama. Jika kunci tetikus tidak disokong, seret tetikus untuk melihat sekeliling.',
+      langLabel: 'BAHASA',
+      destLabel: 'DESTINASI',
+      quickJumpDefault: 'Lompat Terus...',
+      controlsBtn: 'KAWALAN',
+      statusLabel: 'STATUS EKSPEDISI',
+      objectiveDefault: 'Terokai kawasan pos dan dekati mana-mana stesen.',
+      hudHint: 'Klik paparan untuk kunci tetikus • ESC untuk lepaskan kursor',
+      trailsZone: 'LALUAN POS — HUTAN MESOZOIK',
+      closeEsc: 'TUTUP [ESC]',
+      prevStation: 'Stesen Sebelumnya',
+      nextStation: 'Stesen Seterusnya',
+      returnOutpost: 'Kembali ke Pos',
+      skeletonTag: 'PRATONTON STESEN RANGKA',
+      functionalTag: 'TERMINAL BERFUNGSI — KEMAJUAN DISIMPAN',
+      arrivedStation: (title) => `Tiba di ${title}. Tekan [E] untuk periksa.`,
+      arrivedNpc: (title) => `Tiba berhampiran ${title}. Tekan [E] untuk berbual.`,
+      inspecting: (title) => `Memeriksa ${title}`,
+      speakingWith: 'Berbual dengan SavageZed — Pemandu Komuniti Primeval Malaysia',
+      npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
+      npcByeEsc: 'SELAMAT TINGGAL [ESC]',
+      npcBtnWhatToDo: 'Apa perlu saya buat di sini?',
+      npcBtnGreeting: 'Kembali ke Ucapan',
+      npcBtnJumpSteam: 'Pergi ke Stesen Steam',
+      npcBtnBye: 'Terima kasih, SavageZed!',
+      npcMenuLabel: '★ SavageZed (Pemandu Kem)'
+    },
+    npc: {
+      zoneLabel: 'LOKASI 01 — KEM EKSPEDISI UTAMA (SAVAGEZED)',
+      title: 'SavageZed',
+      promptLabel: 'Berbual dengan SavageZed',
+      pages: {
+        greeting: {
+          speaker: 'SavageZed',
+          role: 'Pemandu Komuniti Primeval Malaysia',
+          text:
+            'Selamat datang dan salam mesra, pengembara! Saya SavageZed, dan saya amat gembira menyambut kedatangan anda ke pos Komuniti Primeval Malaysia. Luangkan masa untuk meneroka kem prasejarah kami—kami berbesar hati menerima kehadiran anda!',
+          hint: 'Gunakan butang di bawah untuk bertanya apa yang boleh dilakukan di sini, atau tekan ESC bila-bila masa untuk terus meneroka.'
+        },
+        'what-to-do': {
+          speaker: 'SavageZed',
+          role: 'Taklimat Kawasan Pos',
+          text:
+            'Berikut ialah perkara yang boleh anda lakukan di kem kami sebagai persediaan untuk The Isle: Evrima:\n' +
+            '1. Periksa Papan Kenyataan Pusat Alu-aluan di belakang saya untuk keperluan asas PC & info kem.\n' +
+            '2. Lawati Terminal Steam & Easy Anti-Cheat di arah barat laut untuk panduan memilih cabang Evrima dan semakan EAC.\n' +
+            '3. Semak Papan Direktori Komuniti di arah timur laut untuk maklumat pelayan komuniti & peraturan yang disahkan.\n' +
+            '4. Singgah ke Meja Aplikasi Pendamping di tenggara untuk panduan muat turun rasmi.\n' +
+            '5. Pergi ke Pintu Pelepasan Ekspedisi di utara apabila anda sudah bersedia dengan senarai semak akhir!',
+          hint: 'Tip: Anda boleh berjalan menggunakan WASD + Shift, atau guna menu DESTINASI di penjuru kanan atas untuk lompat terus.'
+        }
+      }
+    },
+    destinations: {
+      'welcome-centre': {
+        badge: 'DESTINASI 01',
+        zoneLabel: 'LOKASI 01 — KEM EKSPEDISI UTAMA',
+        title: 'Pusat Alu-aluan & Papan Kenyataan',
+        subtitle: 'Pengenalan kepada The Isle: Evrima dan lima stesen ekspedisi.',
+        promptLabel: 'Periksa Papan Alu-aluan',
+        summary:
+          'Hab permulaan utama yang memperkenalkan The Isle: Evrima, keperluan asas PC, dan susun atur pos ekspedisi.',
+        plannedSections: [
+          'Pengenalan kepada The Isle & cabang Evrima',
+          'Gambaran keseluruhan lima destinasi panduan',
+          'Keperluan perkakasan PC minimum & disyorkan',
+          'Panduan navigasi ekspedisi'
+        ],
+        callout: 'Nota Rangka: Kad taklimat penuh dan penjejakan MULAKAN EKSPEDISI akan dilengkapkan pada Pencapaian 4.'
+      },
+      'steam-station': {
+        badge: 'DESTINASI 02',
+        zoneLabel: 'LOKASI 02 — STESEN PEMASANGAN STEAM',
+        title: 'Terminal Steam & Easy Anti-Cheat',
+        subtitle: 'Panduan langkah demi langkah pemasangan Steam, cabang Evrima, dan pembaikan EAC.',
+        promptLabel: 'Buka Terminal Steam'
+      },
+      'community-outpost': {
+        badge: 'DESTINASI 03',
+        zoneLabel: 'LOKASI 03 — POS KOMUNITI',
+        title: 'Papan Direktori Komuniti',
+        subtitle: 'Portal komuniti yang disahkan, pautan Discord, dan polisi akses.',
+        promptLabel: 'Baca Direktori Komuniti',
+        summary: 'Papan direktori kayu yang memaparkan senarai komuniti rasmi daripada fail konfigurasi berasingan.',
+        plannedSections: [
+          'IsleLink — Sumber Discord rasmi dengan sekatan umur 18+ yang ketat',
+          'Obsidian Isle — Sumber Discord rasmi, maklumat pelayan, dan panduan aplikasi pendamping',
+          'Kad komuniti dengan carian & penapis daripada serverDirectory.js'
+        ],
+        callout: 'Nota Rangka: Pengesahan umur dan kad komuniti interaktif akan ditambah pada Pencapaian 4.'
+      },
+      'companion-station': {
+        badge: 'DESTINASI 04',
+        zoneLabel: 'LOKASI 04 — STESEN APLIKASI PENDAMPING',
+        title: 'Meja Aplikasi Pendamping',
+        subtitle: 'Sumber edaran rasmi, langkah pemasangan, dan semakan keselamatan.',
+        promptLabel: 'Periksa Meja Pendamping',
+        summary:
+          'Stesen kerja khas yang menerangkan aplikasi pendamping komuniti, saluran edaran Discord rasmi, dan langkah keselamatan.',
+        plannedSections: [
+          'Ciri-ciri dan kegunaan aplikasi pendamping yang disokong',
+          'Panduan edaran rasmi melalui Discord sahaja (Obsidian Isle)',
+          'Senarai semak pemasangan & amaran sumber tidak rasmi'
+        ],
+        callout: 'Nota Rangka: Senarai semak terperinci dan bantuan masalah aplikasi pendamping akan ditambah pada Pencapaian 4.'
+      },
+      'expedition-departure': {
+        badge: 'DESTINASI 05',
+        zoneLabel: 'LOKASI 05 — PELEPASAN EKSPEDISI',
+        title: 'Pintu Pelepasan Ekspedisi',
+        subtitle: 'Senarai semak persediaan akhir sebelum memasuki The Isle.',
+        promptLabel: 'Buka Senarai Semak Akhir',
+        summary:
+          'Gerbang pelepasan hutan yang memuatkan senarai semak kesiapsiagaan akhir termasuk Steam, Evrima, Easy Anti-Cheat, peraturan komuniti, dan aplikasi pendamping.',
+        plannedSections: [
+          'Senarai semak interaktif 11 perkara (termasuk semakan EAC)',
+          'Simpanan kemajuan automatik melalui LocalStorage',
+          'Status tamat: PERSEDIAAN EKSPEDISI SELESAI'
+        ],
+        callout: 'Nota Rangka: Penjejakan senarai semak akhir berterusan akan diaktifkan pada Pencapaian 4.'
+      }
+    },
+    steam: {
+      tabs: {
+        walkthrough: (done, total) => `PANDUAN (${done}/${total})`,
+        eac: 'SEMAKAN SISTEM EAC',
+        troubleshooting: 'PENYELESAIAN MASALAH',
+        checklist: 'SENARAI SEMAK'
+      },
+      illustrationCaption: 'ILUSTRASI ANTARA MUKA — BUKAN TANGKAPAN SKRIN SEBENAR',
+      stepOf: (curr, total) => `LANGKAH ${String(curr).padStart(2, '0')} DARIPADA ${String(total).padStart(2, '0')}`,
+      throughWalkthrough: (pct) => `${pct}% DARIPADA PANDUAN`,
+      stepCompleted: 'Langkah Selesai',
+      markComplete: 'Tanda Selesai',
+      prevStep: '← Langkah Sebelumnya',
+      nextStep: 'Langkah Seterusnya →',
+      reviewChecklist: 'Semak Senarai Semak →',
+      openEacTabBtn: 'Buka Terminal Semakan Sistem EAC →',
+      openSteamBtn: 'Buka Halaman Rasmi Steam Store',
+      steps: [
+        {
+          number: 'LANGKAH 01',
+          title: 'Dapatkan The Isle melalui Steam',
+          summary:
+            'Pastikan anda mempunyai akaun Steam dan klien desktop Steam yang dipasang, kemudian dapatkan The Isle daripada Kedai Steam rasmi.',
+          instructions: [
+            'Buka aplikasi desktop rasmi Steam (atau log masuk Steam dalam pelayar anda).',
+            'Lawati halaman rasmi Steam Store bagi The Isle menggunakan pautan sah di bawah.',
+            'Beli dan tambahkan The Isle ke akaun Steam anda jika belum memilikinya.'
+          ]
+        },
+        {
+          number: 'LANGKAH 02',
+          title: 'Cari The Isle dalam Pustaka Steam',
+          summary: 'Buka Pustaka (Library) Steam anda dan cari The Isle dalam senarai permainan.',
+          instructions: [
+            'Lancarkan aplikasi Steam dan klik tab LIBRARY di bahagian atas.',
+            'Taip "The Isle" pada ruangan carian di bar sisi kiri.',
+            'Pilih "The Isle" daripada senarai permainan anda.'
+          ]
+        },
+        {
+          number: 'LANGKAH 03',
+          title: 'Buka Properties Permainan',
+          summary: 'Buka tetingkap tetapan permainan untuk menukar daripada versi asal ke cabang Evrima.',
+          instructions: [
+            'Klik kanan pada "The Isle" di bar sisi Steam Library (atau klik ikon gear Manage).',
+            'Pilih "Properties..." daripada menu yang muncul.',
+            'Biarkan tetingkap Properties terbuka untuk langkah pemilihan cabang.'
+          ]
+        },
+        {
+          number: 'LANGKAH 04',
+          title: 'Pilih Cabang Permainan Evrima',
+          summary: 'Evrima ialah cabang pembangunan aktif The Isle yang diakses melalui menu Betas / Game Versions di Steam.',
+          instructions: [
+            'Dalam tetingkap Properties, klik tab "Betas" (atau "Game Versions & Betas").',
+            'Buka menu lungsur "Beta Participation".',
+            'Pilih "evrima - EVRIMA Public Branch" jika tersedia, kemudian tutup tetingkap Properties.'
+          ],
+          notice: 'Memilih Evrima akan memulakan giliran muat turun fail Evrima di Steam secara automatik.'
+        },
+        {
+          number: 'LANGKAH 05',
+          title: 'Muat Turun dan Pasang Fail Permainan',
+          summary: 'Benarkan Steam memuat turun atau mengemas kini semua fail Evrima ke storan SSD dengan ruang kosong yang mencukupi.',
+          instructions: [
+            'Klik "Install" atau "Update" pada The Isle di dalam Steam Library.',
+            'Sahkan pemacu pemasangan (SSD amat disyorkan untuk pemuatan yang lebih lancar).',
+            'Tunggu sehingga giliran muat turun Steam mencapai 100%.'
+          ]
+        },
+        {
+          number: 'LANGKAH 06',
+          title: 'Fahami Easy Anti-Cheat',
+          summary:
+            'Easy Anti-Cheat (EAC) ialah komponen anti-penipuan yang digunakan oleh The Isle: Evrima dan disertakan terus bersama fail pemasangan Steam.',
+          instructions: [
+            'Steam kebiasaannya mengurus pemasangan komponen Easy Anti-Cheat secara automatik.',
+            'Anda lazimnya TIDAK perlu memuat turun pemasang EAC berasingan daripada laman web luar.',
+            'Jalankan langkah pembaikan manual hanya jika permainan melaporkan EAC tiada atau belum dipasang.'
+          ],
+          notice:
+            'Easy Anti-Cheat disertakan bersama The Isle: Evrima. Muat turun berasingan kebiasaannya tidak diperlukan. Jika permainan melaporkan EAC tiada atau belum dipasang, ikut arahan pembaikan di bawah.'
+        },
+        {
+          number: 'LANGKAH 07',
+          title: 'Pasang atau Baiki Easy Anti-Cheat jika Perlu',
+          summary:
+            'Jika Evrima melaporkan ralat EAC semasa dilancarkan, gunakan pemasang rasmi dalam folder permainan tempatan (Pilihan A) atau sahkan fail melalui Steam (Pilihan B).',
+          instructions: [
+            'Cuba lancarkan permainan seperti biasa dahulu—jika berjalan lancar, pemasangan manual EAC TIDAK diperlukan.',
+            'Jika ralat EAC muncul, buka tab "SEMAKAN SISTEM EAC" di atas dan ikut Pilihan A (Pemasang / Pembaikan Tempatan).',
+            'Gunakan fail rasmi di dalam direktori pemasangan Steam sahaja—jangan sekali-kali muat turun fail EAC daripada laman pihak ketiga.'
+          ],
+          notice:
+            'Nama fail dan struktur folder (seperti InstallAntiCheat.bat, folder EasyAntiCheat, atau EasyAntiCheat_Setup.exe) boleh berbeza mengikut versi permainan. Jika tiada pemasang ditemui, teruskan ke Pilihan B / Langkah 08.'
+        },
+        {
+          number: 'LANGKAH 08',
+          title: 'Sahkan Fail Permainan (Verify Game Files)',
+          summary: 'Gunakan fungsi pengesahan fail terbina dalam Steam apabila fail permainan atau komponen anti-penipuan hilang atau rosak.',
+          instructions: [
+            'Buka Steam Library, klik kanan "The Isle", dan pilih "Properties...".',
+            'Pergi ke bahagian "Installed Files".',
+            'Klik "Verify integrity of game files" dan tunggu Steam mengimbas serta menggantikan fail yang hilang atau rosak.'
+          ],
+          notice:
+            'Jika ralat EAC masih berterusan selepas pengesahan, rujuk saluran sokongan rasmi The Isle dan elakkan memuat turun pemasang anti-cheat tidak rasmi.'
+        },
+        {
+          number: 'LANGKAH 09',
+          title: 'Lancarkan The Isle: Evrima',
+          summary: 'Lancarkan The Isle daripada Steam dan benarkan sebarang pengesahan permulaan Windows atau Easy Anti-Cheat.',
+          instructions: [
+            'Klik butang hijau "Play" bagi The Isle di Steam Library.',
+            'Benarkan Easy Anti-Cheat dimulakan jika diminta.',
+            'Pastikan anda berjaya masuk ke menu utama Evrima tanpa ralat.'
+          ]
+        },
+        {
+          number: 'LANGKAH 10',
+          title: 'Sahkan Pemasangan Berjaya',
+          summary: 'Pastikan binaan Evrima aktif dan semak senarai persediaan Steam & EAC sebelum melawat Pos Komuniti.',
+          instructions: [
+            'Pastikan menu utama memaparkan skrin Evrima dan pelayar pelayan berfungsi.',
+            'Semak tab Senarai Semak untuk memastikan item berkaitan telah ditanda.',
+            'Kembali ke pos dan teruskan ke Lokasi 03 — Pos Komuniti.'
+          ],
+          notice: 'Apabila anda mengesahkan permainan berjaya dilancarkan (atau semakan EAC lulus), Easy Anti-Cheat dianggap sedia.'
+        }
+      ],
+      eacTerminal: {
+        ledLabel: 'TERMINAL SEMAKAN PERALATAN LAPANGAN',
+        title: 'EASY ANTI-CHEAT — SEMAKAN SISTEM',
+        tagline: '"Memastikan pemasangan permainan anda sedia digunakan."',
+        noticeBanner:
+          'Easy Anti-Cheat disertakan bersama The Isle: Evrima. Muat turun berasingan kebiasaannya tidak diperlukan. Jika permainan melaporkan EAC tiada atau belum dipasang, ikut Pilihan A atau Pilihan B di bawah.',
+        optionA: {
+          code: 'PILIHAN A',
+          title: 'PEMASANG / PEMBAIKAN TEMPATAN',
+          confirmBtn: 'Sahkan Semakan Tempatan Selesai',
+          completionMessage: 'SEMAKAN PEMASANGAN EAC SELESAI',
+          buildVarianceWarning:
+            'Penting: Nama fail dan struktur direktori mungkin berbeza antara binaan permainan. Jangan andaikan semua pemasangan mempunyai nama fail yang sama. Jika pemasang tiada, teruskan ke Pilihan B.',
+          officialOnlyWarning:
+            'Hanya gunakan fail di dalam direktori permainan Steam rasmi anda. Jangan muat turun fail .exe atau .bat EAC gantian daripada laman web tidak rasmi.',
+          steps: [
+            'Buka Steam Library.',
+            'Klik kanan pada The Isle.',
+            'Pilih Properties.',
+            'Pergi ke Installed Files.',
+            'Klik Browse untuk membuka direktori pemasangan permainan tempatan.',
+            'Cari fail pemasangan Easy Anti-Cheat jika ada (contoh bergantung pada versi: InstallAntiCheat.bat, folder EasyAntiCheat, atau EasyAntiCheat_Setup.exe).',
+            'Jalankan skrip atau pemasang rasmi yang disertakan bersama permainan dan pilih Install atau Repair (luluskan kebenaran pentadbir Windows jika diminta).',
+            'Tunggu sehingga proses pemasangan atau pembaikan selesai.',
+            'Kembali ke Steam dan lancarkan The Isle.'
+          ]
+        },
+        optionB: {
+          code: 'PILIHAN B',
+          title: 'SAHKAN FAIL PERMAINAN',
+          confirmBtn: 'Sahkan Semakan Fail Selesai',
+          completionMessage: 'PENGESAHAN FAIL PERMAINAN SELESAI',
+          fallbackWarning:
+            'Jika ralat EAC masih berterusan selepas pengesahan, hubungi saluran sokongan rasmi The Isle dan jangan muat turun pemasang anti-cheat tidak rasmi.',
+          steps: [
+            'Buka Steam Library.',
+            'Klik kanan pada The Isle.',
+            'Pilih Properties.',
+            'Buka Installed Files.',
+            'Pilih "Verify integrity of game files".',
+            'Tunggu sehingga Steam melengkapkan proses pengesahan.',
+            'Biarkan Steam mengenal pasti dan menggantikan fail permainan yang hilang atau rosak, termasuk komponen anti-cheat yang disertakan.',
+            'Setelah pengesahan selesai, lancarkan The Isle semula.'
+          ]
+        }
+      },
+      troubleshooting: [
+        {
+          code: 'ISU 01',
+          title: 'Easy Anti-Cheat Belum Dipasang',
+          action:
+            'Semak direktori pemasangan tempatan permainan untuk pemasang rasmi EAC (Pilihan A). Jika tiada, sahkan fail permainan melalui Steam (Pilihan B).'
+        },
+        {
+          code: 'ISU 02',
+          title: 'Pemasang EAC Tidak Dijumpai',
+          action: 'Gunakan fungsi "Verify integrity of game files" Steam di bawah Properties → Installed Files supaya Steam memulihkan fail asal.'
+        },
+        {
+          code: 'ISU 03',
+          title: 'Pemasangan EAC Gagal',
+          action: 'Mulakan semula Steam, sahkan fail permainan, dan cuba semula pemasangan atau pembaikan rasmi dengan kebenaran pentadbir.'
+        },
+        {
+          code: 'ISU 04',
+          title: 'Permainan Masih Tidak Boleh Dilancarkan',
+          action:
+            'Rujuk saluran sokongan rasmi The Isle dan sertakan mesej ralat yang tepat. Jangan cuba memintas atau menyahaktifkan Easy Anti-Cheat.'
+        }
+      ],
+      troublePolicy:
+        'Polisi Rasmi: Jangan sekali-kali memintas, menyahaktifkan, atau mengelak Easy Anti-Cheat, dan jangan muat turun pemasang EAC daripada sumber tidak rasmi.',
+      checklistHeading: 'SENARAI SEMAK PERSEDIAAN STEAM & EAC',
+      checklistCountSuffix: (done, total) => `${done} / ${total} Ditanda (Disimpan Automatik)`,
+      checklistNote:
+        'Nota: Easy Anti-Cheat akan ditanda secara automatik setelah anda mengesahkan The Isle berjaya dilancarkan atau melengkapkan pengesahan fail Steam—pemasangan manual tidak wajib jika tiada ralat.',
+      checklistItems: {
+        steamObtained: 'The Isle diperoleh melalui Steam',
+        evrimaSelected: 'Cabang Evrima dipilih dalam Steam Properties',
+        filesDownloaded: 'Fail permainan berjaya dimuat turun',
+        eacChecked: 'Pemasangan Easy Anti-Cheat telah disemak',
+        eacRepaired: 'EAC dibaiki jika perlu (abaikan jika Steam pasang automatik)',
+        filesVerified: 'Pengesahan fail permainan diselesaikan jika perlu',
+        gameLaunched: 'The Isle: Evrima berjaya dilancarkan'
+      }
+    }
+  },
+
+  kl: {
+    ui: {
+      eyebrow: 'ONBOARDING PLAYER BARU — PROTOTIP SKELETON',
+      tagline: 'ADVENTURE KORANG KAT THE ISLE MULA KAT SINI.',
+      welcomeDesc:
+        'Jom pusing-pusing kem penyelidikan ni dalam first-person dan test lima stesen interaktif kat sini. Prototip ni untuk test jalan-jalan, langgar dinding, dengan interaksi stesen sebelum content penuh masuk.',
+      ctrlMove: 'Jalan',
+      ctrlLook: 'Pusing Kamera',
+      ctrlSprint: 'Lari Laju',
+      ctrlInteract: 'Tekan Kat Stesen',
+      ctrlEsc: 'Lepas Mouse / Tutup Panel',
+      startBtn: 'JOM MULA EKSPEDISI',
+      pointerNote:
+        'Klik untuk masuk mode first-person. Kalau pointer lock tak jalan, drag je mouse untuk pusing pandangan.',
+      langLabel: 'BAHASA',
+      destLabel: 'LOKASI',
+      quickJumpDefault: 'Terus Teleport...',
+      controlsBtn: 'KAWALAN',
+      statusLabel: 'STATUS EKSPEDISI',
+      objectiveDefault: 'Pusing-pusing kem dan pergi mana-mana stesen jap.',
+      hudHint: 'Klik skrin untuk lock mouse • ESC nak lepas cursor',
+      trailsZone: 'JALAN HUTAN — KEM MESOZOIK',
+      closeEsc: 'TUTUP [ESC]',
+      prevStation: 'Stesen Lepas',
+      nextStation: 'Stesen Depan',
+      returnOutpost: 'Sambung Jalan',
+      skeletonTag: 'PREVIEW STESEN SKELETON',
+      functionalTag: 'TERMINAL ONZ — PROGRESS DAH SAVE',
+      arrivedStation: (title) => `Dah sampai ${title}. Tekan [E] nak tengok.`,
+      arrivedNpc: (title) => `Dah depan ${title}. Tekan [E] nak borak.`,
+      inspecting: (title) => `Tengah tengok ${title}`,
+      speakingWith: 'Tengah sembang dengan SavageZed — Guide Primeval Malaysia',
+      npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
+      npcByeEsc: 'GERAK DULU [ESC]',
+      npcBtnWhatToDo: 'Nak buat apa kat sini bro?',
+      npcBtnGreeting: 'Balik Ucapan Mula',
+      npcBtnJumpSteam: 'Terus ke Stesen Steam',
+      npcBtnBye: 'Okay cun, thanks SavageZed!',
+      npcMenuLabel: '★ SavageZed (Guide Kem)'
+    },
+    npc: {
+      zoneLabel: 'LOKASI 01 — KEM UTAMA (SAVAGEZED)',
+      title: 'SavageZed',
+      promptLabel: 'Borak dengan SavageZed',
+      pages: {
+        greeting: {
+          speaker: 'SavageZed',
+          role: 'Guide Komuniti Primeval Malaysia',
+          text:
+            'Wey selamat datang geng! Aku SavageZed, happy gila dapat sambut korang masuk kem Komuniti Primeval Malaysia ni. Rilek dulu, cuci mata tengok kem dino kita ni—memang ngam korang join kitorang kat sini!',
+          hint: 'Tekan button kat bawah kalau nak tahu apa benda boleh buat kat sini, atau tekan ESC kalau nak sambung jalan.'
+        },
+        'what-to-do': {
+          speaker: 'SavageZed',
+          role: 'Briefing Santai Kem',
+          text:
+            'Ni benda korang kena check sebelum terjun main The Isle: Evrima:\n' +
+            '1. Tengok Papan Notice kat belakang aku ni dulu untuk spec PC basic dengan info kem.\n' +
+            '2. Pergi Terminal Steam & Easy Anti-Cheat kat belah barat laut sana—situ ajar cara tukar branch Evrima dengan settlekan EAC kalau buat hal.\n' +
+            '3. Check Papan Direktori Komuniti kat belah timur laut untuk link Discord verified dengan rules server.\n' +
+            '4. Singgah Meja Companion App belah tenggara kalau nak tahu pasal app tambahan yang official je.\n' +
+            '5. Last sekali, lalu Pintu Pelepasan kat utara sana untuk check senarai akhir. Ngam!',
+          hint: 'Tip: Jalan pakai WASD + Shift, ataupun pilih je kat dropdown LOKASI belah kanan atas kalau malas jalan jauh.'
+        }
+      }
+    },
+    destinations: {
+      'welcome-centre': {
+        badge: 'DESTINASI 01',
+        zoneLabel: 'LOKASI 01 — KEM EKSPEDISI UTAMA',
+        title: 'Pusat Welcome & Papan Notice',
+        subtitle: 'Intro pasal The Isle: Evrima dengan lima stesen kat kem ni.',
+        promptLabel: 'Tengok Papan Welcome',
+        summary: 'Port mula-mula untuk kenalkan The Isle: Evrima, spec PC yang ngam, dan map kasar kem ni.',
+        plannedSections: [
+          'Intro pasal The Isle & branch Evrima',
+          'Ringkasan lima stesen onboarding',
+          'Spec PC minimum & recommended biar tak lag',
+          'Cara gerak dalam kem'
+        ],
+        callout: 'Nota Skeleton: Info penuh dengan tracking JOM MULA EKSPEDISI akan siap masa Milestone 4 nanti.'
+      },
+      'steam-station': {
+        badge: 'DESTINASI 02',
+        zoneLabel: 'LOKASI 02 — STESEN INSTALL STEAM',
+        title: 'Terminal Steam & Easy Anti-Cheat',
+        subtitle: 'Tutorial step-by-step install Steam, tukar branch Evrima, dengan repair EAC.',
+        promptLabel: 'Buka Terminal Steam'
+      },
+      'community-outpost': {
+        badge: 'DESTINASI 03',
+        zoneLabel: 'LOKASI 03 — PORT KOMUNITI',
+        title: 'Papan Direktori Komuniti',
+        subtitle: 'Senarai komuniti verified, link Discord betul, dengan rules akses.',
+        promptLabel: 'Tengok Direktori Komuniti',
+        summary: 'Papan kayu untuk senarai komuniti verified yang tarik data terus dari fail config berasingan.',
+        plannedSections: [
+          'IsleLink — Link Discord rasmi dengan gate umur 18+ yang strict',
+          'Obsidian Isle — Link Discord rasmi, info server, dan panduan companion app',
+          'Kad komuniti boleh search & filter guna serverDirectory.js'
+        ],
+        callout: 'Nota Skeleton: Age-gate dengan kad komuniti interaktif akan siap masuk masa Milestone 4.'
+      },
+      'companion-station': {
+        badge: 'DESTINASI 04',
+        zoneLabel: 'LOKASI 04 — STESEN COMPANION APP',
+        title: 'Meja Companion App',
+        subtitle: 'Sumber download rasmi, cara setup, dan tips elak link scam.',
+        promptLabel: 'Check Meja Companion',
+        summary: 'Meja khas untuk explain app pendamping komuniti, mana nak dapat kat Discord rasmi, dan langkah selamat.',
+        plannedSections: [
+          'Apa fungsi companion app yang disokong',
+          'Panduan download ikut Discord rasmi je (Obsidian Isle)',
+          'Checklist setup & warning jangan tekan link pelik-pelik'
+        ],
+        callout: 'Nota Skeleton: Checklist lengkap dengan troubleshooting companion app akan masuk masa Milestone 4.'
+      },
+      'expedition-departure': {
+        badge: 'DESTINASI 05',
+        zoneLabel: 'LOKASI 05 — PINTU PELEPASAN',
+        title: 'Pintu Pelepasan Ekspedisi',
+        subtitle: 'Checklist last sebelum korang terjun masuk The Isle.',
+        promptLabel: 'Check Senarai Akhir',
+        summary:
+          'Gerbang hutan tempat check semua benda dah settle ke belum—Steam, Evrima, Easy Anti-Cheat, rules komuniti, dengan companion app.',
+        plannedSections: [
+          '11 checklist interaktif (termasuk check EAC)',
+          'Auto-save kat LocalStorage biar tak hilang',
+          'Status siap: PERSEDIAAN EKSPEDISI COMPLETE'
+        ],
+        callout: 'Nota Skeleton: Checklist akhir yang link dengan progress penuh akan aktif masa Milestone 4.'
+      }
+    },
+    steam: {
+      tabs: {
+        walkthrough: (done, total) => `STEP-BY-STEP (${done}/${total})`,
+        eac: 'TERMINAL CHECK EAC',
+        troubleshooting: 'KALAU ERROR',
+        checklist: 'CHECKLIST'
+      },
+      illustrationCaption: 'ILUSTRASI UI JE — BUKAN SCREENSHOT BETUL',
+      stepOf: (curr, total) => `STEP ${String(curr).padStart(2, '0')} DARI ${String(total).padStart(2, '0')}`,
+      throughWalkthrough: (pct) => `DAH ${pct}% SIAP`,
+      stepCompleted: 'Step Ni Dah Settle',
+      markComplete: 'Tanda Dah Settle',
+      prevStep: '← Step Lepas',
+      nextStep: 'Step Depan →',
+      reviewChecklist: 'Tengok Checklist →',
+      openEacTabBtn: 'Buka Terminal Check EAC →',
+      openSteamBtn: 'Buka Steam Store Rasmi',
+      steps: [
+        {
+          number: 'STEP 01',
+          title: 'Dapatkan The Isle kat Steam',
+          summary:
+            'Pastikan Steam dah install kat PC korang, lepas tu beli atau buka page rasmi The Isle kat Steam Store.',
+          instructions: [
+            'Buka app Steam kat PC (atau login kat browser).',
+            'Pergi ke page Steam Store rasmi The Isle guna button link kat bawah ni.',
+            'Beli dan masukkan The Isle dalam akaun Steam korang kalau belum ada.'
+          ]
+        },
+        {
+          number: 'STEP 02',
+          title: 'Cari The Isle dalam Steam Library',
+          summary: 'Buka Steam Library dan cari nama The Isle kat list game korang.',
+          instructions: [
+            'Buka Steam dan tekan tab LIBRARY kat atas tu.',
+            'Taip "The Isle" kat kotak search belah kiri.',
+            'Klik "The Isle" dalam list game korang.'
+          ]
+        },
+        {
+          number: 'STEP 03',
+          title: 'Buka Properties Game',
+          summary: 'Masuk setting Properties game supaya korang boleh tukar dari versi lama ke branch Evrima.',
+          instructions: [
+            'Right-click kat "The Isle" kat sidebar Library (atau tekan ikon gear Manage).',
+            'Pilih "Properties..." dalam menu tu.',
+            'Biar je window Properties tu terbuka untuk step sebelah.'
+          ]
+        },
+        {
+          number: 'STEP 04',
+          title: 'Pilih Branch Evrima',
+          summary: 'Evrima ni versi aktif yang semua orang main sekarang—kena tukar kat bahagian Betas / Game Versions.',
+          instructions: [
+            'Dalam window Properties tu, klik tab "Betas" (atau "Game Versions & Betas").',
+            'Klik dropdown "Beta Participation".',
+            'Pilih "evrima - EVRIMA Public Branch", lepas tu tutup window Properties.'
+          ],
+          notice: 'Lepas korang pilih Evrima, Steam akan automatik queue download fail Evrima.'
+        },
+        {
+          number: 'STEP 05',
+          title: 'Download & Install Fail Game',
+          summary: 'Bagi Steam download atau update semua fail Evrima—elok letak kat SSD biar tak sangkut loading.',
+          instructions: [
+            'Tekan "Install" atau "Update" kat The Isle dalam Library.',
+            'Pilih drive yang ada ruang cukup (SSD paling ngam).',
+            'Tunggu sampai download Steam siap 100%.'
+          ]
+        },
+        {
+          number: 'STEP 06',
+          title: 'Fahami Easy Anti-Cheat (EAC)',
+          summary:
+            'Easy Anti-Cheat (EAC) ni sistem anti-cheat untuk The Isle: Evrima. Dia memang dah sekali bundle dalam download Steam tu.',
+          instructions: [
+            'Selalunya Steam memang terus install EAC ni automatik sekali dengan game.',
+            'Korang TAK payah pun cari atau download installer EAC asing dari website luar.',
+            'Buat repair manual ni kalau betul-betul keluar error kata EAC takde atau tak install je.'
+          ],
+          notice:
+            'Easy Anti-Cheat dah memang ada sekali dalam The Isle: Evrima. Tak perlu download asing. Kalau game keluar error kata EAC takde atau tak install, baru ikut step repair kat bawah.'
+        },
+        {
+          number: 'STEP 07',
+          title: 'Install atau Repair Easy Anti-Cheat Kalau Perlu',
+          summary:
+            'Kalau Evrima keluar error EAC masa launch, guna installer rasmi dalam folder game sendiri (Option A) atau verify file kat Steam (Option B).',
+          instructions: [
+            'Cuba tekan Play macam biasa dulu—kalau masuk game elok, korang TAK payah usik EAC langsung.',
+            'Kalau ada error EAC, buka tab "TERMINAL CHECK EAC" kat atas dan ikut Option A (Local Installer / Repair).',
+            'Guna fail yang memang ada dalam folder Steam rasmi korang je—jangan sesekali download fail EAC dari website luar!'
+          ],
+          notice:
+            'Nama fail dengan folder (contoh macam InstallAntiCheat.bat, folder EasyAntiCheat, atau EasyAntiCheat_Setup.exe) kadang lain ikut build game. Kalau tak jumpa installer, terus buat Option B / Step 08.'
+        },
+        {
+          number: 'STEP 08',
+          title: 'Verify Game Files Kat Steam',
+          summary: 'Guna feature Verify kat Steam kalau ada fail game atau fail anti-cheat yang hilang atau corrupt.',
+          instructions: [
+            'Buka Steam Library, right-click "The Isle", lepas tu klik "Properties...".',
+            'Masuk tab "Installed Files".',
+            'Tekan "Verify integrity of game files" dan tunggu Steam scan serta ganti balik mana-mana fail yang rosak.'
+          ],
+          notice:
+            'Kalau lepas verify pun error EAC masih sangkut, tanya support rasmi The Isle—jangan download installer anti-cheat pelik-pelik kat luar.'
+        },
+        {
+          number: 'STEP 09',
+          title: 'Launch The Isle: Evrima',
+          summary: 'Run The Isle dari Steam dan accept kalau Windows atau EAC keluar prompt permission.',
+          instructions: [
+            'Tekan button hijau "Play" kat The Isle dalam Steam Library.',
+            'Bagi Easy Anti-Cheat jalan kalau dia keluar loading screen.',
+            'Pastikan korang sampai ke main menu Evrima dengan aman.'
+          ]
+        },
+        {
+          number: 'STEP 10',
+          title: 'Confirm Semua Dah Mantap',
+          summary: 'Pastikan skrin menu Evrima dah keluar elok dan tick checklist sebelum korang gerak ke Port Komuniti.',
+          instructions: [
+            'Check main menu tulis Evrima dan senarai server boleh keluar.',
+            'Buka tab Checklist untuk pastikan semua item penting dah bertanda.',
+            'Keluar balik ke kem dan teruskan ke Lokasi 03 — Port Komuniti.'
+          ],
+          notice: 'Bila game dah boleh launch elok (atau lepas check EAC), kira EAC korang dah settel!'
+        }
+      ],
+      eacTerminal: {
+        ledLabel: 'TERMINAL SEMAKAN PERALATAN LAPANGAN',
+        title: 'EASY ANTI-CHEAT — CHECK SISTEM',
+        tagline: '"Pastikan install game korang betul-betul ready."',
+        noticeBanner:
+          'Easy Anti-Cheat dah memang sekali dengan The Isle: Evrima. Tak payah download asing. Kalau game keluar error kata EAC takde, ikut Option A atau Option B kat bawah ni.',
+        optionA: {
+          code: 'OPTION A',
+          title: 'INSTALLER / REPAIR DALAM FOLDER',
+          confirmBtn: 'Confirm Check Folder Siap',
+          completionMessage: 'CHECK PEMASANGAN EAC SETTLE',
+          buildVarianceWarning:
+            'Penting: Nama fail dengan susunan folder boleh berbeza ikut build game. Jangan pelik kalau tak semua fail kat bawah ada. Kalau tak jumpa langsung, terus buat Option B.',
+          officialOnlyWarning:
+            'Guna fail dalam folder Steam rasmi korang je. Jangan download fail .exe atau .bat EAC dari website tak rasmi!',
+          steps: [
+            'Buka Steam Library.',
+            'Right-click kat The Isle.',
+            'Pilih Properties.',
+            'Pergi ke Installed Files.',
+            'Tekan Browse untuk buka folder game kat PC korang.',
+            'Cari fail installer Easy Anti-Cheat kalau ada (contoh ikut versi: InstallAntiCheat.bat, folder EasyAntiCheat, atau EasyAntiCheat_Setup.exe).',
+            'Run skrip atau installer rasmi tu dan pilih Install atau Repair (tekan Yes kalau Windows minta admin permission).',
+            'Tunggu sampai proses install/repair tu habis.',
+            'Balik ke Steam dan tekan Play.'
+          ]
+        },
+        optionB: {
+          code: 'OPTION B',
+          title: 'VERIFY GAME FILES KAT STEAM',
+          confirmBtn: 'Confirm Verify Fail Siap',
+          completionMessage: 'VERIFY FAIL GAME SETTLE',
+          fallbackWarning:
+            'Kalau lepas verify pun masih sangkut error EAC, contact support rasmi The Isle—jangan guna installer pihak ketiga.',
+          steps: [
+            'Buka Steam Library.',
+            'Right-click kat The Isle.',
+            'Pilih Properties.',
+            'Buka Installed Files.',
+            'Tekan "Verify integrity of game files".',
+            'Tunggu sampai Steam habis scan fail.',
+            'Steam akan automatik ganti balik fail game yang hilang atau corrupt termasuk komponen EAC sekali.',
+            'Dah siap verify, cuba launch The Isle balik.'
+          ]
+        }
+      },
+      troubleshooting: [
+        {
+          code: 'MASALAH 01',
+          title: 'Easy Anti-Cheat Tak Install',
+          action:
+            'Check folder game kat PC untuk cari installer rasmi EAC (Option A). Kalau takde juga, verify game files kat Steam (Option B).'
+        },
+        {
+          code: 'MASALAH 02',
+          title: 'Fail Installer EAC Hilang',
+          action: 'Guna "Verify integrity of game files" kat Steam (Properties → Installed Files) biar Steam download balik fail yang hilang.'
+        },
+        {
+          code: 'MASALAH 03',
+          title: 'Install EAC Asyik Fail',
+          action: 'Restart Steam dulu, verify game files, lepas tu run balik installer rasmi dengan admin permission.'
+        },
+        {
+          code: 'MASALAH 04',
+          title: 'Game Masih Tak Boleh Masuk',
+          action:
+            'Tanya kat channel support rasmi The Isle dan tunjuk mesej error penuh. Jangan sesekali cuba bypass atau matikan Easy Anti-Cheat!'
+        }
+      ],
+      troublePolicy:
+        'Amaran Keras: Jangan bypass, disable, atau curi-curi matikan Easy Anti-Cheat, dan jangan download fail EAC dari site luar.',
+      checklistHeading: 'CHECKLIST PERSEDIAAN STEAM & EAC',
+      checklistCountSuffix: (done, total) => `${done} / ${total} Siap (Auto-Save)`,
+      checklistNote:
+        'Nota: Easy Anti-Cheat automatik bertanda siap bila korang dah confirm game boleh launch atau dah siap verify file kat Steam—tak payah install manual kalau game jalan elok.',
+      checklistItems: {
+        steamObtained: 'Dah dapat The Isle kat Steam',
+        evrimaSelected: 'Dah tukar branch ke Evrima kat Steam Properties',
+        filesDownloaded: 'Dah habis download semua fail game',
+        eacChecked: 'Dah check status Easy Anti-Cheat',
+        eacRepaired: 'Dah repair EAC kalau perlu (skip kalau Steam dah settlekan)',
+        filesVerified: 'Dah verify game files kalau perlu',
+        gameLaunched: 'The Isle: Evrima dah berjaya masuk menu'
+      }
+    }
+  }
+};
+
+export function getLocaleBundle(lang = 'en') {
+  return LOCALES[lang] || LOCALES.en;
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE ISLE — EXPEDITION</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/environment.css" />
+  <link rel="stylesheet" href="/css/interface.css" />
+</head>
+<body>
+  <!-- Three.js WebGL Mount -->
+  <div id="viewport-container"></div>
+
+  <!-- Minimal HUD -->
+  <div id="hud" class="hud hidden">
+    <!-- Top Left: Identity & Current Location -->
+    <div class="hud-panel hud-top-left">
+      <div class="brand-title">THE ISLE — EXPEDITION</div>
+      <div class="brand-subtitle" id="current-zone">LOCATION 01 — CENTRAL EXPEDITION CAMP</div>
+    </div>
+
+    <!-- Top Right: Language, Destination Quick-Nav & Controls Toggle -->
+    <div class="hud-top-right">
+      <div class="hud-panel nav-dropdown-wrap">
+        <label for="language-select" id="hud-lang-label" class="hud-label">LANGUAGE</label>
+        <select id="language-select" class="hud-select" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="ms">Bahasa Melayu</option>
+          <option value="kl">Kecek KL</option>
+        </select>
+      </div>
+      <div class="hud-panel nav-dropdown-wrap">
+        <label for="destination-select" id="hud-dest-label" class="hud-label">DESTINATION</label>
+        <select id="destination-select" class="hud-select" aria-label="Jump to destination">
+          <option value="">Quick Jump...</option>
+        </select>
+      </div>
+      <button id="btn-controls-help" class="hud-btn" type="button" title="View Controls">CONTROLS</button>
+    </div>
+
+    <!-- Bottom Left: Objective & Skeleton Indicator -->
+    <div class="hud-panel hud-bottom-left">
+      <div id="hud-status-label" class="hud-label">EXPEDITION STATUS</div>
+      <div id="objective-text" class="objective-text">Explore the outpost and approach any station.</div>
+      <div id="hud-hint" class="hud-hint">Click viewport to lock mouse • <kbd>ESC</kbd> to release cursor</div>
+    </div>
+
+    <!-- Center Crosshair -->
+    <div id="crosshair" class="crosshair" aria-hidden="true"></div>
+
+    <!-- Bottom Center: Interaction Prompt -->
+    <div id="interact-prompt" class="interact-prompt hidden" role="status">
+      <span class="key-badge">E</span>
+      <span id="interact-label">INTERACT</span>
+    </div>
+  </div>
+
+  <!-- Welcome / Pause Overlay -->
+  <div id="welcome-overlay" class="overlay">
+    <div class="welcome-card">
+      <div id="welcome-eyebrow" class="eyebrow">PREHISTORIC PLAYER ONBOARDING — SKELETON PROTOTYPE</div>
+      <h1>THE ISLE — EXPEDITION</h1>
+      <p id="welcome-tagline" class="tagline">YOUR JOURNEY INTO THE ISLE BEGINS HERE.</p>
+      <p id="welcome-desc" class="welcome-desc">
+        Explore the research outpost in first-person and test the five interactive onboarding
+        stations. This skeleton prototype validates movement, terrain collision, and station
+        interaction before full tutorial content is added.
+      </p>
+
+      <div class="welcome-lang-row">
+        <span id="welcome-lang-label" class="hud-label">LANGUAGE</span>
+        <div id="welcome-lang-switcher" class="lang-pills" role="group" aria-label="Language selection">
+          <button type="button" class="lang-pill active" data-lang="en">English</button>
+          <button type="button" class="lang-pill" data-lang="ms">Bahasa Melayu</button>
+          <button type="button" class="lang-pill" data-lang="kl">Kecek KL</button>
+        </div>
+      </div>
+
+      <div class="controls-grid">
+        <div class="control-item"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span id="ctrl-move">Move</span></div>
+        <div class="control-item"><kbd>MOUSE</kbd><span id="ctrl-look">Look Around</span></div>
+        <div class="control-item"><kbd>SHIFT</kbd><span id="ctrl-sprint">Sprint</span></div>
+        <div class="control-item"><kbd>E</kbd><span id="ctrl-interact">Interact at Station</span></div>
+        <div class="control-item"><kbd>ESC</kbd><span id="ctrl-esc">Release Mouse / Close Panel</span></div>
+      </div>
+
+      <div class="welcome-actions">
+        <button id="btn-start-expedition" class="primary-btn" type="button">START EXPEDITION</button>
+      </div>
+      <p class="pointer-note" id="pointer-status-note">
+        Click to enter first-person mode. If pointer lock is unavailable, drag with the mouse to look around.
+      </p>
+    </div>
+  </div>
+
+  <!-- Station Information Panel (Skeleton Modal) -->
+  <div id="station-modal" class="station-modal hidden" role="dialog" aria-modal="true" aria-labelledby="station-title">
+    <div class="station-card">
+      <div class="station-header">
+        <div>
+          <div id="station-badge" class="station-badge">DESTINATION 01</div>
+          <h2 id="station-title">Station Title</h2>
+          <p id="station-subtitle" class="station-subtitle"></p>
+        </div>
+        <button id="btn-close-modal" class="close-btn" type="button" aria-label="Close panel">CLOSE [ESC]</button>
+      </div>
+
+      <div class="station-body" id="station-body">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="station-footer">
+        <span class="skeleton-tag">SKELETON STATION PREVIEW</span>
+        <div class="station-footer-actions">
+          <button id="btn-prev-station" class="secondary-btn" type="button">Previous Station</button>
+          <button id="btn-next-station" class="secondary-btn" type="button">Next Station</button>
+          <button id="btn-resume-walk" class="primary-btn" type="button">Return to Outpost</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SavageZed NPC Dialog Box -->
+  <div id="npc-dialog" class="npc-dialog hidden" role="dialog" aria-modal="true" aria-labelledby="npc-name">
+    <div class="npc-dialog-card">
+      <div class="npc-dialog-header">
+        <div class="npc-identity">
+          <span class="npc-avatar-badge" aria-hidden="true">SZ</span>
+          <div>
+            <div class="npc-community-tag">PRIMEVAL MALAYSIA COMMUNITY</div>
+            <h2 id="npc-name">SavageZed</h2>
+            <div id="npc-role" class="npc-role">Primeval Malaysia Community Guide</div>
+          </div>
+        </div>
+        <button id="btn-close-npc" class="close-btn" type="button" aria-label="Close dialog">GOODBYE [ESC]</button>
+      </div>
+
+      <div id="npc-dialog-text" class="npc-dialog-text"></div>
+      <div id="npc-dialog-hint" class="npc-dialog-hint"></div>
+
+      <div class="npc-dialog-actions">
+        <button id="btn-npc-what-to-do" class="primary-btn" type="button">What should I do here?</button>
+        <button id="btn-npc-greeting" class="secondary-btn" type="button">Back to Welcome</button>
+        <button id="btn-npc-jump-steam" class="secondary-btn" type="button">Go to Steam Station</button>
+        <button id="btn-npc-bye" class="secondary-btn" type="button">Thank you, SavageZed!</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
