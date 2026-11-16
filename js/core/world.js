@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES } from '../data/tutorialContent.js';
+import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES, S5_JUVENILE_QUEUE_GUIDES } from '../data/tutorialContent.js';
 import { createOutpostMaterials } from './materials.js';
 import { buildSavageZedNPC, buildStationGuides, buildRandomMalaysiaFlags } from './npc.js';
 import { createPrehistoricWildlife } from './wildlife.js';
@@ -1646,6 +1646,11 @@ function isNearStation(x, z, minClearance) {
   }
   for (const guide of STATION_GUIDES) {
     if (Math.hypot(x - guide.position.x, z - guide.position.z) < Math.max(3.8, minClearance * 0.7)) {
+      return true;
+    }
+  }
+  for (const qGuide of S5_JUVENILE_QUEUE_GUIDES) {
+    if (Math.hypot(x - qGuide.position.x, z - qGuide.position.z) < Math.max(2.6, minClearance * 0.5)) {
       return true;
     }
   }

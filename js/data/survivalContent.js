@@ -63,14 +63,17 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Open the Departure Gate Checklist below, {name}, to review your launch readiness.'
       },
       Zapicy: {
-        role: 'Tyrannosaurus • Station 05 Apex Marshal',
+        role: 'Tyrannosaurus • Station 05 Apex & Prime Elder Marshal',
         greeting:
-          'Welcome to the North Gate, {name}! I am Zapicy, co-warden with kmy here at Destination 05. Make sure you also visit the Survival Training Camp on the western trail with sai, Dom, and Shanks outside the gate!',
+          'Welcome to the North Gate, {name}! I am Zapicy, co-warden with kmy here at Destination 05. Before you cross through the Exit Portal—REMEMBER TO AIM FOR PRIME (Prime Elder), not Frail Elder!!\n\n' +
+          'Complete at least 5 Prime conditions BEFORE hitting 75% growth (4 for smaller species like Hypsi, Troodon, Beipi, Dryo, Deino). Click "What should I do here?" below for the full Prime Elder conditions list!',
         tips:
-          'Station 05 Combat & Departure Advice for {name}:\n' +
-          '• Open the Departure Checklist ([E]) before launching The Isle from Steam.\n' +
-          '• Never fight empty-stomached with under 50% stamina—regain stam in cover, check bleed status, and pick terrain that favors your dinosaur!',
-        hint: 'Check the Departure Checklist below, {name}, before stepping onto the island.'
+          'Prime Elder Conditions & Station 05 Checklist for {name} (Complete 5+ before 75% growth):\n' +
+          '• Perfect Diet & Fertility: Reach a Perfect Diet (α + β + γ) at least once, and NEVER let all diet bars hit 0% (avoid Temporary Infertility) or suffer Muscle Spasms / severe fractures!\n' +
+          '• Map Exploration (Hold Q): Visit a Juvenile Sanctuary, 2 different Migration Zones, and 4 different Patrol Zones.\n' +
+          '• Family Bonus: Be hatched from a Nest OR successfully raise young to sub-adult.\n' +
+          '• 75% Check & Peak: At 75% growth, open [TAB] Mutations—if your 4th Mutation Slot unlocks/is clickable, you are PRIME! You peak at ~87.5% growth and can Entomb at 100% Elder. Open the S5 Departure Terminal ([E]) too!',
+        hint: 'Aim for 5+ Prime conditions before 75% growth and verify your 4th mutation slot in [TAB], {name}!'
       },
       sai: {
         role: 'Allosaurus • Survival Training Ground Combat Instructor',
@@ -130,6 +133,63 @@ export const GUIDE_TRANSLATIONS = {
           '• Inherited Mutations: When hatchlings spawn inside a well-tended nest, they can inherit upgraded/parental mutations directly from their parents!\n' +
           '• Coordinate Shifts: One Carno watches the skyline with [Q] scent pulses while the other incubates eggs or hunts small prey along the plains.',
         hint: 'Check all 3 speckled eggs in our nest mound, {name}, and open the Survival Training Manual for full controls!'
+      },
+      s5_juvie_excited: {
+        role: 'S5 Portal Queue • Hyped & Excited Juvenile',
+        greeting:
+          'WOOHOO!! Move aside {name}, I am SO READY to jump straight into that glowing portal right now!! Look at that emerald swirl—it’s calling my name!\n\n' +
+          'I finished my checklist with kmy and Zapicy, watched BOTH Evrima & EAC videos, and memorized α, β, and γ diets! Once I hit the island I’m grabbing a Perfect Diet, surviving to 100% Elder, and Entombing four whole lives in a row!!',
+        tips:
+          'Wait, hold on {name}—even though I’m vibrating with hype, here’s what I promised Dom & sai I’d actually remember:\n' +
+          '• Keep 60% stamina in reserve (no matter HOW shiny a sunset sprint looks).\n' +
+          '• Press X for Night Vision, NOT N—N is for holding hands and making a nest! Though I definitely have zero patience to sit on eggs right now!! LET’S GOOO!!',
+        hint: 'Talk to the others in line behind me, {name}—half of them are freaking out while I’m ready to dive in!'
+      },
+      s5_juvie_nervous: {
+        role: 'S5 Portal Queue • Shaking & Nervous Juvenile',
+        greeting:
+          '*knees trembling* H-hey {name}… is… is that swirling green gate actually safe? Nobody told me Gateway had GIANT CROCODILES hiding in literally every cute river pond!\n\n' +
+          'I just learned from the Training Camp that taking one sip of water without spinning my camera can end my whole permadeath run in two seconds… and if I step off a pebble wrong my legs fracture! Maybe I’ll just live inside bushes forever…',
+        tips:
+          'P-please double-check my nervous survivor notes with me, {name}:\n' +
+          '• Never drink at deep murky ledges—always shallow sunlit riffles!\n' +
+          '• Never spam 1-call (Broadcast) unless you WANT an Allosaurus pack at your picnic.\n' +
+          '• Hold H cleanly for the full Safe-Log timer before closing the game… okay, deep breaths… one small step toward the portal…',
+        hint: 'Wish me luck, {name}! Inspect the Departure Checklist on the left lectern if you also need reassurance!'
+      },
+      s5_juvie_confused: {
+        role: 'S5 Portal Queue • Totally Confused Juvenile',
+        greeting:
+          'Uhh… hi {name}? Wait—slow down, my brain is completely scrambled from this tour!\n\n' +
+          'So let me get this straight: X turns on Night Vision, Hold N builds a Nest with a random dinosaur ONLY if neither of you is in a group, TAB has something called Alpha (α), Beta (β), Gamma (γ) organs—WAIT, Lungs are α, Hearts are β, Intestines are γ?! And earlier Shanks whispered behind a wooden fence telling me to drink SEAWATER and jump 50 times?! Did I enroll in dino camp or Hogwarts?!',
+        tips:
+          'Wait, don’t leave yet {name}, help me sort out what we literally just learned:\n' +
+          '• S1 showed 22 playable dinosaurs—did I accidentally pick one that gets chased by EVERYTHING?!\n' +
+          '• And at the Departure Gate, mapotofu said Primeval Malaysia mainly plays IsleLink & Obsidian Isle—I forgot which Discord has 18+ gating and where Cocomelon & J5 parked those 3 eggs! Send help!!',
+        hint: 'I’m glad at least {name} is paying attention—open the Training Manual or Gateway Map [M] so one of us survives!'
+      },
+      s5_juvie_funny: {
+        role: 'S5 Portal Queue • Comedian Juvenile',
+        greeting:
+          'Yo {name}, welcome to the world’s slowest conveyor belt to being eaten! Look at this single-file queue—five brave babies marching straight into an apex buffet line!\n\n' +
+          'My biggest takeaway from Survival Training Camp? Key [1] is NOT "Say Hello"—Key [1] is literally the "Free DoorDash Delivery Here!" button for starving Tyrannosaurus! Also, I stood beside Cocomelon & J5’s cozy light-blue-and-pink nest for three minutes feeling like the world’s awkwardest third wheel!',
+        tips:
+          'Top comedy-slash-survival wisdom I picked up today, {name}:\n' +
+          '• Eat Lungs (α), Hearts (β), Intestines (γ) like a five-star jungle chef instead of chewing plain bush bark.\n' +
+          '• Wait—did Shanks tell YOU to break your own leg to chew bones for Osteophagic too?! Because that sounds like a scam, right?! See you on the respawn screen—I mean in a Juvenile Sanctuary!',
+        hint: 'Drop by [M] Gateway Map before jumping in, {name}, unless your strategy is walking off a cliff like me!'
+      },
+      s5_juvie_anxious: {
+        role: 'S5 Portal Queue • Overthinking Anxious Juvenile',
+        greeting:
+          'Oh no, oh no, {name}—wait, let me check my notes again! Did I verify my Steam game files in Option B or was Easy Anti-Cheat only Option A?! What if I spawn on Gateway in sector C4 instead of A1 and can’t read the cyan vs deep-navy water legend fast enough?!\n\n' +
+          'Wait… when you reach 100% Elder and Hold H to sleep and press Entomb in TAB, do you respawn at 25% Juvenile with stacked mutations, or 0%? And what if my nest eggs rot because my γ Gamma lipid bar dropped 2%?!',
+        tips:
+          'Help me count down the final prep checks before stepping through, {name}:\n' +
+          '• Evrima branch switched & EAC verified (checked both setup videos at S2/S3!).\n' +
+          '• Gateway Map Legend memorized: Red Palm = Sanctuary, Footprints = Migration, Deep Navy = Beware Deinosuchus.\n' +
+          '• Still panicking slightly, {name}, so you can step in front of me if you want!!',
+        hint: 'Talk to kmy or Zapicy beside the pillars or open the S5 Departure Terminal to calm my nerves, {name}!'
       }
     }
   },
@@ -193,14 +253,17 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Buka Senarai Semak Gerbang Pelepasan di bawah sebelum melancarkan permainan, {name}.'
       },
       Zapicy: {
-        role: 'Tyrannosaurus • Marsyal Gerbang Pelepasan Stesen 05',
+        role: 'Tyrannosaurus • Marsyal Gerbang Pelepasan & Prime Elder S05',
         greeting:
-          'Selamat datang ke Gerbang Utara, {name}! Saya Zapicy, bertugas bersama kmy di Destinasi 05. Pastikan anda turut singgah ke Kem Latihan Survival di laluan barat bersama sai, Dom, dan Shanks di luar pagar!',
+          'Selamat datang ke Gerbang Utara, {name}! Saya Zapicy, bertugas bersama kmy di Destinasi 05. Sebelum anda lintas Portal Pelepasan—INGAT UNTUK JADI PRIME (Prime Elder), jangan sampai jatuh menjadi Frail Elder!!\n\n' +
+          'Sempurnakan sekurang-kurangnya 5 syarat Prime SEBELUM mencecah 75% tumbesaran (4 syarat bagi spesies kecil seperti Hypsi, Troodon, Beipi, Dryo, Deino). Tekan butang di bawah untuk senarai penuh syarat Prime!',
         tips:
-          'Nasihat Pertempuran & Pelepasan untuk {name}:\n' +
-          '• Buka Senarai Semak Pelepasan ([E]) sebagai pengesahan terakhir sebelum melancarkan The Isle.\n' +
-          '• Jangan memulakan pertarungan jika stamina bawah 50%—cari perlindungan untuk memulihkan tenaga dan pendarahan dahulu!',
-        hint: 'Semak senarai pelepasan di bawah atau kunjungi Kem Latihan Survival, {name}.'
+          'Syarat Prime Elder & Checklist Stesen 05 untuk {name} (Lengkapkan 5+ sebelum 75% growth):\n' +
+          '• Perfect Diet & Elak Kerosakan: Capai Perfect Diet (α + β + γ) sekurang-kurangnya sekali, JANGAN biarkan semua bar diet jatuh ke 0% (elak Kemandulan Sementara), dan elak Muscle Spasms / kecederaan tulang parah!\n' +
+          '• Jelajah Peta (Tahan Q): Lawati 1 Juvenile Sanctuary, 2 Zon Migrasi berbeza, dan 4 Zon Rondaan (Patrol Zone) berbeza.\n' +
+          '• Bonus Sarang: Menetas daripada sarang ibu bapa ATAU berjaya membesarkan anak.\n' +
+          '• Ujian Slot Ke-4 (75% Growth): Buka [TAB] Mutasi apabila capai 75%—jika slot mutasi ke-4 boleh ditekan, tahniah anda PRIME! Kekuatan memuncak pada ~87.5% dan boleh Entomb di 100% Elder. Semak juga Terminal Pelepasan S5 ([E])!',
+        hint: 'Pastikan 5+ syarat Prime selesai sebelum 75% growth dan uji slot mutasi ke-4 di [TAB], {name}!'
       },
       sai: {
         role: 'Allosaurus • Jurulatih Tempur Kem Latihan Survival',
@@ -258,6 +321,63 @@ export const GUIDE_TRANSLATIONS = {
           '• Pewarisan Mutasi: Anak yang menetas dari sarang ibu bapa berpotensi mewarisi mutasi terkuat ibu bapa!\n' +
           '• Bergilir Mengawal: Seorang menjaga sarang manakala seorang lagi menghidu [Q] dan memburu sekitar padang.',
         hint: 'Perhatikan 3 telur di sarang kami ini, {name}, dan buka Manual Kem Latihan untuk rujukan penuh!'
+      },
+      s5_juvie_excited: {
+        role: 'Barisan Portal S5 • Anak Dino Teruja!',
+        greeting:
+          'WOOHOO!! Tepi sikit {name}, saya MEMANG TAK SABAR nak terjun masuk ke portal hijau bercahaya depan ni!! Tengok pusaran tu—memang memanggil-manggil nama saya!\n\n' +
+          'Semua 11 checklist dengan kmy dan Zapicy dah selesai, dua-dua video setup Evrima & EAC dah khatam, dan diet α, β, γ dah hafal! Turun pulau nanti saya terus kumpul Perfect Diet, naik 100% Elder, lepas tu Entomb empat generasi berturut-turut!!',
+        tips:
+          'Eh sabar sekejap {name}—walaupun teruja melampau, ini janji saya pada Dom & sai:\n' +
+          '• Simpan sekurang-kurangnya 60% stamina (jangan pecut kosong di padang terbuka!).\n' +
+          '• Tekan X untuk Night Vision, BUKAN N—N untuk Courting & bina sarang! Tapi sekarang tak menyabar dah… JOM TERJUN!!',
+        hint: 'Sembang dengan ahli barisan di belakang saya, {name}—mereka semua cuak sementara saya dah sedia melompat!'
+      },
+      s5_juvie_nervous: {
+        role: 'Barisan Portal S5 • Anak Dino Gementar',
+        greeting:
+          '*lutut menggigil* H-hai {name}… portal hijau pusing-pusing tu betul selamat ke? Tak ada siapa pun beritahu awal-awal rupanya SEMUA sungai comel di Gateway ada BUAYA DEINOSUCHUS menyorok bawah air!!\n\n' +
+          'Baru tadi di Kem Latihan saya dengar silap minum tanpa pusing kamera terus tamat riwayat… silap lompat batu sikit kaki patah! Rasanya nak menyorok bawah daun selamanya pun bagus juga…',
+        tips:
+          'T-tolong semak semula nota survival gementar saya ni, {name}:\n' +
+          '• Jangan sesekali minum di tebing dalam keruh—cari anak sungai cetek bercahaya matahari!\n' +
+          '• Jangan tekan panggilan 1 (Broadcast) sesuka hati kecuali memang rindu pack Allosaurus.\n' +
+          '• Tahan H sampai tamat kiraan Safe-Log… baiklah, tarik nafas dalam… satu langkah ke depan…',
+        hint: 'Doakan saya selamat di Gateway, {name}! Semak Checklist Pelepasan di sebelah kiri untuk tenangkan hati!'
+      },
+      s5_juvie_confused: {
+        role: 'Barisan Portal S5 • Anak Dino Pening & Keliru',
+        greeting:
+          'Err… hai {name}? Kejap, perlahan sikit—otak saya betul-betul berpusing lepas habis pusing satu kem!\n\n' +
+          'Betulkan kalau saya salah faham: butang X ialah Night Vision, Tahan N untuk Courting kalau DUA-DUA bukan dalam group, menu TAB ada simbol Alpha (α), Beta (β), Gamma (γ)—kejap, Paru-paru α, Jantung β, Usus γ?! Lepas tu Shanks berbisik di balik pagar kayu suruh minum AIR LAUT dengan lompat 50 kali?! Ni kem dinosaur ke kelas sains angkasa?!',
+        tips:
+          'Jangan pergi dulu {name}, tolong ingatkan semula perkara asas yang kita baru belajar:\n' +
+          '• Dekat S1 ada 22 dinosaur boleh dimain—harapnya spesies saya ni bukan lauk kegemaran semua orang!\n' +
+          '• Dengan mapotofu kata server utama ialah IsleLink & Obsidian Isle—sampai lupa kat mana Discord 18+ tu. Nasib baik {name} ada!',
+        hint: 'Buka Manual Kem Latihan atau Peta Gateway [M], {name}, supaya sekurang-kurangnya salah seorang daripada kita tahu arah!'
+      },
+      s5_juvie_funny: {
+        role: 'Barisan Portal S5 • Anak Dino Kelakar',
+        greeting:
+          'Yo {name}, selamat datang ke barisan paling perlahan menuju ke alam kena makan! Tengok barisan lurus kita ni—lima ekor bayi beratur elok macam nak masuk bufet pemangsa!\n\n' +
+          'Ilmu paling bermakna hari ni? Butang [1] BUKAN maksud "Hai kawan!"—butang [1] ialah butang "Hantar Pizza Percuma Ke Lokasi Saya!" untuk T-Rex lapar! Lagi satu, lama juga saya berdiri sebelah sarang 3 telur Cocomelon (biru) & J5 (pink), rasa macam pengacau pasangan paling janggal abad ni!',
+        tips:
+          'Tip lawak tapi betul daripada pengalaman hari ni, {name}:\n' +
+          '• Makan Paru-paru (α), Jantung (β), Usus (γ) macam chef lima bintang di hutan.\n' +
+          '• Shanks ada suruh {name} patahkan kaki sendiri semata-mata nak makan tulang untuk Osteophagic tak?! Bunyi macam scam kan?! Jumpa di Sanctuary—eh silap, di skrin respawn!',
+        hint: 'Tengok Peta Gateway [M] sebelum masuk portal, {name}, nanti terjun gaung macam saya!'
+      },
+      s5_juvie_anxious: {
+        role: 'Barisan Portal S5 • Anak Dino Terlebih Fikir',
+        greeting:
+          'Aduh aduh, {name}—kejap saya semak nota lagi! Tadi saya dah verify game files Steam ke Option B atau cuma check Easy Anti-Cheat Option A?! Kalau saya spawn kat koordinat C4 dan tersalah baca warna biru gelap dengan biru muda kat legenda Peta Gateway macam mana?!\n\n' +
+          'Lepas tu bila capai 100% Elder, Tahan H tidur dan tekan Entomb kat TAB, kita spawn balik 25% Juvenile bersama mutasi bertingkat ke? Macam mana kalau telur sarang saya busuk sebab bar γ Gamma kurang 2%?!',
+        tips:
+          'Bantu saya semak senarai akhir sebelum lintas Pintu S5, {name}:\n' +
+          '• Branch Evrima & EAC disahkan (video panduan kat S2 & S3 pun dah tonton!).\n' +
+          '• Legenda Peta Gateway dihafal: Pokok Palma Merah = Sanctuary, Tapak Kaki = Migrasi, Biru Pekat = Awas Buaya.\n' +
+          '• Masih sedikit panik, {name}—kalau nak potong barisan depan saya pun silakanlah dulu!!',
+        hint: 'Berbual dengan kmy & Zapicy atau buka Terminal Pelepasan S5 untuk sahkan 11 checklist kita, {name}!'
       }
     }
   },
@@ -321,14 +441,17 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Buka Senarai Semak Pelepasan kat bawah, {name}, untuk tengok readiness korang.'
       },
       Zapicy: {
-        role: 'Tyrannosaurus • Marshal Kanan Stesen 05',
+        role: 'Tyrannosaurus • Marshal Kanan & Cikgu Prime Elder S05',
         greeting:
-          'Selamat sampai ke Gerbang Utara, {name}! Aku Zapicy, partner kmy kat Destinasi 05 ni. Jangan lupa singgah Kem Latihan Survival kat belah barat dengan sai, Dom, dan Shanks kat luar pagar dulu!',
+          'Selamat sampai ke Gerbang Utara, {name}! Aku Zapicy, partner kmy kat Destinasi 05 ni. Sebelum korang langkah masuk Portal hijau tu—INGAT WAJIB KEJAR PRIME (Prime Elder), jangan sampai jadi Frail Elder yang lembik!!\n\n' +
+          'Buat paling kurang 5 syarat Prime SEBELUM growth cecah 75% (4 syarat je untuk dino kecik macam Hypsi, Troodon, Beipi, Dryo, Deino). Tekan bawah ni untuk korek semua syarat penuh Prime!',
         tips:
-          'Pesan Otai S5 untuk {name}:\n' +
-          '• Check Senarai Pelepasan ([E]) biar tak tertinggal satu benda pun sebelum launch game.\n' +
-          '• Kalau stamina bawah 50%, jangan gatal nak fight! Cari semak, rehat, bagi bleed berhenti dulu!',
-        hint: 'Tekan bawah, {name}, untuk check Senarai Pelepasan atau gerak ke Kem Survival.'
+          'Syarat Prime Elder & Pesan Otai S5 untuk {name} (Kena 5+ sebelum 75% growth):\n' +
+          '• Diet & Badan Sihat: Dapat Perfect Diet (α + β + γ) at least sekali, JANGAN bagi semua bar diet kering 0% (elak Infertile), dan elak kena Muscle Spasms atau patah teruk!\n' +
+          '• Pusing Map (Hold Q): Masuk 1 Juvenile Sanctuary, jalan pergi 2 Migration Zones lain-lain, dan 4 Patrol Zones berbeza.\n' +
+          '• Bonus Family: Lahir dari sarang (nested) ATAU jaga anak sampai besar.\n' +
+          '• Test Kat 75% Growth: Bukak [TAB] Mutasi—kalau Slot Mutasi Ke-4 boleh klik, confirm korang PRIME!! Peak power kat ~87.5% dan boleh Entomb kat 100% Elder. Jangan lupa check Checklist Pelepasan ([E]) sekali!',
+        hint: 'Kejar 5+ syarat Prime sebelum 75% growth dan test slot mutasi ke-4 dalam [TAB], {name}!'
       },
       sai: {
         role: 'Allosaurus • Cikgu Combat Kem Latihan Survival',
@@ -386,6 +509,63 @@ export const GUIDE_TRANSLATIONS = {
           '• Waris Mutasi Ibu Bapa: Anak yang lahir dari sarang boleh mewarisi mutasi padu mak pak dia tau!\n' +
           '• Cover Kawasan: Sorang tunggu sarang, sorang lagi hold [Q] scan bau cari mangsa dekat padang.',
         hint: 'Check Manual Kem Latihan Survival untuk hafal semua simbol α β γ dengan butang kawalan!'
+      },
+      s5_juvie_excited: {
+        role: 'Barisan Portal S5 • Baby Dino Hype Gila!',
+        greeting:
+          'WOOHOO!! Tepi sikit {name}, aku DAH READY GILA nak terjun masuk portal hijau berkilat depan ni!! Tengok pusaran dia—memang panggil aku suruh masuk!\n\n' +
+          'Checklist 11 benda dengan kmy & Zapicy dah settle, dua-dua video Evrima dengan EAC dah tengok, diet α β γ pun dah hafal! Masuk map nanti aku sapu Perfect Diet, naik 100% Elder, lepas tu Entomb 4 nyawa terus!!',
+        tips:
+          'Kejap {name}—walau tengah hype gila, ni janji aku kat Dom dengan sai:\n' +
+          '• Simpan 60% stamina standby kecemasan (jangan sprint kosong tengah padang).\n' +
+          '• Night Vision tu X, BUKAN N—N tu nak courting buat sarang! Tapi aku tak sabar dah… LETS GOOO BRO!!',
+        hint: 'Cuba borak member lain belakang aku, {name}—semua cuak tapi aku steady je nak lompat!'
+      },
+      s5_juvie_nervous: {
+        role: 'Barisan Portal S5 • Baby Dino Cuak & Menggigil',
+        greeting:
+          '*lutut bergetar* H-hai {name}… portal pusing-pusing ni betul ke selamat? Takde orang cakap awal-awal rupanya SEMUA sungai lawa kat Gateway ada BUAYA DEINOSUCHUS standby ngap dari bawah air!!\n\n' +
+          'Baru tadi kat kem aku dengar silap minum tak pusing kamera terus habis nyawa permadeath… silap lompat batu sikit terus patah kaki! Rasanya lepak dalam semak sampai tua pun okay kot…',
+        tips:
+          'T-tolong check nota cuak aku kejap, {name}:\n' +
+          '• Jangan minum kat tebing sungai dalam keruh—cari air cetek nampak dasar je!\n' +
+          '• Jangan spam button 1 (Broadcast) melainkan kau nak jemput pack Allo datang kenduri.\n' +
+          '• Hold H sampai habis timer Safe-Log… fuh… tarik nafas… gerak selangkah dulu…',
+        hint: 'Doakan aku tak jadi snack Deino kat Gateway nanti, {name}! Bukak Checklist S5 kalau nak double check!'
+      },
+      s5_juvie_confused: {
+        role: 'Barisan Portal S5 • Baby Dino Pening Kepala',
+        greeting:
+          'Err… hai {name}? Kejap bang, slow sikit—kepala aku jem lepas pusing semua stesen!\n\n' +
+          'Betulkan kalau aku silap: X bukak Night Vision, Hold N untuk Courting dengan syarat DUA-DUA takde dalam group, menu TAB ada Alpha (α), Beta (β), Gamma (γ)—kejap, Paru-paru α, Jantung β, Usus γ?! Lepas tu kat luar pagar tadi Shanks bisik suruh aku minum AIR MASIN LAUT dengan lompat 50 kali?! Ni game dino ke ujian sains?!',
+        tips:
+          'Jangan jalan dulu {name}, tolong recall balik apa kita belajar:\n' +
+          '• Kat S1 tunjuk 22 spesies boleh main—harap dino aku ni bukan yang paling lembik!\n' +
+          '• Tadi mapotofu sebut IsleLink & Obsidian Isle server utama, lepas tu aku lupa mana satu nak kena verify 18+! Nasib baik {name} ingat semua!',
+        hint: 'Bukak Manual Kem atau Peta Gateway [M], {name}, at least salah sorang kita tahu mana utara selatan!'
+      },
+      s5_juvie_funny: {
+        role: 'Barisan Portal S5 • Baby Dino Kaki Lawak',
+        greeting:
+          'Yo {name}, selamat datang ke barisan teratur paling lawak sebelum kena baham! Tengok lima ekor baby beratur elok ni—sebiji macam barisan budak sekolah nak masuk kantin T-Rex!\n\n' +
+          'Pelajaran paling padu hari ni? Butang [1] BUKAN "Hai bestie!"—butang [1] ialah button "Hantar Makanan Segar Kat Koordinat Aku!" untuk pemangsa! Lepas tu tadi lama aku berdiri tengok sarang 3 telur Cocomelon & J5—rasa macam penyibuk paling awkward kat hutan!',
+        tips:
+          'Lawak tapi fakta wajib ingat, {name}:\n' +
+          '• Cari Paru-paru (α), Jantung (β), Usus (γ) baru Growth laju kaw-kaw.\n' +
+          '• Shanks ada hasut {name} suruh patahkan kaki sendiri sebab nak makan tulang Osteophagic tak?! Bunyi macam scam kan?! Jumpa kat Sanctuary—eh tak, jumpa kat skrin respawn!',
+        hint: 'Tengok Peta Gateway [M] dulu sebelum terjun portal, {name}, jangan jadi macam aku yang buta map!'
+      },
+      s5_juvie_anxious: {
+        role: 'Barisan Portal S5 • Baby Dino Overthinking',
+        greeting:
+          'Weh {name}, kejap aku check balik!! Aku dah Verify Game Files Steam Option B belum tadi ke check EAC Option A je?! Kalau aku spawn kat petak C4 dan lupa beza biru cetek dengan biru dalam kat Legends Peta Gateway macam mana?!\n\n' +
+          'Lagi satu, bila 100% Elder lepas tu Hold H tidur tekan Entomb kat TAB, memang betul respawn 25% Juvenile bersama mutasi bertingkat eh? Kalau telur busuk sebab bar γ Gamma turun 2% macam mana?!',
+        tips:
+          'Jom semak sekali lagi checklist sebelum lintas Gate S5, {name}:\n' +
+          '• Branch Evrima & EAC settle (video kat S2 & S3 dah tengok!).\n' +
+          '• Legends Peta Gateway hafal: Pokok Merah = Sanctuary, Tapak Kaki = Migrasi, Biru Gelap = Port Buaya.\n' +
+          '• Hati aku berdebar lagi ni {name}—kalau nak masuk portal dulu, dipersilakan potong line aku!!',
+        hint: 'Tanya kmy atau Zapicy kat tepi tiang atau check 11 checklist kat Terminal S5, {name}!'
       }
     }
   }

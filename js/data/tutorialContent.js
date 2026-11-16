@@ -574,3 +574,81 @@ export const STATION_GUIDES = [
     }
   }
 ];
+
+function shuffledCopy(list) {
+  const arr = [...list];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const JUVENILE_SPECIES_POOL = [
+  { species: 'omniraptor', label: 'Omniraptor', patternVariant: 'adult1', targetHeight: 0.92 },
+  { species: 'dilophosaurus', label: 'Dilophosaurus', patternVariant: 'adult1', targetHeight: 0.88 },
+  { species: 'ceratosaurus', label: 'Ceratosaurus', patternVariant: 'adult1', targetHeight: 0.96 },
+  { species: 'allosaurus', label: 'Allosaurus', patternVariant: 'adult1', targetHeight: 1.02 },
+  { species: 'carnotaurus', label: 'Carnotaurus', patternVariant: 'adult1', targetHeight: 0.98 },
+  { species: 'maiasaura', label: 'Maiasaura', patternVariant: 'adult1', targetHeight: 0.94 },
+  { species: 'triceratops', label: 'Triceratops', patternVariant: 'adult1', targetHeight: 0.96 },
+  { species: 'pteranodon', label: 'Pteranodon', patternVariant: 'adult1', targetHeight: 0.84 },
+  { species: 'tyrannosaurus', label: 'Tyrannosaurus Rex', patternVariant: 'adult1', targetHeight: 1.08 }
+];
+
+const RANDOM_PLAYER_NAMES = [
+  'NasiLemak99',
+  'TehTarik_OP',
+  'BrokoliGaming',
+  'KopiO_Ping',
+  'MiloAis_MY',
+  'SambalBite',
+  'RotiCanaiFly',
+  'CendolRex',
+  'MurtabakGG',
+  'SirapBandung'
+];
+
+const JUVENILE_EMOTION_PROFILES = [
+  { guideId: 's5_juvie_excited', badgeRole: 'Juvenile • Excited!' },
+  { guideId: 's5_juvie_nervous', badgeRole: 'Juvenile • Nervous' },
+  { guideId: 's5_juvie_confused', badgeRole: 'Juvenile • Confused' },
+  { guideId: 's5_juvie_funny', badgeRole: 'Juvenile • Funny' },
+  { guideId: 's5_juvie_anxious', badgeRole: 'Juvenile • Anxious' }
+];
+
+function createRandomS5QueueJuveniles() {
+  const pickedSpecies = shuffledCopy(JUVENILE_SPECIES_POOL).slice(0, 5);
+  const pickedNames = shuffledCopy(RANDOM_PLAYER_NAMES).slice(0, 5);
+  const pickedEmotions = shuffledCopy(JUVENILE_EMOTION_PROFILES);
+
+  // Straight single-file line crossing from z = -23.6 toward S5 Departure Gate at (0, -36)
+  return pickedSpecies.map((sp, i) => {
+    const playerName = pickedNames[i];
+    const emo = pickedEmotions[i];
+    const initials = playerName
+      .replace(/[^A-Za-z0-9]/g, '')
+      .slice(0, 2)
+      .toUpperCase();
+    const zPos = -33.2 + i * 2.4;
+
+    return {
+      id: emo.guideId,
+      instanceId: `s5-queue-${i + 1}`,
+      displayName: playerName,
+      initials,
+      species: sp.species,
+      speciesLabel: sp.label,
+      badgeRole: emo.badgeRole,
+      patternVariant: sp.patternVariant,
+      morphTarget: 'Juvenile',
+      stationId: 'expedition-departure',
+      targetHeight: sp.targetHeight,
+      position: { x: 0.35, z: zPos },
+      lookAt: { x: 0.35, z: -37.0 },
+      interactRadius: 3.8
+    };
+  });
+}
+
+export const S5_JUVENILE_QUEUE_GUIDES = createRandomS5QueueJuveniles();

@@ -166,6 +166,13 @@
 * **Evrima & EAC Setup Walkthrough Videos (`public/videos/`, `js/systems/tutorial.js`, `js/systems/destinations.js`, `css/interface.css`):**
   * Bundled `envrimasetup.mp4` and `eacsetup.mp4` from `assets/so3/` into `public/videos/` and embedded responsive `<video controls>` players across Station 02 (`SteamTutorialController` Walkthrough & EAC tabs) and Station 03 (`CommunityDirectoryController`).
 
+### Stage 15: Startup Freeze Fix, S5 Queue Juveniles & Zapicy Prime Elder Reminder
+* **Startup Fix (`js/core/world.js`):** Replaced non-existent `createStationRoot` and `collision.addCircleCollider` calls inside `buildCarnotaurusNest` with explicit terrain-height `THREE.Group` creation and `collision.addCylinder`.
+* **5 Random S5 Queue Juveniles (`js/data/tutorialContent.js`, `js/core/npc.js`, `js/data/survivalContent.js`, `js/core/world.js`):**
+  * Added `createRandomS5QueueJuveniles()` (`S5_JUVENILE_QUEUE_GUIDES`) spawning 5 randomly rolled species using `'Juvenile'` morph targets and random player names in a single-file line (`x: 0.35`, `z: -33.2` to `-23.6`) facing the S5 Exit Portal, with 5 emotional interactive dialogs (`excited`, `nervous`, `confused`, `funny`, `anxious`) in `en`, `ms`, and `kl`.
+* **Zapicy Prime Elder Conditions Reminder (`js/data/survivalContent.js`):**
+  * Updated **Zapicy**'s `greeting`, `tips`, and `hint` across `en`, `ms`, and `kl` to remind survivors to qualify for **Prime Elder** instead of **Frail Elder** by completing 5+ conditions before 75% growth (4 for small species) and checking the 4th Mutation Slot in `TAB`.
+
 ---
 
 ## 2. Git Commit Milestones (`main`)

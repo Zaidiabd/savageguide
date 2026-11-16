@@ -4,7 +4,7 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { getTerrainHeight } from './world.js';
-import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES } from '../data/tutorialContent.js';
+import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES, S5_JUVENILE_QUEUE_GUIDES } from '../data/tutorialContent.js';
 
 /**
  * Species catalog mapping Evrima GLB models, skin textures, and official .json palettes.
@@ -479,6 +479,7 @@ function mountDinoAvatar({
   canvasSize = 512,
   phaseOffset = 0,
   sittingPose = false,
+  morphTarget = 'Adult',
   paletteOverride = null,
   setupExtra = null
 }) {
@@ -562,7 +563,9 @@ function mountDinoAvatar({
 
           if (obj.morphTargetDictionary && obj.morphTargetInfluences) {
             obj.morphTargetInfluences.fill(0);
-            if (obj.morphTargetDictionary.Adult !== undefined) {
+            if (obj.morphTargetDictionary[morphTarget] !== undefined) {
+              obj.morphTargetInfluences[obj.morphTargetDictionary[morphTarget]] = 1.0;
+            } else if (obj.morphTargetDictionary.Adult !== undefined) {
               obj.morphTargetInfluences[obj.morphTargetDictionary.Adult] = 1.0;
             }
           }
@@ -825,7 +828,8 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
   const updaters = [];
   let lastElapsed = null;
 
-  STATION_GUIDES.forEach((guide, idx) => {
+  const allGuides = [...STATION_GUIDES, ...S5_JUVENILE_QUEUE_GUIDES];
+  allGuides.forEach((guide, idx) => {
     const dest = DESTINATIONS.find((d) => d.id === guide.stationId);
     const shortStation = dest ? dest.badge.replace('DESTINATION ', 'S') : '';
     const stationTag = guide.badgeRole
@@ -835,7 +839,7 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
         : shortStation;
 
     const interactDestination = {
-      id: `guide-${guide.id}`,
+      id: `guide-${guide.instanceId || guide.id}`,
       isNpc: true,
       isStationGuide: true,
       guideId: guide.id,
@@ -863,11 +867,12 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
       lookAt: guide.lookAt,
       targetHeight: guide.targetHeight,
       interactDestination,
-      colliderTag: `npc-guide-${guide.id}`,
+      colliderTag: `npc-guide-${guide.instanceId || guide.id}`,
       canvasSize: 512,
       phaseOffset: idx * 0.43,
       sittingPose: Boolean(guide.sittingPose),
-      paletteOverride: guide.customPalette || createRandomColorfulPalette(guide.id, idx)
+      morphTarget: guide.morphTarget || 'Adult',
+      paletteOverride: guide.customPalette || createRandomColorfulPalette(guide.instanceId || guide.id, idx)
     });
 
     updaters.push(mixerUpdater);
@@ -939,6 +944,7 @@ export function buildRandomMalaysiaFlags(scene, collisionSystem, flagCount = 9, 
     if (tooClose) continue;
 
     if (Math.abs(x) < 3.0 && z > 2 && z < 16) continue;
+    if (Math.abs(x) < 3.6 && z > -37 && z < -21) continue;
 
     const y = getTerrainHeight(x, z);
     const poleHeight = 4.2 + Math.random() * 0.9;
