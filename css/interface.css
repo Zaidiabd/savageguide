@@ -550,6 +550,85 @@
   gap: 10px;
 }
 
+/* Welcome Survivor Name Input */
+.welcome-name-row {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name-input {
+  width: 100%;
+  background: rgba(12, 16, 13, 0.86);
+  border: 1px solid rgba(212, 166, 86, 0.45);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.name-input:focus {
+  border-color: var(--accent-sun);
+  box-shadow: 0 0 0 3px rgba(212, 166, 86, 0.16);
+}
+
+.name-error {
+  font-size: 0.8rem;
+  color: #f08a6c;
+  font-weight: 600;
+}
+
+/* Shanks Secret Mutation Interactive Panel */
+.npc-extra-panel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(11, 15, 12, 0.72);
+  border: 1px solid rgba(212, 166, 86, 0.32);
+  border-radius: 7px;
+  max-height: 28vh;
+  overflow-y: auto;
+}
+
+.mutation-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.mutation-pill {
+  background: rgba(25, 33, 27, 0.9);
+  color: var(--text-primary);
+  border: 1px solid rgba(178, 166, 134, 0.28);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mutation-pill:hover,
+.mutation-pill.active {
+  border-color: var(--accent-sun);
+  background: rgba(212, 166, 86, 0.18);
+  color: var(--accent-sun);
+}
+
+.mutation-detail-card {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.mutation-detail-card strong {
+  color: var(--accent-sun);
+}
+
 /* Steam & Easy Anti-Cheat Terminal */
 .station-card.wide {
   max-width: 920px;
@@ -1359,6 +1438,32 @@ body.touch-device .hud-bottom-left {
 }
 
 .touch-sprint-btn.active {
+  background: var(--accent-sun);
+  color: #161a16;
+  border-color: var(--accent-sun);
+}
+
+.touch-jump-btn {
+  position: absolute;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: calc(max(36px, env(safe-area-inset-bottom)) + 58px);
+  min-width: 78px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 99px;
+  background: rgba(17, 21, 18, 0.78);
+  color: var(--text-primary);
+  border: 1px solid rgba(178, 166, 134, 0.4);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  pointer-events: auto;
+  touch-action: manipulation;
+  backdrop-filter: blur(8px);
+}
+
+.touch-jump-btn:active {
   background: var(--accent-sun);
   color: #161a16;
   border-color: var(--accent-sun);

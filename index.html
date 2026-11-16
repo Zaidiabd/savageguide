@@ -60,6 +60,7 @@
       <div id="touch-joystick" class="touch-joystick">
         <div id="touch-joystick-knob" class="touch-joystick-knob"></div>
       </div>
+      <button id="btn-touch-jump" class="touch-jump-btn" type="button">JUMP</button>
       <button id="btn-touch-sprint" class="touch-sprint-btn" type="button">SPRINT</button>
     </div>
   </div>
@@ -88,8 +89,22 @@
         <div class="control-item"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span id="ctrl-move">Move</span></div>
         <div class="control-item"><kbd>MOUSE</kbd><span id="ctrl-look">Look Around</span></div>
         <div class="control-item"><kbd>SHIFT</kbd><span id="ctrl-sprint">Sprint</span></div>
+        <div class="control-item"><kbd>SPACE</kbd><span id="ctrl-jump">Jump</span></div>
         <div class="control-item"><kbd>E</kbd><span id="ctrl-interact">Interact at Station</span></div>
         <div class="control-item"><kbd>ESC</kbd><span id="ctrl-esc">Release Mouse / Close Panel</span></div>
+      </div>
+
+      <div class="welcome-name-row">
+        <label id="welcome-name-label" for="player-name-input" class="hud-label">SURVIVOR NAME</label>
+        <input
+          id="player-name-input"
+          class="name-input"
+          type="text"
+          maxlength="24"
+          placeholder="Enter your name..."
+          autocomplete="nickname"
+        />
+        <div id="welcome-name-error" class="name-error hidden"></div>
       </div>
 
       <div class="welcome-actions">
@@ -144,6 +159,7 @@
       </div>
 
       <div id="npc-dialog-text" class="npc-dialog-text"></div>
+      <div id="npc-extra-panel" class="npc-extra-panel hidden"></div>
       <div id="npc-dialog-hint" class="npc-dialog-hint"></div>
 
       <div class="npc-dialog-actions">

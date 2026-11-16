@@ -124,6 +124,17 @@
     * `sai` (Allosaurus) & `Dom` (Dilophosaurus) — Survival Training Ground
   * Wired every guide's `[E]` interaction dialog to deliver localized station briefings and open their assigned station directly.
 
+### Stage 12 — Session Survivor Name, Space Jumping & Shanks Ceratosaurus (Hidden Mutations)
+* **Session Survivor Name Input (`index.html`, `js/ui/interface.js`, `js/data/i18n.js`, `js/data/survivalContent.js`, `css/interface.css`):**
+  * Prompted users to enter their survivor name on the Welcome Overlay (`sessionStorage`-persisted for the session) with localized validation across **English**, **Bahasa Melayu**, and **Kecek KL**.
+  * Personalized HUD objectives and all dinosaur guide dialogs (SavageZed, `kift90`, `kenzy`, `apollo`, `mapotofu`, `kmy`, `Zapicy`, `sai`, `Dom`, and `Shanks`) with the entered `{name}` throughout the session.
+* **Jumping Controls (`js/core/player.js`, `index.html`, `css/interface.css`, `js/data/i18n.js`, `js/data/survivalContent.js`):**
+  * Implemented `Space` keyboard jumping (and mobile `JUMP` touch button) with vertical gravity physics and terrain landing detection in `PlayerController`, plus documented `Space — Jump` in the Welcome Controls and Survival Training Manual.
+* **Added Ceratosaurus Guide `Shanks` Outside Training Camp (`public/models/ceratosaurus/`, `js/core/npc.js`, `js/data/tutorialContent.js`, `js/data/survivalContent.js`):**
+  * Copied `Ceratosaurus.glb` and matching Adult Pattern 1 / Albedo / Detail textures into `public/models/ceratosaurus/`.
+  * Placed `Shanks` in a crouched/resting leaf-and-stone hollow (`sittingPose: true`) right outside the Training Camp palisade gateway (`(-21.8, -3.2)`).
+  * Built an interactive whispering dialog panel asking `{name}` about Evrima's **Hidden Mutations** (`Reniculate Kidneys`, `Reinforced Tendons`, `Osteophagic`, and `Augmented Tapetum` — kill 5 players at night) and revealing their exact unlock conditions and survival effects.
+
 ---
 
 ## 2. Git Commit Milestones (`main`)
@@ -136,6 +147,8 @@
 * `a8b3295` — Restored `AGY.md` and added `LOG.md`
 * `e80b639` — Implemented Destination 01 (Welcome) and Destination 03 (Community Outpost)
 * `0caf690` — Upgraded 3D polygon detail, procedural PBR textures, foliage, structures, and SavageZed
+* `db7e078` — Replaced SavageZed avatar with Omniraptor GLB model and Evrima skin
+* `dced2d7` — Added Survival Training Ground (Station 06), gateway signboard, bonfire, and 8 station dino guides
 
 ---
 

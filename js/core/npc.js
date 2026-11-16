@@ -139,6 +139,24 @@ const SPECIES_CATALOG = {
       claw: [0x4c, 0x47, 0x3f],
       teeth: [0xa0, 0x8a, 0x74]
     }
+  },
+  ceratosaurus: {
+    basePath: './models/ceratosaurus',
+    glb: 'Ceratosaurus.glb',
+    albedo: 'T_Cerato_Adult_Albedo.webp',
+    mask: 'T_Cerato_Adult_Mouth-Teeth-Claws.webp',
+    patterns: { adult1: 'T_Ceratosaurus_Adult_Pattern_1.webp' },
+    colors: {
+      red: [0xba, 0x5f, 0x4a],
+      green: [0xe9, 0xc8, 0xaf],
+      blue: [0xa5, 0x84, 0x71],
+      cyan: [0xe3, 0xaf, 0x81],
+      magenta: [0x5d, 0x4e, 0x47],
+      yellow: [0x3b, 0x2c, 0x26],
+      mouth: [0x9e, 0x5d, 0x58],
+      claw: [0x54, 0x4e, 0x46],
+      teeth: [0xa6, 0x92, 0x7a]
+    }
   }
 };
 
@@ -371,6 +389,7 @@ function mountDinoAvatar({
   collisionSystem,
   interactables,
   renderer,
+  materials = null,
   speciesKey,
   patternVariant = 'adult1',
   displayName,
@@ -382,6 +401,7 @@ function mountDinoAvatar({
   colliderTag,
   canvasSize = 512,
   phaseOffset = 0,
+  sittingPose = false,
   setupExtra = null
 }) {
   const y = getTerrainHeight(position.x, position.z);
@@ -403,8 +423,29 @@ function mountDinoAvatar({
   root.add(hitProxy);
 
   const nameplate = createNameplateSprite(displayName, speciesLabel);
-  nameplate.position.set(0, targetHeight + 0.35, 0);
+  nameplate.position.set(0, (sittingPose ? targetHeight * 0.72 : targetHeight) + 0.35, 0);
   root.add(nameplate);
+
+  if (sittingPose) {
+    // Cozy resting leaf-litter & log hollow outside Training Camp for seated/crouched Shanks
+    const hollowMat =
+      materials?.timberDark || new THREE.MeshStandardMaterial({ color: 0x3b2f22, roughness: 0.96 });
+    const rimMat =
+      materials?.stone || new THREE.MeshStandardMaterial({ color: 0x4e5249, roughness: 0.92 });
+    const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.85, 0.24, 14), hollowMat);
+    pad.position.set(0, 0.12, 0);
+    pad.receiveShadow = true;
+    root.add(pad);
+
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      const stone = new THREE.Mesh(new THREE.DodecahedronGeometry(0.32, 1), rimMat);
+      stone.position.set(Math.cos(a) * 1.45, 0.16, Math.sin(a) * 1.45);
+      stone.scale.set(1.2, 0.65, 1.0);
+      stone.receiveShadow = true;
+      root.add(stone);
+    }
+  }
 
   if (setupExtra) {
     setupExtra(root);
@@ -515,10 +556,12 @@ function mountDinoAvatar({
 
         const scaledBox = new THREE.Box3().setFromObject(holder);
         const scaledCenter = new THREE.Vector3();
+        const scaledSize = new THREE.Vector3();
         scaledBox.getCenter(scaledCenter);
+        scaledBox.getSize(scaledSize);
         holder.position.x -= scaledCenter.x;
         holder.position.z -= scaledCenter.z;
-        holder.position.y -= scaledBox.min.y;
+        holder.position.y -= scaledBox.min.y + (sittingPose ? scaledSize.y * 0.24 : 0);
       }
 
       root.add(holder);
@@ -705,7 +748,11 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
   STATION_GUIDES.forEach((guide, idx) => {
     const dest = DESTINATIONS.find((d) => d.id === guide.stationId);
     const shortStation = dest ? dest.badge.replace('DESTINATION ', 'S') : '';
-    const stationTag = guide.stationId === 'survival-training' ? 'Survival Camp' : shortStation;
+    const stationTag = guide.badgeRole
+      ? guide.badgeRole
+      : guide.stationId === 'survival-training'
+        ? 'Survival Camp'
+        : shortStation;
 
     const interactDestination = {
       id: `guide-${guide.id}`,
@@ -727,6 +774,7 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
       collisionSystem,
       interactables,
       renderer,
+      materials,
       speciesKey: guide.species,
       patternVariant: guide.patternVariant,
       displayName: guide.displayName,
@@ -737,7 +785,8 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
       interactDestination,
       colliderTag: `npc-guide-${guide.id}`,
       canvasSize: 512,
-      phaseOffset: idx * 0.43
+      phaseOffset: idx * 0.43,
+      sittingPose: Boolean(guide.sittingPose)
     });
 
     updaters.push(mixerUpdater);

@@ -35,6 +35,7 @@ function init() {
 
   // Global E (Interact) and ESC (Close Panel / NPC Dialog) hotkeys
   window.addEventListener('keydown', (e) => {
+    if (e.target?.tagName === 'INPUT' || e.target?.tagName === 'TEXTAREA') return;
     if (!ui.hasEnteredWorld) return;
 
     if (e.code === 'KeyE' && !ui.hasOpenOverlay) {

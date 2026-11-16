@@ -20,7 +20,7 @@ export const SAVAGEZED_NPC = {
       speaker: 'SavageZed',
       role: 'Primeval Malaysia Community Guide',
       text:
-        'Selamat datang and warm greetings, fellow survivor! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
+        'Selamat datang and warm greetings, {name}! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
       hint: 'Use the buttons below to ask what to do here, or press ESC anytime to continue exploring.'
     },
     {
@@ -28,7 +28,7 @@ export const SAVAGEZED_NPC = {
       speaker: 'SavageZed',
       role: 'Outpost Orientation',
       text:
-        'Here is what you can do around our camp to get ready for The Isle: Evrima:\n' +
+        'Here is what you can do around our camp, {name}, to get ready for The Isle: Evrima:\n' +
         '1. Inspect the Welcome Centre Noticeboard right behind me for hardware tips & camp basics.\n' +
         '2. Visit the Steam & Easy Anti-Cheat Terminal to the northwest to learn how to switch to the Evrima branch and verify EAC.\n' +
         '3. Check the Community Directory Board to the northeast for verified community portals & rules.\n' +
@@ -511,5 +511,20 @@ export const STATION_GUIDES = [
     position: { x: -33.2, z: 5.9 },
     lookAt: { x: -27.5, z: 2.0 },
     interactRadius: 4.8
+  },
+  {
+    id: 'shanks',
+    displayName: 'Shanks',
+    initials: 'SH',
+    species: 'ceratosaurus',
+    speciesLabel: 'Ceratosaurus',
+    badgeRole: 'Secret Mutations',
+    patternVariant: 'adult1',
+    stationId: 'survival-training',
+    sittingPose: true,
+    targetHeight: 2.35,
+    position: { x: -21.8, z: -3.2 },
+    lookAt: { x: -20.5, z: 2.0 },
+    interactRadius: 5.0
   }
 ];

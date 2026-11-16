@@ -5,6 +5,8 @@ import { getTerrainHeight } from './world.js';
 const EYE_HEIGHT = 1.72;
 const WALK_SPEED = 6.2;
 const SPRINT_SPEED = 10.6;
+const JUMP_VELOCITY = 6.8;
+const GRAVITY = 19.5;
 
 /**
  * First-person player controller with PointerLockControls, WASD + Shift sprint,
@@ -39,6 +41,8 @@ export class PlayerController {
     this.touchSprint = false;
 
     this.velocity = new THREE.Vector3();
+    this.verticalVelocity = 0;
+    this.isGrounded = true;
     this.direction = new THREE.Vector3();
     this.forwardVec = new THREE.Vector3();
     this.rightVec = new THREE.Vector3();
@@ -88,6 +92,12 @@ export class PlayerController {
     this.touchSprint = Boolean(active);
   }
 
+  triggerJump() {
+    if (!this.enabled || !this.isGrounded) return;
+    this.verticalVelocity = JUMP_VELOCITY;
+    this.isGrounded = false;
+  }
+
   resetKeys() {
     this.keys.forward = false;
     this.keys.backward = false;
@@ -103,6 +113,8 @@ export class PlayerController {
       this.camera.lookAt(lookAtTarget.x, y - 0.15, lookAtTarget.z);
     }
     this.velocity.set(0, 0, 0);
+    this.verticalVelocity = 0;
+    this.isGrounded = true;
   }
 
   update(delta) {
@@ -143,13 +155,24 @@ export class PlayerController {
     // Resolve horizontal collisions against buildings, rocks & boundary
     this.collision.resolve(this.camera.position, 0.58);
 
-    // Clamp to terrain height with gentle smoothing
-    const targetY = getTerrainHeight(this.camera.position.x, this.camera.position.z) + EYE_HEIGHT;
-    this.camera.position.y += (targetY - this.camera.position.y) * Math.min(1, 18 * dt);
+    // Vertical jump physics & terrain height clamping
+    const groundY = getTerrainHeight(this.camera.position.x, this.camera.position.z) + EYE_HEIGHT;
+    if (!this.isGrounded) {
+      this.verticalVelocity -= GRAVITY * dt;
+      this.camera.position.y += this.verticalVelocity * dt;
+      if (this.camera.position.y <= groundY) {
+        this.camera.position.y = groundY;
+        this.verticalVelocity = 0;
+        this.isGrounded = true;
+      }
+    } else {
+      this.camera.position.y += (groundY - this.camera.position.y) * Math.min(1, 18 * dt);
+    }
   }
 
   _bindEvents() {
     window.addEventListener('keydown', (e) => {
+      if (e.target?.tagName === 'INPUT' || e.target?.tagName === 'TEXTAREA') return;
       switch (e.code) {
         case 'KeyW':
         case 'ArrowUp':
@@ -170,6 +193,12 @@ export class PlayerController {
         case 'ShiftLeft':
         case 'ShiftRight':
           this.keys.sprint = true;
+          break;
+        case 'Space':
+          if (this.enabled) {
+            e.preventDefault();
+            this.triggerJump();
+          }
           break;
       }
     });

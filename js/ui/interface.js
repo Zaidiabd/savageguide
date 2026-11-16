@@ -1,9 +1,19 @@
 import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
 import { getLocaleBundle } from '../data/i18n.js';
-import { GUIDE_TRANSLATIONS } from '../data/survivalContent.js';
+import { GUIDE_TRANSLATIONS, SHANKS_MUTATIONS } from '../data/survivalContent.js';
 import { SteamTutorialController } from '../systems/tutorial.js';
 import { WelcomeStationController, CommunityDirectoryController } from '../systems/destinations.js';
 import { SurvivalGuideController } from '../systems/survivalGuide.js';
+
+const SESSION_NAME_KEY = 'the-isle-expedition-player-name';
+
+function escapeHtml(val) {
+  return String(val ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 /**
  * Manages DOM UI overlays, HUD status, destination selector,
@@ -31,11 +41,18 @@ export class InterfaceController {
     this.currentModalIndex = -1;
     this.currentNpcPageId = 'greeting';
     this.activeNpcTarget = null;
+    this.selectedMutationId = 'reniculate';
     this.currentActiveStation = null;
     this.isModalOpen = false;
     this.isNpcDialogOpen = false;
     this.hasEnteredWorld = false;
     this.joystickTouchId = null;
+
+    try {
+      this.playerName = window.sessionStorage.getItem(SESSION_NAME_KEY)?.trim() || '';
+    } catch {
+      this.playerName = '';
+    }
 
     document.body.classList.toggle('touch-device', Boolean(player.isTouchDevice));
 
@@ -55,6 +72,7 @@ export class InterfaceController {
       interactLabel: document.getElementById('interact-label'),
       touchJoystick: document.getElementById('touch-joystick'),
       touchJoystickKnob: document.getElementById('touch-joystick-knob'),
+      btnTouchJump: document.getElementById('btn-touch-jump'),
       btnTouchSprint: document.getElementById('btn-touch-sprint'),
       welcomeOverlay: document.getElementById('welcome-overlay'),
       welcomeEyebrow: document.getElementById('welcome-eyebrow'),
@@ -62,9 +80,13 @@ export class InterfaceController {
       welcomeDesc: document.getElementById('welcome-desc'),
       welcomeLangLabel: document.getElementById('welcome-lang-label'),
       welcomeLangPills: document.querySelectorAll('#welcome-lang-switcher .lang-pill'),
+      welcomeNameLabel: document.getElementById('welcome-name-label'),
+      playerNameInput: document.getElementById('player-name-input'),
+      welcomeNameError: document.getElementById('welcome-name-error'),
       ctrlMove: document.getElementById('ctrl-move'),
       ctrlLook: document.getElementById('ctrl-look'),
       ctrlSprint: document.getElementById('ctrl-sprint'),
+      ctrlJump: document.getElementById('ctrl-jump'),
       ctrlInteract: document.getElementById('ctrl-interact'),
       ctrlEsc: document.getElementById('ctrl-esc'),
       pointerNote: document.getElementById('pointer-status-note'),
@@ -84,6 +106,7 @@ export class InterfaceController {
       npcName: document.getElementById('npc-name'),
       npcRole: document.getElementById('npc-role'),
       npcDialogText: document.getElementById('npc-dialog-text'),
+      npcExtraPanel: document.getElementById('npc-extra-panel'),
       npcDialogHint: document.getElementById('npc-dialog-hint'),
       btnCloseNpc: document.getElementById('btn-close-npc'),
       btnNpcWhatToDo: document.getElementById('btn-npc-what-to-do'),
@@ -102,6 +125,14 @@ export class InterfaceController {
 
   _bundle() {
     return getLocaleBundle(this.progress.getLanguage());
+  }
+
+  getDisplayName() {
+    return this.playerName || 'Survivor';
+  }
+
+  _withName(text) {
+    return String(text ?? '').replaceAll('{name}', this.getDisplayName());
   }
 
   setLanguage(langCode) {
@@ -128,11 +159,29 @@ export class InterfaceController {
     this.els.ctrlMove.textContent = u.ctrlMove;
     this.els.ctrlLook.textContent = u.ctrlLook;
     this.els.ctrlSprint.textContent = u.ctrlSprint;
+    if (this.els.ctrlJump) {
+      this.els.ctrlJump.textContent = u.ctrlJump || 'Jump';
+    }
     this.els.ctrlInteract.textContent = u.ctrlInteract;
     this.els.ctrlEsc.textContent = u.ctrlEsc;
     this.els.btnStart.textContent = u.startBtn;
+    if (this.els.welcomeNameLabel) {
+      this.els.welcomeNameLabel.textContent = u.nameLabel || 'SURVIVOR NAME';
+    }
+    if (this.els.playerNameInput) {
+      this.els.playerNameInput.placeholder = u.namePlaceholder || 'Enter your name...';
+      if (this.playerName && !this.els.playerNameInput.value) {
+        this.els.playerNameInput.value = this.playerName;
+      }
+    }
+    if (this.els.welcomeNameError && !this.els.welcomeNameError.classList.contains('hidden')) {
+      this.els.welcomeNameError.textContent = u.nameRequired;
+    }
     this.els.pointerNote.textContent = this.player.isTouchDevice ? u.pointerNoteTouch : u.pointerNote;
     this.els.btnTouchSprint.textContent = u.sprintBtn;
+    if (this.els.btnTouchJump) {
+      this.els.btnTouchJump.textContent = u.jumpBtn || 'JUMP';
+    }
 
     // HUD strings
     this.els.hudLangLabel.textContent = u.langLabel;
@@ -141,7 +190,7 @@ export class InterfaceController {
     this.els.hudStatusLabel.textContent = u.statusLabel;
     this.els.hudHint.innerHTML = u.hudHint.replace('ESC', '<kbd>ESC</kbd>');
     if (!this.isModalOpen && !this.isNpcDialogOpen) {
-      this.els.objectiveText.textContent = u.objectiveDefault;
+      this.els.objectiveText.textContent = this._withName(u.objectiveDefault);
     }
 
     // Modal & NPC static button labels
@@ -205,6 +254,20 @@ export class InterfaceController {
     this.els.btnStart.addEventListener('click', () => {
       this.enterWorld();
     });
+
+    if (this.els.playerNameInput) {
+      this.els.playerNameInput.addEventListener('input', () => {
+        if (this.els.welcomeNameError) {
+          this.els.welcomeNameError.classList.add('hidden');
+        }
+      });
+      this.els.playerNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.enterWorld();
+        }
+      });
+    }
 
     // Tappable interaction prompt for mobile & non-pointer-lock play
     this.els.interactPrompt.addEventListener('click', (e) => {
@@ -350,6 +413,13 @@ export class InterfaceController {
     joy.addEventListener('touchend', endStick, { passive: true });
     joy.addEventListener('touchcancel', endStick, { passive: true });
 
+    if (this.els.btnTouchJump) {
+      this.els.btnTouchJump.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.player.triggerJump();
+      });
+    }
+
     this.els.btnTouchSprint.addEventListener('click', (e) => {
       e.stopPropagation();
       const next = !this.player.touchSprint;
@@ -363,9 +433,32 @@ export class InterfaceController {
   }
 
   enterWorld() {
+    if (this.els.playerNameInput) {
+      const entered = this.els.playerNameInput.value.trim();
+      if (!entered) {
+        if (this.els.welcomeNameError) {
+          this.els.welcomeNameError.textContent =
+            this._bundle().ui.nameRequired || 'Please enter your survivor name first.';
+          this.els.welcomeNameError.classList.remove('hidden');
+        }
+        this.els.playerNameInput.focus();
+        return;
+      }
+      this.playerName = entered;
+      try {
+        window.sessionStorage.setItem(SESSION_NAME_KEY, entered);
+      } catch {
+        // Ignore storage restrictions
+      }
+      if (this.els.welcomeNameError) {
+        this.els.welcomeNameError.classList.add('hidden');
+      }
+    }
+
     this.hasEnteredWorld = true;
     this.els.welcomeOverlay.classList.add('hidden');
     this.els.hud.classList.remove('hidden');
+    this.els.objectiveText.textContent = this._withName(this._bundle().ui.objectiveDefault);
     this.player.setEnabled(true);
     this.player.lockPointer();
   }
@@ -426,10 +519,23 @@ export class InterfaceController {
       }
       this.els.npcName.textContent = guide.displayName;
       this.els.npcRole.textContent = gInfo.role;
-      this.els.npcDialogText.textContent = pageId === 'what-to-do' ? gInfo.tips : gInfo.greeting;
-      this.els.npcDialogHint.textContent = gInfo.hint;
+      this.els.npcDialogText.textContent = this._withName(
+        pageId === 'what-to-do' ? gInfo.tips : gInfo.greeting
+      );
+      this.els.npcDialogHint.textContent = this._withName(gInfo.hint);
 
-      this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
+      if (guide.guideId === 'shanks') {
+        const sData = SHANKS_MUTATIONS[lang] || SHANKS_MUTATIONS.en;
+        this.els.btnNpcWhatToDo.textContent = sData.askBtn;
+        this._renderShanksMutationsPanel(sData);
+      } else {
+        this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
+        if (this.els.npcExtraPanel) {
+          this.els.npcExtraPanel.classList.add('hidden');
+          this.els.npcExtraPanel.innerHTML = '';
+        }
+      }
+
       this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
       this.els.btnNpcJumpSteam.textContent = gLocale.openStationBtn(stationTitle);
       this.els.btnNpcBye.textContent = gLocale.byeGuideBtn(guide.displayName);
@@ -439,14 +545,19 @@ export class InterfaceController {
       return;
     }
 
+    if (this.els.npcExtraPanel) {
+      this.els.npcExtraPanel.classList.add('hidden');
+      this.els.npcExtraPanel.innerHTML = '';
+    }
+
     const page = b.npc.pages[pageId] || b.npc.pages.greeting;
     if (this.els.npcAvatarBadge) {
       this.els.npcAvatarBadge.textContent = 'SZ';
     }
     this.els.npcName.textContent = page.speaker;
     this.els.npcRole.textContent = page.role;
-    this.els.npcDialogText.textContent = page.text;
-    this.els.npcDialogHint.textContent = page.hint;
+    this.els.npcDialogText.textContent = this._withName(page.text);
+    this.els.npcDialogHint.textContent = this._withName(page.hint);
 
     this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
     this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
@@ -457,12 +568,73 @@ export class InterfaceController {
     this.els.btnNpcGreeting.classList.toggle('hidden', pageId === 'greeting');
   }
 
+  _renderShanksMutationsPanel(sData) {
+    const panel = this.els.npcExtraPanel;
+    if (!panel) return;
+
+    panel.classList.remove('hidden');
+
+    const pillsHtml = sData.items
+      .map(
+        (m) => `
+        <button type="button" class="mutation-pill ${this.selectedMutationId === m.id ? 'active' : ''}" data-mut-id="${escapeHtml(m.id)}">
+          ${escapeHtml(m.name)}
+        </button>
+      `
+      )
+      .join('');
+
+    const allBtnHtml = `
+      <button type="button" class="mutation-pill ${this.selectedMutationId === 'all' ? 'active' : ''}" data-mut-id="all">
+        ${escapeHtml(sData.revealAllLabel)}
+      </button>
+    `;
+
+    let detailHtml = '';
+    if (this.selectedMutationId === 'all') {
+      detailHtml = sData.items
+        .map(
+          (m) => `
+          <div style="margin-bottom: 8px;">
+            <strong>${escapeHtml(m.name)}:</strong> ${escapeHtml(m.effect)}<br/>
+            <span style="color: var(--accent-olive);">Unlock:</span> ${escapeHtml(m.condition)}
+          </div>
+        `
+        )
+        .join('');
+    } else {
+      const selected = sData.items.find((m) => m.id === this.selectedMutationId) || sData.items[0];
+      detailHtml = `
+        <div><strong>${escapeHtml(selected.name)}</strong> — ${escapeHtml(selected.effect)}</div>
+        <div style="margin-top: 4px;"><strong style="color: var(--accent-olive);">Condition:</strong> ${escapeHtml(selected.condition)}</div>
+      `;
+    }
+
+    panel.innerHTML = `
+      <div style="font-size: 0.78rem; color: var(--accent-sun); font-weight: 700; margin-bottom: 8px;">
+        ${escapeHtml(this._withName(sData.promptTitle))}
+      </div>
+      <div class="mutation-pill-row">${pillsHtml}${allBtnHtml}</div>
+      <div class="mutation-detail-card">${detailHtml}</div>
+    `;
+
+    panel.querySelectorAll('[data-mut-id]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        this.selectedMutationId = btn.dataset.mutId;
+        this._renderShanksMutationsPanel(sData);
+      });
+    });
+  }
+
   closeNpcDialog(reLockPointer = false) {
     if (!this.isNpcDialogOpen) return;
     this.isNpcDialogOpen = false;
     this.els.npcDialog.classList.add('hidden');
+    if (this.els.npcExtraPanel) {
+      this.els.npcExtraPanel.classList.add('hidden');
+    }
     this.player.setEnabled(true);
-    this.els.objectiveText.textContent = this._bundle().ui.objectiveDefault;
+    this.els.objectiveText.textContent = this._withName(this._bundle().ui.objectiveDefault);
     if (reLockPointer) {
       this.player.lockPointer();
     }
@@ -523,7 +695,7 @@ export class InterfaceController {
     this.isModalOpen = false;
     this.els.stationModal.classList.add('hidden');
     this.player.setEnabled(true);
-    this.els.objectiveText.textContent = this._bundle().ui.objectiveDefault;
+    this.els.objectiveText.textContent = this._withName(this._bundle().ui.objectiveDefault);
     if (reLockPointer) {
       this.player.lockPointer();
     }

@@ -14,20 +14,25 @@ const LOCALES = {
       ctrlMove: 'Move',
       ctrlLook: 'Look Around',
       ctrlSprint: 'Sprint',
+      ctrlJump: 'Jump',
       ctrlInteract: 'Interact at Station',
       ctrlEsc: 'Release Mouse / Close Panel',
       startBtn: 'START EXPEDITION',
+      nameLabel: 'SURVIVOR NAME',
+      namePlaceholder: 'Enter your name for this session...',
+      nameRequired: 'Please enter your survivor name before stepping into the outpost.',
+      objectiveDefault: 'Welcome, {name}! Explore the outpost and approach any station.',
       pointerNote:
         'Click to enter first-person mode. If pointer lock is unavailable, drag with the mouse to look around.',
       pointerNoteTouch:
         'Touch controls enabled: use the left thumbstick to walk, swipe the screen to look around, and tap prompts to interact.',
       sprintBtn: 'SPRINT',
+      jumpBtn: 'JUMP',
       langLabel: 'LANGUAGE',
       destLabel: 'DESTINATION',
       quickJumpDefault: 'Quick Jump...',
       controlsBtn: 'CONTROLS',
       statusLabel: 'EXPEDITION STATUS',
-      objectiveDefault: 'Explore the outpost and approach any station.',
       hudHint: 'Click viewport to lock mouse • ESC to release cursor',
       trailsZone: 'OUTPOST TRAILS — MESOZOIC FOREST',
       closeEsc: 'CLOSE [ESC]',
@@ -60,14 +65,14 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Primeval Malaysia Community Guide',
           text:
-            'Selamat datang and warm greetings, fellow survivor! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
-          hint: 'Use the buttons below to ask what to do here, or press ESC anytime to continue exploring.'
+            'Selamat datang and warm greetings, {name}! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
+          hint: 'Use the buttons below to ask what to do here, or press ESC anytime to continue exploring, {name}.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
           role: 'Outpost Orientation',
           text:
-            'Here is what you can do around our camp to get ready for The Isle: Evrima:\n' +
+            'Here is what you can do around our camp, {name}, to get ready for The Isle: Evrima:\n' +
             '1. Inspect the Welcome Centre Noticeboard right behind me for hardware tips & camp basics.\n' +
             '2. Visit the Steam & Easy Anti-Cheat Terminal to the northwest to learn how to switch to the Evrima branch and verify EAC.\n' +
             '3. Check the Community Directory Board to the northeast for verified community portals & rules.\n' +
@@ -396,9 +401,13 @@ const LOCALES = {
       ],
       jumpBtn: 'Visit Station →',
       navTitle: 'Outpost Navigation Instructions',
-      navDesktop: 'Desktop: WASD / Arrows to walk • Shift to sprint • Mouse to look • E to interact • ESC to close panels.',
+      navDesktop: 'Desktop: WASD / Arrows to walk • Space to jump • Shift to sprint • Mouse to look • E to interact • ESC to close panels.',
       navMobile: 'Mobile / Touch: Left thumbstick to walk • Swipe screen to look • Tap the [E] prompt when near a station.',
       startBtn: 'START EXPEDITION',
+      nameLabel: 'SURVIVOR NAME',
+      namePlaceholder: 'Enter your name for this session...',
+      nameRequired: 'Please enter your survivor name before stepping into the outpost.',
+      objectiveDefault: 'Welcome, {name}! Explore the outpost and approach any station.',
       goSteamBtn: 'Proceed to Steam Station →',
       reviewedBadge: '✓ ORIENTATION REVIEWED'
     },
@@ -447,20 +456,25 @@ const LOCALES = {
       ctrlMove: 'Bergerak',
       ctrlLook: 'Lihat Sekeliling',
       ctrlSprint: 'Lari Pecut',
+      ctrlJump: 'Lompat',
       ctrlInteract: 'Berinteraksi di Stesen',
       ctrlEsc: 'Lepaskan Tetikus / Tutup Panel',
       startBtn: 'MULAKAN EKSPEDISI',
+      nameLabel: 'NAMA PENGEMBARA',
+      namePlaceholder: 'Masukkan nama anda untuk sesi ini...',
+      nameRequired: 'Sila masukkan nama pengembara anda sebelum memasuki pos.',
+      objectiveDefault: 'Selamat datang, {name}! Terokai kawasan pos dan dekati mana-mana stesen.',
       pointerNote:
         'Klik untuk masuk ke mod orang pertama. Jika kunci tetikus tidak disokong, seret tetikus untuk melihat sekeliling.',
       pointerNoteTouch:
         'Kawalan sentuh diaktifkan: guna kayu ria kiri untuk berjalan, leret skrin untuk melihat sekeliling, dan ketik butang interaksi.',
       sprintBtn: 'PECUT',
+      jumpBtn: 'LOMPAT',
       langLabel: 'BAHASA',
       destLabel: 'DESTINASI',
       quickJumpDefault: 'Lompat Terus...',
       controlsBtn: 'KAWALAN',
       statusLabel: 'STATUS EKSPEDISI',
-      objectiveDefault: 'Terokai kawasan pos dan dekati mana-mana stesen.',
       hudHint: 'Klik paparan untuk kunci tetikus • ESC untuk lepaskan kursor',
       trailsZone: 'LALUAN POS — HUTAN MESOZOIK',
       closeEsc: 'TUTUP [ESC]',
@@ -493,14 +507,14 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Pemandu Komuniti Primeval Malaysia',
           text:
-            'Selamat datang dan salam mesra, pengembara! Saya SavageZed, dan saya amat gembira menyambut kedatangan anda ke pos Komuniti Primeval Malaysia. Luangkan masa untuk meneroka kem prasejarah kami—kami berbesar hati menerima kehadiran anda!',
-          hint: 'Gunakan butang di bawah untuk bertanya apa yang boleh dilakukan di sini, atau tekan ESC bila-bila masa untuk terus meneroka.'
+            'Selamat datang dan salam mesra, {name}! Saya SavageZed, dan saya amat gembira menyambut kedatangan anda ke pos Komuniti Primeval Malaysia. Luangkan masa untuk meneroka kem prasejarah kami—kami berbesar hati menerima kehadiran anda!',
+          hint: 'Gunakan butang di bawah untuk bertanya apa yang boleh dilakukan di sini, atau tekan ESC bila-bila masa, {name}.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
           role: 'Taklimat Kawasan Pos',
           text:
-            'Berikut ialah perkara yang boleh anda lakukan di kem kami sebagai persediaan untuk The Isle: Evrima:\n' +
+            'Berikut ialah perkara yang boleh anda lakukan di kem kami, {name}, sebagai persediaan untuk The Isle: Evrima:\n' +
             '1. Periksa Papan Kenyataan Pusat Alu-aluan di belakang saya untuk keperluan asas PC & info kem.\n' +
             '2. Lawati Terminal Steam & Easy Anti-Cheat di arah barat laut untuk panduan memilih cabang Evrima dan semakan EAC.\n' +
             '3. Semak Papan Direktori Komuniti di arah timur laut untuk maklumat pelayan komuniti & peraturan yang disahkan.\n' +
@@ -829,9 +843,13 @@ const LOCALES = {
       ],
       jumpBtn: 'Lawat Stesen →',
       navTitle: 'Arahan Navigasi Pos',
-      navDesktop: 'Komputer: WASD / Anak Panah untuk bergerak • Shift untuk pecut • Tetikus untuk melihat • E untuk berinteraksi • ESC untuk tutup panel.',
+      navDesktop: 'Komputer: WASD / Anak Panah untuk bergerak • Space untuk lompat • Shift untuk pecut • Tetikus untuk melihat • E untuk berinteraksi • ESC untuk tutup panel.',
       navMobile: 'Mudah Alih / Sentuh: Kayu ria kiri untuk berjalan • Leret skrin untuk melihat • Ketik butang [E] apabila berdekatan stesen.',
       startBtn: 'MULAKAN EKSPEDISI',
+      nameLabel: 'NAMA PENGEMBARA',
+      namePlaceholder: 'Masukkan nama anda untuk sesi ini...',
+      nameRequired: 'Sila masukkan nama pengembara anda sebelum memasuki pos.',
+      objectiveDefault: 'Selamat datang, {name}! Terokai kawasan pos dan dekati mana-mana stesen.',
       goSteamBtn: 'Terus ke Stesen Steam →',
       reviewedBadge: '✓ TAKLIMAT DISEMAK'
     },
@@ -880,20 +898,25 @@ const LOCALES = {
       ctrlMove: 'Jalan',
       ctrlLook: 'Pusing Kamera',
       ctrlSprint: 'Lari Laju',
+      ctrlJump: 'Lompat',
       ctrlInteract: 'Tekan Kat Stesen',
       ctrlEsc: 'Lepas Mouse / Tutup Panel',
       startBtn: 'JOM MULA EKSPEDISI',
+      nameLabel: 'NAMA SURVIVOR KORANG',
+      namePlaceholder: 'Masukkan nama korang untuk sesi ni...',
+      nameRequired: 'Masukkan nama korang dulu bro sebelum masuk kem!',
+      objectiveDefault: 'Welcome {name}! Pusing-pusing kem dan pergi mana-mana stesen jap.',
       pointerNote:
         'Klik untuk masuk mode first-person. Kalau pointer lock tak jalan, drag je mouse untuk pusing pandangan.',
       pointerNoteTouch:
         'Mode sentuh aktif: guna joystick kiri untuk jalan, swipe skrin untuk pusing kamera, dan tap je prompt bila dekat.',
       sprintBtn: 'LARI',
+      jumpBtn: 'LOMPAT',
       langLabel: 'BAHASA',
       destLabel: 'LOKASI',
       quickJumpDefault: 'Terus Teleport...',
       controlsBtn: 'KAWALAN',
       statusLabel: 'STATUS EKSPEDISI',
-      objectiveDefault: 'Pusing-pusing kem dan pergi mana-mana stesen jap.',
       hudHint: 'Klik skrin untuk lock mouse • ESC nak lepas cursor',
       trailsZone: 'JALAN HUTAN — KEM MESOZOIK',
       closeEsc: 'TUTUP [ESC]',
@@ -926,14 +949,14 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Guide Komuniti Primeval Malaysia',
           text:
-            'Wey selamat datang geng! Aku SavageZed, happy gila dapat sambut korang masuk kem Komuniti Primeval Malaysia ni. Rilek dulu, cuci mata tengok kem dino kita ni—memang ngam korang join kitorang kat sini!',
-          hint: 'Tekan button kat bawah kalau nak tahu apa benda boleh buat kat sini, atau tekan ESC kalau nak sambung jalan.'
+            'Wey selamat datang {name}! Aku SavageZed, happy gila dapat sambut korang masuk kem Komuniti Primeval Malaysia ni. Rilek dulu, cuci mata tengok kem dino kita ni—memang ngam {name} join kitorang kat sini!',
+          hint: 'Tekan button kat bawah kalau nak tahu apa benda boleh buat kat sini, {name}, atau tekan ESC kalau nak sambung jalan.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
           role: 'Briefing Santai Kem',
           text:
-            'Ni benda korang kena check sebelum terjun main The Isle: Evrima:\n' +
+            'Ni benda {name} kena check sebelum terjun main The Isle: Evrima:\n' +
             '1. Tengok Papan Notice kat belakang aku ni dulu untuk spec PC basic dengan info kem.\n' +
             '2. Pergi Terminal Steam & Easy Anti-Cheat kat belah barat laut sana—situ ajar cara tukar branch Evrima dengan settlekan EAC kalau buat hal.\n' +
             '3. Check Papan Direktori Komuniti kat belah timur laut untuk link Discord verified dengan rules server.\n' +
@@ -1260,9 +1283,13 @@ const LOCALES = {
       ],
       jumpBtn: 'Pergi Stesen →',
       navTitle: 'Cara Gerak Kat Kem',
-      navDesktop: 'PC: WASD / Arrow untuk jalan • Shift untuk lari • Mouse untuk pusing • E untuk tekan • ESC untuk tutup panel.',
+      navDesktop: 'PC: WASD / Arrow untuk jalan • Space untuk lompat • Shift untuk lari • Mouse untuk pusing • E untuk tekan • ESC untuk tutup panel.',
       navMobile: 'Phone / Touch: Joystick kiri untuk jalan • Swipe skrin untuk pusing kamera • Tap button [E] bila dah dekat stesen.',
       startBtn: 'JOM MULA EKSPEDISI',
+      nameLabel: 'NAMA SURVIVOR KORANG',
+      namePlaceholder: 'Masukkan nama korang untuk sesi ni...',
+      nameRequired: 'Masukkan nama korang dulu bro sebelum masuk kem!',
+      objectiveDefault: 'Welcome {name}! Pusing-pusing kem dan pergi mana-mana stesen jap.',
       goSteamBtn: 'Terus ke Stesen Steam →',
       reviewedBadge: '✓ ORIENTASI DAH CHECK'
     },
