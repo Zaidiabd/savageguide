@@ -8,6 +8,7 @@ const DEFAULT_STATE = {
   eacOptionBComplete: false,
   welcomeReviewed: false,
   communityReviewed: false,
+  survivalReviewed: false,
   isleLinkAgeStatus: 'unknown', // 'unknown' | 'adult' | 'underage'
   checklist: {
     steamObtained: false,
@@ -151,6 +152,15 @@ export class ProgressSystem {
   setIsleLinkAgeStatus(status) {
     if (!['unknown', 'adult', 'underage'].includes(status)) return;
     this.state.isleLinkAgeStatus = status;
+    this._save();
+  }
+
+  isSurvivalReviewed() {
+    return Boolean(this.state.survivalReviewed);
+  }
+
+  markSurvivalReviewed(value = true) {
+    this.state.survivalReviewed = Boolean(value);
     this._save();
   }
 }

@@ -1,7 +1,9 @@
 import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
 import { getLocaleBundle } from '../data/i18n.js';
+import { GUIDE_TRANSLATIONS } from '../data/survivalContent.js';
 import { SteamTutorialController } from '../systems/tutorial.js';
 import { WelcomeStationController, CommunityDirectoryController } from '../systems/destinations.js';
+import { SurvivalGuideController } from '../systems/survivalGuide.js';
 
 /**
  * Manages DOM UI overlays, HUD status, destination selector,
@@ -22,11 +24,13 @@ export class InterfaceController {
       }
     });
     this.communityDirectory = new CommunityDirectoryController(progress);
+    this.survivalGuide = new SurvivalGuideController(progress);
     this.onOpenStation = onOpenStation;
     this.onCloseStation = onCloseStation;
 
     this.currentModalIndex = -1;
     this.currentNpcPageId = 'greeting';
+    this.activeNpcTarget = null;
     this.currentActiveStation = null;
     this.isModalOpen = false;
     this.isNpcDialogOpen = false;
@@ -75,6 +79,7 @@ export class InterfaceController {
       btnNextStation: document.getElementById('btn-next-station'),
       btnResumeWalk: document.getElementById('btn-resume-walk'),
       npcDialog: document.getElementById('npc-dialog'),
+      npcAvatarBadge: document.getElementById('npc-avatar-badge'),
       npcCommunityTag: document.querySelector('.npc-community-tag'),
       npcName: document.getElementById('npc-name'),
       npcRole: document.getElementById('npc-role'),
@@ -147,10 +152,6 @@ export class InterfaceController {
 
     this.els.npcCommunityTag.textContent = u.npcCommunityTag;
     this.els.btnCloseNpc.textContent = u.npcByeEsc;
-    this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
-    this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
-    this.els.btnNpcJumpSteam.textContent = u.npcBtnJumpSteam;
-    this.els.btnNpcBye.textContent = u.npcBtnBye;
 
     this._populateDestinationMenu();
 
@@ -160,7 +161,7 @@ export class InterfaceController {
     }
     if (this.isNpcDialogOpen) {
       this._renderNpcPage(this.currentNpcPageId);
-      this.els.objectiveText.textContent = u.speakingWith;
+      this.els.objectiveText.textContent = this._getNpcSpeakingStatus();
     }
   }
 
@@ -261,12 +262,23 @@ export class InterfaceController {
     this.els.btnNpcWhatToDo.addEventListener('click', () => this._renderNpcPage('what-to-do'));
     this.els.btnNpcGreeting.addEventListener('click', () => this._renderNpcPage('greeting'));
     this.els.btnNpcJumpSteam.addEventListener('click', () => {
+      const targetStationId =
+        this.activeNpcTarget?.isStationGuide && this.activeNpcTarget.stationId
+          ? this.activeNpcTarget.stationId
+          : 'steam-station';
       this.closeNpcDialog(false);
-      const steamDest = this.navigation.jumpTo('steam-station');
-      if (steamDest) {
-        const b = this._bundle();
-        const loc = b.destinations[steamDest.id] || steamDest;
-        this.els.objectiveText.textContent = b.ui.arrivedStation(loc.title);
+      const dest = DESTINATIONS.find((d) => d.id === targetStationId);
+      if (dest) {
+        if (this.activeNpcTarget?.isStationGuide) {
+          this.openStationModal(dest);
+        } else {
+          const arrived = this.navigation.jumpTo(dest.id);
+          if (arrived) {
+            const b = this._bundle();
+            const loc = b.destinations[arrived.id] || arrived;
+            this.els.objectiveText.textContent = b.ui.arrivedStation(loc.title);
+          }
+        }
       }
     });
   }
@@ -368,31 +380,78 @@ export class InterfaceController {
   openInteraction(target) {
     this._resetTouchStick();
     if (target.isNpc) {
-      this.openNpcDialog();
+      this.openNpcDialog(target);
     } else {
       this.openStationModal(target);
     }
   }
 
-  openNpcDialog() {
-    const b = this._bundle();
+  _getNpcSpeakingStatus() {
+    const u = this._bundle().ui;
+    if (this.activeNpcTarget?.isStationGuide) {
+      return u.speakingWithGuide
+        ? u.speakingWithGuide(this.activeNpcTarget.displayName, this.activeNpcTarget.speciesLabel)
+        : `Speaking with ${this.activeNpcTarget.displayName}`;
+    }
+    return u.speakingWith;
+  }
+
+  openNpcDialog(npcTarget = SAVAGEZED_NPC) {
+    this.activeNpcTarget = npcTarget || SAVAGEZED_NPC;
     this.isNpcDialogOpen = true;
     this.player.setEnabled(false);
     this.player.unlockPointer();
     this._renderNpcPage('greeting');
     this.els.npcDialog.classList.remove('hidden');
-    this.els.objectiveText.textContent = b.ui.speakingWith;
+    this.els.objectiveText.textContent = this._getNpcSpeakingStatus();
   }
 
   _renderNpcPage(pageId) {
     this.currentNpcPageId = pageId;
+    const lang = this.progress.getLanguage();
     const b = this._bundle();
-    const page = b.npc.pages[pageId] || b.npc.pages.greeting;
+    const u = b.ui;
 
+    if (this.activeNpcTarget?.isStationGuide) {
+      const guide = this.activeNpcTarget;
+      const gLocale = GUIDE_TRANSLATIONS[lang] || GUIDE_TRANSLATIONS.en;
+      const gInfo = gLocale.guides[guide.guideId] || GUIDE_TRANSLATIONS.en.guides[guide.guideId];
+      const stationDest = DESTINATIONS.find((d) => d.id === guide.stationId);
+      const stationTitle =
+        (stationDest && (b.destinations[stationDest.id]?.title || stationDest.title)) ||
+        guide.stationId;
+
+      if (this.els.npcAvatarBadge) {
+        this.els.npcAvatarBadge.textContent = guide.initials || 'GD';
+      }
+      this.els.npcName.textContent = guide.displayName;
+      this.els.npcRole.textContent = gInfo.role;
+      this.els.npcDialogText.textContent = pageId === 'what-to-do' ? gInfo.tips : gInfo.greeting;
+      this.els.npcDialogHint.textContent = gInfo.hint;
+
+      this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
+      this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
+      this.els.btnNpcJumpSteam.textContent = gLocale.openStationBtn(stationTitle);
+      this.els.btnNpcBye.textContent = gLocale.byeGuideBtn(guide.displayName);
+
+      this.els.btnNpcWhatToDo.classList.toggle('hidden', pageId === 'what-to-do');
+      this.els.btnNpcGreeting.classList.toggle('hidden', pageId === 'greeting');
+      return;
+    }
+
+    const page = b.npc.pages[pageId] || b.npc.pages.greeting;
+    if (this.els.npcAvatarBadge) {
+      this.els.npcAvatarBadge.textContent = 'SZ';
+    }
     this.els.npcName.textContent = page.speaker;
     this.els.npcRole.textContent = page.role;
     this.els.npcDialogText.textContent = page.text;
     this.els.npcDialogHint.textContent = page.hint;
+
+    this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
+    this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
+    this.els.btnNpcJumpSteam.textContent = u.npcBtnJumpSteam;
+    this.els.btnNpcBye.textContent = u.npcBtnBye;
 
     this.els.btnNpcWhatToDo.classList.toggle('hidden', pageId === 'what-to-do');
     this.els.btnNpcGreeting.classList.toggle('hidden', pageId === 'greeting');
@@ -437,6 +496,10 @@ export class InterfaceController {
       stationCard.classList.add('wide');
       footerTag.textContent = b.ui.functionalTag;
       this.communityDirectory.mount(this.els.stationBody);
+    } else if (destination.id === 'survival-training') {
+      stationCard.classList.add('wide');
+      footerTag.textContent = b.ui.functionalTag;
+      this.survivalGuide.mount(this.els.stationBody);
     } else {
       stationCard.classList.remove('wide');
       footerTag.textContent = b.ui.skeletonTag;
@@ -477,18 +540,32 @@ export class InterfaceController {
     const b = this._bundle();
 
     if (nearestZone) {
-      const zoneText = nearestZone.isNpc
-        ? b.npc.zoneLabel
-        : (b.destinations[nearestZone.id]?.zoneLabel || nearestZone.zoneLabel);
+      let zoneText;
+      if (nearestZone.isStationGuide) {
+        zoneText = b.ui.guideZoneLabel
+          ? b.ui.guideZoneLabel(nearestZone.displayName, nearestZone.speciesLabel)
+          : nearestZone.zoneLabel;
+      } else if (nearestZone.isNpc) {
+        zoneText = b.npc.zoneLabel;
+      } else {
+        zoneText = b.destinations[nearestZone.id]?.zoneLabel || nearestZone.zoneLabel;
+      }
       this.els.currentZone.textContent = zoneText;
     } else {
       this.els.currentZone.textContent = b.ui.trailsZone;
     }
 
     if (activeStation && !this.hasOpenOverlay) {
-      const promptText = activeStation.isNpc
-        ? b.npc.promptLabel
-        : (b.destinations[activeStation.id]?.promptLabel || activeStation.promptLabel);
+      let promptText;
+      if (activeStation.isStationGuide) {
+        promptText = b.ui.talkToPrompt
+          ? b.ui.talkToPrompt(activeStation.displayName)
+          : activeStation.promptLabel;
+      } else if (activeStation.isNpc) {
+        promptText = b.npc.promptLabel;
+      } else {
+        promptText = b.destinations[activeStation.id]?.promptLabel || activeStation.promptLabel;
+      }
       this.els.interactPrompt.classList.remove('hidden');
       this.els.interactLabel.textContent = promptText.toUpperCase();
       this.els.crosshair.classList.add('active');

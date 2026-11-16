@@ -107,6 +107,23 @@
   * Applied the `Adult` morph target, aligned the head-to-tail skeleton axis toward the player trail (`+Z`), normalized stature (`1.88m`) flush to terrain, and played the embedded `'Idle'` skeletal `AnimationClip` loop via `THREE.AnimationMixer`.
   * Composited `T_Omniraptor_Albedo.webp`, `T_Omniraptor_Adult_Pattern_1.webp`, and `T_Omniraptor_Detail_M.webp` with the `Omniraptor.json` layer/anatomy palette while preserving quantized glTF UV transforms (`offset`, `repeat`, `channel`).
 
+### Stage 11 — Survival Training Ground (Station 06) & 8 Named Station Dinosaur Guides (Local Dev)
+* **Added Station 06 — Survival Training Ground (`js/core/world.js`, `js/data/tutorialContent.js`, `js/data/survivalContent.js`, `js/systems/survivalGuide.js`):**
+  * Built a walled timber palisade compound at `(-31, 2)` connected by a western forest trail, with colliders along all 5 wall sections leaving a walkable entrance walkway.
+  * Added an **Entrance Gateway** on the east wall (`(-23.8, 2)`) featuring a carved signboard reading **`PRIMEVAL MALAYSIA TRAINING CAMP`**, timber rafters, and hanging lanterns.
+  * Built a central animated **bonfire** (stone ring, stacked logs, glowing ember bed, flickering flames, rising spark particles, and warm `PointLight`), surrounded by log benches, sparring posts, and the interactive Survival Training Board.
+  * Implemented an interactive 6-tab **Survival Training Field Manual** (`Controls & Moves`, `Diet & Water`, `Stamina & Healing`, `Groups & Sanctuaries`, `Night & Stealth`, `Pro Survival Tips`) localized in **English**, **Bahasa Melayu**, and **Kecek KL** with persistent review tracking (`ProgressSystem.markSurvivalReviewed()`).
+* **Deployed 8 Named Station Dinosaur Guides (`js/core/npc.js`, `js/ui/interface.js`, `public/models/`):**
+  * Copied required `.glb` models & skin/mask textures for **Pteranodon**, **Triceratops**, **Maiasaura**, **Tyrannosaurus** (shared via `SkeletonUtils.clone` with distinct Pattern 1/2/3 skins), **Allosaurus**, and **Dilophosaurus**.
+  * Placed floating nameplates, skeletal `Idle` animations, colliders, and interactive dialogs for:
+    * `kift90` (Pteranodon — Station 01 Welcome Centre)
+    * `kenzy` (Triceratops — Station 02 Steam Terminal)
+    * `apollo` (Maiasaura — Station 03 Community Outpost)
+    * `mapotofu` (Tyrannosaurus — Station 04 Companion Station)
+    * `kmy` & `Zapicy` (Tyrannosaurus — Station 05 Departure Gate)
+    * `sai` (Allosaurus) & `Dom` (Dilophosaurus) — Survival Training Ground
+  * Wired every guide's `[E]` interaction dialog to deliver localized station briefings and open their assigned station directly.
+
 ---
 
 ## 2. Git Commit Milestones (`main`)

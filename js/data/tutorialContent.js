@@ -33,7 +33,8 @@ export const SAVAGEZED_NPC = {
         '2. Visit the Steam & Easy Anti-Cheat Terminal to the northwest to learn how to switch to the Evrima branch and verify EAC.\n' +
         '3. Check the Community Directory Board to the northeast for verified community portals & rules.\n' +
         '4. Drop by the Companion Application Desk to the southeast for official companion setup guidance.\n' +
-        '5. Walk through the Expedition Departure Gate up north when you are ready for your final checklist!',
+        '5. Visit the walled Survival Training Ground to the west (Primeval Malaysia Training Camp) for combat, diet & survival tips!\n' +
+        '6. Walk through the Expedition Departure Gate up north when you are ready for your final checklist!',
       hint: 'Tip: You can walk the forest trails using WASD + Shift, or use the top-right DESTINATION menu to quick-jump.'
     }
   ]
@@ -380,5 +381,135 @@ export const DESTINATIONS = [
       'Completion state: EXPEDITION PREPARATION COMPLETE'
     ],
     callout: 'Skeleton Notice: Interactive persistent checklist tracking will be wired in Milestone 4.'
+  },
+  {
+    id: 'survival-training',
+    badge: 'DESTINATION 06',
+    zoneLabel: 'LOCATION 06 — PRIMEVAL MALAYSIA TRAINING CAMP',
+    title: 'Survival Training Ground',
+    subtitle: 'Walled camp & bonfire teaching combat, diets, stamina, scent, night vision & pro Evrima survival tips.',
+    position: { x: -31, z: 2 },
+    approach: { x: -21.2, z: 2, lookAt: { x: -31, y: 1.8, z: 2 } },
+    interactRadius: 6.2,
+    promptLabel: 'Open Survival Training Manual',
+    summary:
+      'Timber-walled Survival Training Camp surrounding a warm central bonfire—inside, instructors sai and Dom teach controls, nutrients, stamina management, sanctuaries, and nocturnal survival.',
+    plannedSections: [
+      'Controls, Alt-Bites, Special Abilities & Dino Calls (1–4)',
+      'Nutrient Diet Combos (S / Dots / Lines) & Safe Waterhole Tactics',
+      'Stamina Management, Bleeding Recovery & Juvenile Sanctuaries',
+      'Night Vision, Scent Hunting, Mud & Veteran Pro Tips'
+    ],
+    callout: 'Field instructors inside: sai (Allosaurus) and Dom (Dilophosaurus).'
+  }
+];
+
+/**
+ * Station guide dinosaur avatars placed beside each station across the outpost.
+ */
+export const STATION_GUIDES = [
+  {
+    id: 'kift90',
+    displayName: 'kift90',
+    initials: 'K90',
+    species: 'pteranodon',
+    speciesLabel: 'Pteranodon',
+    patternVariant: 'adult1',
+    stationId: 'welcome-centre',
+    targetHeight: 1.7,
+    position: { x: 4.5, z: 1.8 },
+    lookAt: { x: 0, z: 6.5 },
+    interactRadius: 4.6
+  },
+  {
+    id: 'kenzy',
+    displayName: 'kenzy',
+    initials: 'KZ',
+    species: 'triceratops',
+    speciesLabel: 'Triceratops',
+    patternVariant: 'adult1',
+    stationId: 'steam-station',
+    targetHeight: 2.35,
+    position: { x: -20.2, z: -17.2 },
+    lookAt: { x: -19.5, z: -10.5 },
+    interactRadius: 4.8
+  },
+  {
+    id: 'apollo',
+    displayName: 'apollo',
+    initials: 'AP',
+    species: 'maiasaura',
+    speciesLabel: 'Maiasaura',
+    patternVariant: 'adult1',
+    stationId: 'community-outpost',
+    targetHeight: 2.2,
+    position: { x: 20.4, z: -13.0 },
+    lookAt: { x: 19.5, z: -7.0 },
+    interactRadius: 4.8
+  },
+  {
+    id: 'mapotofu',
+    displayName: 'mapotofu',
+    initials: 'MT',
+    species: 'tyrannosaurus',
+    speciesLabel: 'Tyrannosaurus Rex',
+    patternVariant: 'adult1',
+    stationId: 'companion-station',
+    targetHeight: 3.15,
+    position: { x: 24.0, z: 15.0 },
+    lookAt: { x: 16.5, z: 14.5 },
+    interactRadius: 5.2
+  },
+  {
+    id: 'kmy',
+    displayName: 'kmy',
+    initials: 'KM',
+    species: 'tyrannosaurus',
+    speciesLabel: 'Tyrannosaurus Rex',
+    patternVariant: 'adult2',
+    stationId: 'expedition-departure',
+    targetHeight: 3.15,
+    position: { x: -5.4, z: -32.8 },
+    lookAt: { x: 0, z: -30.5 },
+    interactRadius: 5.2
+  },
+  {
+    id: 'Zapicy',
+    displayName: 'Zapicy',
+    initials: 'ZP',
+    species: 'tyrannosaurus',
+    speciesLabel: 'Tyrannosaurus Rex',
+    patternVariant: 'adult3',
+    stationId: 'expedition-departure',
+    targetHeight: 3.15,
+    position: { x: 5.4, z: -32.8 },
+    lookAt: { x: 0, z: -30.5 },
+    interactRadius: 5.2
+  },
+  {
+    id: 'sai',
+    displayName: 'sai',
+    initials: 'SAI',
+    species: 'allosaurus',
+    speciesLabel: 'Allosaurus',
+    patternVariant: 'adult1',
+    stationId: 'survival-training',
+    targetHeight: 2.55,
+    position: { x: -33.2, z: -1.9 },
+    lookAt: { x: -27.5, z: 2.0 },
+    interactRadius: 4.8
+  },
+  {
+    id: 'Dom',
+    displayName: 'Dom',
+    initials: 'DM',
+    species: 'dilophosaurus',
+    speciesLabel: 'Dilophosaurus',
+    patternVariant: 'adult1',
+    stationId: 'survival-training',
+    targetHeight: 1.95,
+    position: { x: -33.2, z: 5.9 },
+    lookAt: { x: -27.5, z: 2.0 },
+    interactRadius: 4.8
   }
 ];

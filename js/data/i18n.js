@@ -10,7 +10,7 @@ const LOCALES = {
       eyebrow: 'PREHISTORIC PLAYER ONBOARDING — SKELETON PROTOTYPE',
       tagline: 'YOUR JOURNEY INTO THE ISLE BEGINS HERE.',
       welcomeDesc:
-        'Explore the research outpost in first-person and test the five interactive onboarding stations. This skeleton prototype validates movement, terrain collision, and station interaction before full tutorial content is added.',
+        'Explore the research outpost in first-person across all six onboarding stations and meet each dinosaur guide to prepare for The Isle: Evrima.',
       ctrlMove: 'Move',
       ctrlLook: 'Look Around',
       ctrlSprint: 'Sprint',
@@ -40,6 +40,9 @@ const LOCALES = {
       arrivedNpc: (title) => `Arrived at ${title}. Press [E] to talk.`,
       inspecting: (title) => `Inspecting ${title}`,
       speakingWith: 'Speaking with SavageZed — Primeval Malaysia Guide',
+      speakingWithGuide: (name, species) => `Speaking with ${name} (${species})`,
+      talkToPrompt: (name) => `Talk to ${name}`,
+      guideZoneLabel: (name, species) => `${name.toUpperCase()} — ${species.toUpperCase()} GUIDE`,
       npcCommunityTag: 'PRIMEVAL MALAYSIA COMMUNITY',
       npcByeEsc: 'GOODBYE [ESC]',
       npcBtnWhatToDo: 'What should I do here?',
@@ -69,7 +72,8 @@ const LOCALES = {
             '2. Visit the Steam & Easy Anti-Cheat Terminal to the northwest to learn how to switch to the Evrima branch and verify EAC.\n' +
             '3. Check the Community Directory Board to the northeast for verified community portals & rules.\n' +
             '4. Drop by the Companion Application Desk to the southeast for official companion setup guidance.\n' +
-            '5. Walk through the Expedition Departure Gate up north when you are ready for your final checklist!',
+            '5. Visit the walled Survival Training Ground to the west (Primeval Malaysia Training Camp) for combat, diet & survival tips!\n' +
+            '6. Walk through the Expedition Departure Gate up north when you are ready for your final checklist!',
           hint: 'Tip: You can walk the forest trails using WASD + Shift, or use the top-right DESTINATION menu to quick-jump.'
         }
       }
@@ -142,6 +146,13 @@ const LOCALES = {
           'Completion state: EXPEDITION PREPARATION COMPLETE'
         ],
         callout: 'Skeleton Notice: Interactive persistent checklist tracking will be wired in Milestone 4.'
+      },
+      'survival-training': {
+        badge: 'DESTINATION 06',
+        zoneLabel: 'LOCATION 06 — PRIMEVAL MALAYSIA TRAINING CAMP',
+        title: 'Survival Training Ground',
+        subtitle: 'Walled camp & bonfire teaching controls, diets, stamina, scent, night vision & pro tips.',
+        promptLabel: 'Open Survival Training Manual'
       }
     },
     steam: {
@@ -374,13 +385,14 @@ const LOCALES = {
         'Stable broadband connection for multiplayer servers and Easy Anti-Cheat'
       ],
       steamSpecsLink: 'Check Exact Live System Requirements on Steam Store ↗',
-      destinationsTitle: 'The Five Expedition Destinations',
+      destinationsTitle: 'The Six Expedition Destinations',
       destinationCards: [
         { id: 'welcome-centre', code: '01', name: 'Welcome Centre', desc: 'Overview, Evrima intro, PC readiness, and controls.' },
         { id: 'steam-station', code: '02', name: 'Steam & EAC Terminal', desc: '10-step Steam install, Evrima branch switch, and EAC verification.' },
         { id: 'community-outpost', code: '03', name: 'Community Outpost', desc: 'Verified community directory with Discord portals & access rules.' },
         { id: 'companion-station', code: '04', name: 'Companion Desk', desc: 'Official companion utility guidance and safety rules.' },
-        { id: 'expedition-departure', code: '05', name: 'Expedition Departure', desc: 'Final pre-launch readiness checklist before playing.' }
+        { id: 'expedition-departure', code: '05', name: 'Expedition Departure', desc: 'Final pre-launch readiness checklist before playing.' },
+        { id: 'survival-training', code: '06', name: 'Survival Training Ground', desc: 'Walled camp & bonfire with full Evrima survival field manual.' }
       ],
       jumpBtn: 'Visit Station →',
       navTitle: 'Outpost Navigation Instructions',
@@ -431,7 +443,7 @@ const LOCALES = {
       eyebrow: 'PANDUAN PEMAIN BAHARU PRASEJARAH — PROTOTIP RANGKA',
       tagline: 'PERJALANAN ANDA KE DALAM THE ISLE BERMULA DI SINI.',
       welcomeDesc:
-        'Terokai pos penyelidikan ini dalam mod orang pertama dan cuba lima stesen interaktif yang tersedia. Prototip rangka ini menguji pergerakan, perlanggaran objek, dan interaksi stesen sebelum kandungan penuh ditambah.',
+        'Terokai pos penyelidikan ini dalam mod orang pertama merentasi keenam-enam stesen panduan dan temui setiap pemandu dinosaur sebagai persediaan The Isle: Evrima.',
       ctrlMove: 'Bergerak',
       ctrlLook: 'Lihat Sekeliling',
       ctrlSprint: 'Lari Pecut',
@@ -461,6 +473,9 @@ const LOCALES = {
       arrivedNpc: (title) => `Tiba berhampiran ${title}. Tekan [E] untuk berbual.`,
       inspecting: (title) => `Memeriksa ${title}`,
       speakingWith: 'Berbual dengan SavageZed — Pemandu Komuniti Primeval Malaysia',
+      speakingWithGuide: (name, species) => `Berbual dengan ${name} (${species})`,
+      talkToPrompt: (name) => `Berbual dengan ${name}`,
+      guideZoneLabel: (name, species) => `${name.toUpperCase()} — PEMANDU ${species.toUpperCase()}`,
       npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
       npcByeEsc: 'SELAMAT TINGGAL [ESC]',
       npcBtnWhatToDo: 'Apa perlu saya buat di sini?',
@@ -490,7 +505,8 @@ const LOCALES = {
             '2. Lawati Terminal Steam & Easy Anti-Cheat di arah barat laut untuk panduan memilih cabang Evrima dan semakan EAC.\n' +
             '3. Semak Papan Direktori Komuniti di arah timur laut untuk maklumat pelayan komuniti & peraturan yang disahkan.\n' +
             '4. Singgah ke Meja Aplikasi Pendamping di tenggara untuk panduan muat turun rasmi.\n' +
-            '5. Pergi ke Pintu Pelepasan Ekspedisi di utara apabila anda sudah bersedia dengan senarai semak akhir!',
+            '5. Kunjungi Kem Latihan Survival berbenteng kayu di arah barat (Primeval Malaysia Training Camp) untuk petua tempur, diet & survival!\n' +
+            '6. Pergi ke Pintu Pelepasan Ekspedisi di utara apabila anda sudah bersedia dengan senarai semak akhir!',
           hint: 'Tip: Anda boleh berjalan menggunakan WASD + Shift, atau guna menu DESTINASI di penjuru kanan atas untuk lompat terus.'
         }
       }
@@ -562,6 +578,13 @@ const LOCALES = {
           'Status tamat: PERSEDIAAN EKSPEDISI SELESAI'
         ],
         callout: 'Nota Rangka: Penjejakan senarai semak akhir berterusan akan diaktifkan pada Pencapaian 4.'
+      },
+      'survival-training': {
+        badge: 'DESTINASI 06',
+        zoneLabel: 'LOKASI 06 — KEM LATIHAN PRIMEVAL MALAYSIA',
+        title: 'Kem Latihan Survival',
+        subtitle: 'Kem berdinding kayu & unggun api: ajaran kawalan, diet, stamina, bau, malam & tip survival.',
+        promptLabel: 'Buka Manual Latihan Survival'
       }
     },
     steam: {
@@ -795,13 +818,14 @@ const LOCALES = {
         'Sambungan internet jalur lebar stabil untuk pelayan berbilang pemain & Easy Anti-Cheat'
       ],
       steamSpecsLink: 'Semak Spesifikasi Rasmi Terkini di Steam Store ↗',
-      destinationsTitle: 'Lima Destinasi Ekspedisi',
+      destinationsTitle: 'Enam Destinasi Ekspedisi',
       destinationCards: [
         { id: 'welcome-centre', code: '01', name: 'Pusat Alu-aluan', desc: 'Pengenalan Evrima, kesediaan PC, dan kawalan asas.' },
         { id: 'steam-station', code: '02', name: 'Terminal Steam & EAC', desc: 'Panduan 10 langkah Steam, cabang Evrima, dan semakan EAC.' },
         { id: 'community-outpost', code: '03', name: 'Pos Komuniti', desc: 'Direktori komuniti disahkan berserta Discord rasmi & polisi akses.' },
         { id: 'companion-station', code: '04', name: 'Meja Aplikasi Pendamping', desc: 'Panduan aplikasi pendamping rasmi dan langkah keselamatan.' },
-        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan Ekspedisi', desc: 'Senarai semak persediaan akhir sebelum mula bermain.' }
+        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan Ekspedisi', desc: 'Senarai semak persediaan akhir sebelum mula bermain.' },
+        { id: 'survival-training', code: '06', name: 'Kem Latihan Survival', desc: 'Kem berbenteng kayu & unggun api dengan manual lengkap survival Evrima.' }
       ],
       jumpBtn: 'Lawat Stesen →',
       navTitle: 'Arahan Navigasi Pos',
@@ -852,7 +876,7 @@ const LOCALES = {
       eyebrow: 'ONBOARDING PLAYER BARU — PROTOTIP SKELETON',
       tagline: 'ADVENTURE KORANG KAT THE ISLE MULA KAT SINI.',
       welcomeDesc:
-        'Jom pusing-pusing kem penyelidikan ni dalam first-person dan test lima stesen interaktif kat sini. Prototip ni untuk test jalan-jalan, langgar dinding, dengan interaksi stesen sebelum content penuh masuk.',
+        'Jom pusing-pusing kem penyelidikan ni dalam first-person merentasi enam stesen onboarding dan borak dengan semua guide dino untuk bersiap masuk The Isle: Evrima.',
       ctrlMove: 'Jalan',
       ctrlLook: 'Pusing Kamera',
       ctrlSprint: 'Lari Laju',
@@ -882,6 +906,9 @@ const LOCALES = {
       arrivedNpc: (title) => `Dah depan ${title}. Tekan [E] nak borak.`,
       inspecting: (title) => `Tengah tengok ${title}`,
       speakingWith: 'Tengah sembang dengan SavageZed — Guide Primeval Malaysia',
+      speakingWithGuide: (name, species) => `Tengah sembang dengan ${name} (${species})`,
+      talkToPrompt: (name) => `Borak dengan ${name}`,
+      guideZoneLabel: (name, species) => `${name.toUpperCase()} — GUIDE ${species.toUpperCase()}`,
       npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
       npcByeEsc: 'GERAK DULU [ESC]',
       npcBtnWhatToDo: 'Nak buat apa kat sini bro?',
@@ -911,7 +938,8 @@ const LOCALES = {
             '2. Pergi Terminal Steam & Easy Anti-Cheat kat belah barat laut sana—situ ajar cara tukar branch Evrima dengan settlekan EAC kalau buat hal.\n' +
             '3. Check Papan Direktori Komuniti kat belah timur laut untuk link Discord verified dengan rules server.\n' +
             '4. Singgah Meja Companion App belah tenggara kalau nak tahu pasal app tambahan yang official je.\n' +
-            '5. Last sekali, lalu Pintu Pelepasan kat utara sana untuk check senarai akhir. Ngam!',
+            '5. Singgah sekali Kem Latihan Survival berdinding kayu kat belah barat (Primeval Malaysia Training Camp) untuk belajar teknik combat, diet & survival!\n' +
+            '6. Last sekali, lalu Pintu Pelepasan kat utara sana untuk check senarai akhir. Ngam!',
           hint: 'Tip: Jalan pakai WASD + Shift, ataupun pilih je kat dropdown LOKASI belah kanan atas kalau malas jalan jauh.'
         }
       }
@@ -981,6 +1009,13 @@ const LOCALES = {
           'Status siap: PERSEDIAAN EKSPEDISI COMPLETE'
         ],
         callout: 'Nota Skeleton: Checklist akhir yang link dengan progress penuh akan aktif masa Milestone 4.'
+      },
+      'survival-training': {
+        badge: 'DESTINASI 06',
+        zoneLabel: 'LOKASI 06 — KEM LATIHAN PRIMEVAL MALAYSIA',
+        title: 'Kem Latihan Survival',
+        subtitle: 'Kem berpagar kayu & unggun api: ajaran controls, diet, stamina, bau, malam & tips padu.',
+        promptLabel: 'Buka Manual Latihan Survival'
       }
     },
     steam: {
@@ -1214,13 +1249,14 @@ const LOCALES = {
         'Internet stabil untuk main multiplayer dan jalankan Easy Anti-Cheat'
       ],
       steamSpecsLink: 'Check Spec Rasmi Penuh Kat Steam Store ↗',
-      destinationsTitle: 'Lima Stesen Dalam Kem Ni',
+      destinationsTitle: 'Enam Stesen Dalam Kem Ni',
       destinationCards: [
         { id: 'welcome-centre', code: '01', name: 'Pusat Welcome', desc: 'Intro Evrima, spec PC asas, dengan cara kawal.' },
         { id: 'steam-station', code: '02', name: 'Terminal Steam & EAC', desc: '10 step install Steam, tukar branch Evrima, dan check EAC.' },
         { id: 'community-outpost', code: '03', name: 'Port Komuniti', desc: 'Senarai komuniti verified dengan link Discord & rules akses.' },
         { id: 'companion-station', code: '04', name: 'Meja Companion App', desc: 'Panduan app tambahan yang official dengan tips elak scam.' },
-        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan', desc: 'Checklist last sebelum korang terjun masuk server.' }
+        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan', desc: 'Checklist last sebelum korang terjun masuk server.' },
+        { id: 'survival-training', code: '06', name: 'Kem Latihan Survival', desc: 'Kem dinding kayu & unggun api dengan manual survival Evrima penuh.' }
       ],
       jumpBtn: 'Pergi Stesen →',
       navTitle: 'Cara Gerak Kat Kem',

@@ -2,8 +2,554 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { getTerrainHeight } from './world.js';
-import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
+import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES } from '../data/tutorialContent.js';
+
+/**
+ * Species catalog mapping Evrima GLB models, skin textures, and official .json palettes.
+ */
+const SPECIES_CATALOG = {
+  omniraptor: {
+    basePath: './models/omniraptor',
+    glb: 'Omniraptor.glb',
+    albedo: 'T_Omniraptor_Albedo.webp',
+    mask: 'T_Omniraptor_Detail_M.webp',
+    patterns: { adult1: 'T_Omniraptor_Adult_Pattern_1.webp' },
+    colors: {
+      red: [0x95, 0x6e, 0x3c],
+      green: [0xaa, 0x98, 0x7f],
+      blue: [0x6c, 0x4d, 0x41],
+      cyan: [0x89, 0x69, 0x4a],
+      magenta: [0x38, 0x31, 0x2c],
+      yellow: [0x24, 0x1e, 0x1a],
+      mouth: [0xaa, 0x82, 0x75],
+      claw: [0x59, 0x54, 0x48],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  },
+  pteranodon: {
+    basePath: './models/pteranodon',
+    glb: 'Pteranodon.glb',
+    albedo: 'T_Pteranodon_Albedo.webp',
+    mask: 'T_Pteranodon_Detail_M.webp',
+    patterns: { adult1: 'T_Pteranodon_Adult_Pattern_1.webp' },
+    colors: {
+      red: [0xaa, 0xa2, 0x88],
+      green: [0xbc, 0xb1, 0x9e],
+      blue: [0x6c, 0x5f, 0x42],
+      cyan: [0xe1, 0xb0, 0x5e],
+      magenta: [0x34, 0x30, 0x2b],
+      yellow: [0x4f, 0x42, 0x30],
+      mouth: [0xaa, 0x82, 0x75],
+      claw: [0x59, 0x54, 0x48],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  },
+  triceratops: {
+    basePath: './models/triceratops',
+    glb: 'Triceratops.glb',
+    albedo: 'T_Triceratops_Albedo.webp',
+    mask: 'T_Triceratops_Detail_M.webp',
+    patterns: { adult1: 'T_Triceratops_Adult_Pattern_1.webp' },
+    colors: {
+      red: [0xd8, 0x6b, 0x35],
+      green: [0xbf, 0xa8, 0x7e],
+      blue: [0x69, 0x58, 0x4c],
+      cyan: [0xab, 0x80, 0x53],
+      magenta: [0x42, 0x3e, 0x38],
+      yellow: [0x5b, 0x48, 0x34],
+      mouth: [0xaa, 0x82, 0x75],
+      claw: [0x59, 0x54, 0x48],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  },
+  maiasaura: {
+    basePath: './models/maiasaura',
+    glb: 'Maiasaura.glb',
+    albedo: 'T_Maiasaura_Albedo.webp',
+    mask: 'T_Maiasaura_M.webp',
+    patterns: { adult1: 'T_Maiasaura_Pattern_Adult_1.webp' },
+    colors: {
+      red: [0x93, 0x7f, 0x66],
+      green: [0xdc, 0xb5, 0x89],
+      blue: [0x57, 0x3f, 0x33],
+      cyan: [0x86, 0x5a, 0x38],
+      magenta: [0x38, 0x30, 0x32],
+      yellow: [0x4c, 0x3d, 0x32],
+      mouth: [0xaa, 0x82, 0x75],
+      claw: [0x59, 0x54, 0x48],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  },
+  tyrannosaurus: {
+    basePath: './models/tyrannosaurus',
+    glb: 'Tyrannosaurus.glb',
+    albedo: 'T_Tyrannosaurus_Albedo.webp',
+    mask: 'T_Tyrannosaurus_Mask_TMC.webp',
+    patterns: {
+      adult1: 'T_Tyrannosaurus_Adult_Pattern_1.webp',
+      adult2: 'T_Tyrannosaurus_Adult_Pattern_2.webp',
+      adult3: 'T_Tyrannosaurus_Adult_Pattern_3.webp'
+    },
+    colors: {
+      red: [0x6c, 0x37, 0x29],
+      green: [0xd3, 0xb4, 0x8b],
+      blue: [0x59, 0x49, 0x34],
+      cyan: [0x89, 0x75, 0x59],
+      magenta: [0x34, 0x2f, 0x29],
+      yellow: [0x44, 0x35, 0x27],
+      mouth: [0x7c, 0x58, 0x59],
+      claw: [0x59, 0x54, 0x48],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  },
+  allosaurus: {
+    basePath: './models/allosaurus',
+    glb: 'Allosaurus.glb',
+    albedo: 'T_Allosaurus_Albedo.webp',
+    mask: 'T_Allosaurus_M.webp',
+    patterns: { adult1: 'T_Allosaurus_Adult_Pattern_1.webp' },
+    colors: {
+      red: [0x5e, 0x39, 0x3e],
+      green: [0x83, 0x76, 0x6e],
+      blue: [0x4a, 0x44, 0x41],
+      cyan: [0x75, 0x5f, 0x44],
+      magenta: [0x25, 0x25, 0x26],
+      yellow: [0xff, 0xe8, 0xc4],
+      mouth: [0x8e, 0x5e, 0x5c],
+      claw: [0x4d, 0x49, 0x43],
+      teeth: [0xa5, 0x92, 0x7d]
+    }
+  },
+  dilophosaurus: {
+    basePath: './models/dilophosaurus',
+    glb: 'Dilophosaurus.glb',
+    albedo: 'T_Dilo_Base_Albedo.webp',
+    mask: 'T_Dilophosaurus_M.webp',
+    patterns: { adult1: 'T_Dilophosaurus_Adult_Pattern_Default.webp' },
+    colors: {
+      red: [0x72, 0x47, 0x18],
+      green: [0x89, 0x65, 0x57],
+      blue: [0x56, 0x2e, 0x33],
+      cyan: [0x65, 0x45, 0x33],
+      magenta: [0x2d, 0x20, 0x2a],
+      yellow: [0x3a, 0x2b, 0x26],
+      mouth: [0x92, 0x5f, 0x5b],
+      claw: [0x4c, 0x47, 0x3f],
+      teeth: [0xa0, 0x8a, 0x74]
+    }
+  }
+};
+
+// Shared loader & promise caches so duplicate species (e.g., 3x Tyrannosaurus) load only once
+let sharedGltfLoader = null;
+const gltfCache = new Map();
+const imageCache = new Map();
+const skinTextureCache = new Map();
+
+function getSharedGltfLoader(renderer) {
+  if (sharedGltfLoader) return sharedGltfLoader;
+  const ktx2Loader = new KTX2Loader();
+  ktx2Loader.setTranscoderPath('./basis/');
+  if (renderer) {
+    ktx2Loader.detectSupport(renderer);
+  }
+  const loader = new GLTFLoader();
+  loader.setKTX2Loader(ktx2Loader);
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  sharedGltfLoader = loader;
+  return loader;
+}
+
+function loadSpeciesGLTF(speciesKey, renderer) {
+  const spec = SPECIES_CATALOG[speciesKey];
+  const url = `${spec.basePath}/${spec.glb}`;
+  if (!gltfCache.has(url)) {
+    const loader = getSharedGltfLoader(renderer);
+    gltfCache.set(
+      url,
+      new Promise((resolve, reject) => {
+        loader.load(url, resolve, undefined, reject);
+      })
+    );
+  }
+  return gltfCache.get(url);
+}
+
+function loadImageCached(src) {
+  if (!imageCache.has(src)) {
+    imageCache.set(
+      src,
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = (err) => reject(err);
+        img.src = src;
+      })
+    );
+  }
+  return imageCache.get(src);
+}
+
+/**
+ * Composites Evrima albedo cavity, CMYRGB pattern mask, and detail mask into a CanvasTexture
+ * and clones glTF quantized UV transform attributes onto the generated texture.
+ */
+async function getSpeciesSkinTexture(speciesKey, variantKey, templateMap, canvasSize = 512) {
+  const spec = SPECIES_CATALOG[speciesKey];
+  const patternFile = spec.patterns[variantKey] || spec.patterns.adult1;
+  const cacheKey = `${speciesKey}:${variantKey}:${canvasSize}`;
+
+  if (!skinTextureCache.has(cacheKey)) {
+    const [albedoImg, patternImg, detailImg] = await Promise.all([
+      loadImageCached(`${spec.basePath}/${spec.albedo}`),
+      loadImageCached(`${spec.basePath}/${patternFile}`),
+      loadImageCached(`${spec.basePath}/${spec.mask}`)
+    ]);
+
+    const makeBuffer = (img) => {
+      const c = document.createElement('canvas');
+      c.width = canvasSize;
+      c.height = canvasSize;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, canvasSize, canvasSize);
+      return { canvas: c, ctx, data: ctx.getImageData(0, 0, canvasSize, canvasSize).data };
+    };
+
+    const albedo = makeBuffer(albedoImg);
+    const pattern = makeBuffer(patternImg);
+    const detail = makeBuffer(detailImg);
+    const c = spec.colors;
+
+    const out = albedo.ctx.createImageData(canvasSize, canvasSize);
+    const oData = out.data;
+    const aData = albedo.data;
+    const pData = pattern.data;
+    const dData = detail.data;
+
+    for (let i = 0; i < oData.length; i += 4) {
+      const pr = pData[i] / 255;
+      const pg = pData[i + 1] / 255;
+      const pb = pData[i + 2] / 255;
+
+      const wRed = pr * (1 - pg) * (1 - pb);
+      const wGreen = (1 - pr) * pg * (1 - pb);
+      const wBlue = (1 - pr) * (1 - pg) * pb;
+      const wCyan = (1 - pr) * pg * pb;
+      const wMagenta = pr * (1 - pg) * pb;
+      const wYellow = pr * pg * (1 - pb);
+      const wSum = wRed + wGreen + wBlue + wCyan + wMagenta + wYellow;
+
+      let r = c.blue[0];
+      let g = c.blue[1];
+      let b = c.blue[2];
+
+      if (wSum > 0.01) {
+        r =
+          (wRed * c.red[0] +
+            wGreen * c.green[0] +
+            wBlue * c.blue[0] +
+            wCyan * c.cyan[0] +
+            wMagenta * c.magenta[0] +
+            wYellow * c.yellow[0]) /
+          wSum;
+        g =
+          (wRed * c.red[1] +
+            wGreen * c.green[1] +
+            wBlue * c.blue[1] +
+            wCyan * c.cyan[1] +
+            wMagenta * c.magenta[1] +
+            wYellow * c.yellow[1]) /
+          wSum;
+        b =
+          (wRed * c.red[2] +
+            wGreen * c.green[2] +
+            wBlue * c.blue[2] +
+            wCyan * c.cyan[2] +
+            wMagenta * c.magenta[2] +
+            wYellow * c.yellow[2]) /
+          wSum;
+      }
+
+      const dr = dData[i] / 255;
+      const dg = dData[i + 1] / 255;
+      const db = dData[i + 2] / 255;
+      if (dr > 0.25) {
+        r = r * (1 - dr) + c.teeth[0] * dr;
+        g = g * (1 - dr) + c.teeth[1] * dr;
+        b = b * (1 - dr) + c.teeth[2] * dr;
+      }
+      if (dg > 0.25) {
+        r = r * (1 - dg) + c.mouth[0] * dg;
+        g = g * (1 - dg) + c.mouth[1] * dg;
+        b = b * (1 - dg) + c.mouth[2] * dg;
+      }
+      if (db > 0.25) {
+        r = r * (1 - db) + c.claw[0] * db;
+        g = g * (1 - db) + c.claw[1] * db;
+        b = b * (1 - db) + c.claw[2] * db;
+      }
+
+      const lum = (aData[i] * 0.299 + aData[i + 1] * 0.587 + aData[i + 2] * 0.114) / 255;
+      const cavityShade = 0.36 + lum * 1.32;
+
+      oData[i] = Math.min(255, Math.max(0, r * cavityShade));
+      oData[i + 1] = Math.min(255, Math.max(0, g * cavityShade));
+      oData[i + 2] = Math.min(255, Math.max(0, b * cavityShade));
+      oData[i + 3] = 255;
+    }
+
+    albedo.ctx.putImageData(out, 0, 0);
+
+    const tex = new THREE.CanvasTexture(albedo.canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.flipY = false;
+    tex.anisotropy = 4;
+    if (templateMap) {
+      tex.channel = templateMap.channel;
+      tex.offset.copy(templateMap.offset);
+      tex.repeat.copy(templateMap.repeat);
+      tex.center.copy(templateMap.center);
+      tex.rotation = templateMap.rotation;
+      tex.wrapS = templateMap.wrapS;
+      tex.wrapT = templateMap.wrapT;
+    }
+    tex.needsUpdate = true;
+    skinTextureCache.set(cacheKey, tex);
+  }
+
+  return skinTextureCache.get(cacheKey);
+}
+
+/**
+ * Generates a compact wooden-slate floating nameplate sprite displayed above a dinosaur guide.
+ */
+function createNameplateSprite(name, speciesLabel) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, 512, 128);
+
+  // Dark translucent plate with muted gold border
+  ctx.fillStyle = 'rgba(18, 24, 19, 0.84)';
+  ctx.beginPath();
+  ctx.roundRect(18, 14, 476, 98, 18);
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(218, 165, 75, 0.85)';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f3ebd8';
+  ctx.font = 'bold 42px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(name, 256, 62);
+
+  ctx.fillStyle = '#d4a656';
+  ctx.font = '600 24px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(speciesLabel.toUpperCase(), 256, 95);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+  const sprite = new THREE.Sprite(mat);
+  sprite.center.set(0.5, 0);
+  sprite.scale.set(2.15, 0.54, 1);
+  return sprite;
+}
+
+/**
+ * Shared loader attaching an Evrima dinosaur GLB, Adult proportions, composite skin,
+ * nameplate sprite, Idle skeletal animation, collision cylinder, and interaction target.
+ */
+function mountDinoAvatar({
+  scene,
+  collisionSystem,
+  interactables,
+  renderer,
+  speciesKey,
+  patternVariant = 'adult1',
+  displayName,
+  speciesLabel,
+  position,
+  lookAt,
+  targetHeight,
+  interactDestination,
+  colliderTag,
+  canvasSize = 512,
+  phaseOffset = 0,
+  setupExtra = null
+}) {
+  const y = getTerrainHeight(position.x, position.z);
+  const root = new THREE.Group();
+  root.position.set(position.x, y, position.z);
+
+  const yaw = Math.atan2(lookAt.x - position.x, lookAt.z - position.z);
+  root.rotation.y = yaw;
+
+  const hitProxy = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      Math.max(1.5, targetHeight * 0.82),
+      Math.max(1.85, targetHeight * 1.05),
+      Math.max(2.8, targetHeight * 1.45)
+    ),
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+  );
+  hitProxy.position.set(0, targetHeight * 0.52, 0);
+  root.add(hitProxy);
+
+  const nameplate = createNameplateSprite(displayName, speciesLabel);
+  nameplate.position.set(0, targetHeight + 0.35, 0);
+  root.add(nameplate);
+
+  if (setupExtra) {
+    setupExtra(root);
+  }
+
+  scene.add(root);
+  root.updateMatrixWorld(true);
+
+  const colliderRadius = Math.max(0.75, Math.min(1.45, targetHeight * 0.42));
+  collisionSystem.addCylinder(position.x, position.z, colliderRadius, colliderTag);
+
+  const worldPos = new THREE.Vector3();
+  hitProxy.getWorldPosition(worldPos);
+  interactables.push({
+    ...interactDestination,
+    type: 'npc',
+    destination: interactDestination,
+    group: root,
+    target: hitProxy,
+    worldPosition: worldPos
+  });
+
+  let mixer = null;
+
+  loadSpeciesGLTF(speciesKey, renderer)
+    .then(async (gltf) => {
+      const model = SkeletonUtils.clone(gltf.scene);
+      let bodyMaterial = null;
+      let templateBodyMap = null;
+
+      model.traverse((obj) => {
+        if (obj.isMesh || obj.isSkinnedMesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+          obj.frustumCulled = false;
+
+          if (obj.morphTargetDictionary && obj.morphTargetInfluences) {
+            obj.morphTargetInfluences.fill(0);
+            if (obj.morphTargetDictionary.Adult !== undefined) {
+              obj.morphTargetInfluences[obj.morphTargetDictionary.Adult] = 1.0;
+            }
+          }
+
+          if (obj.material && obj.material.name === 'DinoBody') {
+            obj.material = obj.material.clone();
+            obj.material.color.setHex(0xffffff);
+            bodyMaterial = obj.material;
+            templateBodyMap = obj.material.map;
+          }
+        }
+      });
+
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        const idleClip =
+          THREE.AnimationClip.findByName(gltf.animations, 'Idle') || gltf.animations[0];
+        const action = mixer.clipAction(idleClip);
+        action.play();
+        mixer.update(0.1 + phaseOffset);
+      }
+
+      const holder = new THREE.Group();
+      holder.add(model);
+      holder.updateMatrixWorld(true);
+
+      model.traverse((obj) => {
+        if (obj.isSkinnedMesh && obj.skeleton) {
+          obj.skeleton.update();
+        }
+      });
+
+      // Align tail -> head axis cleanly onto local +Z
+      const headBone =
+        model.getObjectByName('DinoHead') || model.getObjectByName('PreviewHead');
+      const tailBone = [
+        'DinoTail07',
+        'DinoTail06',
+        'DinoTail05',
+        'DinoTail04',
+        'DinoTail02',
+        'DinoTail01',
+        'DinoPelvis'
+      ]
+        .map((n) => model.getObjectByName(n))
+        .find(Boolean);
+
+      if (headBone && tailBone) {
+        const headPos = new THREE.Vector3();
+        const tailPos = new THREE.Vector3();
+        headBone.getWorldPosition(headPos);
+        tailBone.getWorldPosition(tailPos);
+        const dx = headPos.x - tailPos.x;
+        const dz = headPos.z - tailPos.z;
+        if (Math.hypot(dx, dz) > 0.001) {
+          holder.rotation.y = -Math.atan2(dx, dz);
+          holder.updateMatrixWorld(true);
+        }
+      }
+
+      // Normalize height & plant feet cleanly on local y = 0
+      const box = new THREE.Box3().setFromObject(holder);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      if (size.y > 0.001) {
+        const normScale = targetHeight / size.y;
+        holder.scale.setScalar(normScale);
+        holder.updateMatrixWorld(true);
+
+        const scaledBox = new THREE.Box3().setFromObject(holder);
+        const scaledCenter = new THREE.Vector3();
+        scaledBox.getCenter(scaledCenter);
+        holder.position.x -= scaledCenter.x;
+        holder.position.z -= scaledCenter.z;
+        holder.position.y -= scaledBox.min.y;
+      }
+
+      root.add(holder);
+      root.updateMatrixWorld(true);
+
+      try {
+        const compositedMap = await getSpeciesSkinTexture(
+          speciesKey,
+          patternVariant,
+          templateBodyMap,
+          canvasSize
+        );
+        if (bodyMaterial) {
+          bodyMaterial.map = compositedMap;
+          bodyMaterial.roughness = 0.72;
+          bodyMaterial.needsUpdate = true;
+        }
+      } catch (err) {
+        console.warn(`Skin composite fallback for ${displayName}:`, err);
+      }
+    })
+    .catch((err) => {
+      console.error(`Failed to load ${speciesKey} avatar for ${displayName}:`, err);
+    });
+
+  return (dt) => {
+    if (mixer && dt > 0) {
+      mixer.update(dt);
+    }
+  };
+}
 
 /**
  * Creates a procedural CanvasTexture of the Malaysian Flag (Jalur Gemilang):
@@ -69,344 +615,68 @@ function createMalaysiaFlagTexture() {
 }
 
 /**
- * Loads an image from a URL and resolves when decoded.
- */
-function loadImageAsset(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = (err) => reject(err);
-    img.src = src;
-  });
-}
-
-/**
- * Composites Evrima Omniraptor albedo cavity, Adult Pattern 1 mask, and detail mask
- * into a unified sRGB CanvasTexture using Omniraptor.json layer colors.
- */
-async function createOmniraptorSkinTexture(templateMap) {
-  const [albedoImg, patternImg, detailImg] = await Promise.all([
-    loadImageAsset('./models/omniraptor/T_Omniraptor_Albedo.webp'),
-    loadImageAsset('./models/omniraptor/T_Omniraptor_Adult_Pattern_1.webp'),
-    loadImageAsset('./models/omniraptor/T_Omniraptor_Detail_M.webp')
-  ]);
-
-  const size = 1024;
-  const makeBuffer = (img) => {
-    const c = document.createElement('canvas');
-    c.width = size;
-    c.height = size;
-    const ctx = c.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0, size, size);
-    return { canvas: c, ctx, data: ctx.getImageData(0, 0, size, size).data };
-  };
-
-  const albedo = makeBuffer(albedoImg);
-  const pattern = makeBuffer(patternImg);
-  const detail = makeBuffer(detailImg);
-
-  // Layer & anatomy colors sourced from skin-models-v2/Omniraptor/Omniraptor.json
-  const colRed = [0x95, 0x6e, 0x3c];
-  const colGreen = [0xaa, 0x98, 0x7f];
-  const colBlue = [0x6c, 0x4d, 0x41];
-  const colCyan = [0x89, 0x69, 0x4a];
-  const colMagenta = [0x38, 0x31, 0x2c];
-  const colYellow = [0x24, 0x1e, 0x1a];
-  const colTeeth = [0xa0, 0x8a, 0x74];
-  const colMouth = [0xaa, 0x82, 0x75];
-  const colClaw = [0x59, 0x54, 0x48];
-
-  const out = albedo.ctx.createImageData(size, size);
-  const oData = out.data;
-  const aData = albedo.data;
-  const pData = pattern.data;
-  const dData = detail.data;
-
-  for (let i = 0; i < oData.length; i += 4) {
-    const pr = pData[i] / 255;
-    const pg = pData[i + 1] / 255;
-    const pb = pData[i + 2] / 255;
-
-    const wRed = pr * (1 - pg) * (1 - pb);
-    const wGreen = (1 - pr) * pg * (1 - pb);
-    const wBlue = (1 - pr) * (1 - pg) * pb;
-    const wCyan = (1 - pr) * pg * pb;
-    const wMagenta = pr * (1 - pg) * pb;
-    const wYellow = pr * pg * (1 - pb);
-    const wSum = wRed + wGreen + wBlue + wCyan + wMagenta + wYellow;
-
-    let r = colBlue[0];
-    let g = colBlue[1];
-    let b = colBlue[2];
-
-    if (wSum > 0.01) {
-      r =
-        (wRed * colRed[0] +
-          wGreen * colGreen[0] +
-          wBlue * colBlue[0] +
-          wCyan * colCyan[0] +
-          wMagenta * colMagenta[0] +
-          wYellow * colYellow[0]) /
-        wSum;
-      g =
-        (wRed * colRed[1] +
-          wGreen * colGreen[1] +
-          wBlue * colBlue[1] +
-          wCyan * colCyan[1] +
-          wMagenta * colMagenta[1] +
-          wYellow * colYellow[1]) /
-        wSum;
-      b =
-        (wRed * colRed[2] +
-          wGreen * colGreen[2] +
-          wBlue * colBlue[2] +
-          wCyan * colCyan[2] +
-          wMagenta * colMagenta[2] +
-          wYellow * colYellow[2]) /
-        wSum;
-    }
-
-    // Blend teeth (red), mouth/tongue (green), and claws/scutes (blue) from Detail_M
-    const dr = dData[i] / 255;
-    const dg = dData[i + 1] / 255;
-    const db = dData[i + 2] / 255;
-    if (dr > 0.25) {
-      r = r * (1 - dr) + colTeeth[0] * dr;
-      g = g * (1 - dr) + colTeeth[1] * dr;
-      b = b * (1 - dr) + colTeeth[2] * dr;
-    }
-    if (dg > 0.25) {
-      r = r * (1 - dg) + colMouth[0] * dg;
-      g = g * (1 - dg) + colMouth[1] * dg;
-      b = b * (1 - dg) + colMouth[2] * dg;
-    }
-    if (db > 0.25) {
-      r = r * (1 - db) + colClaw[0] * db;
-      g = g * (1 - db) + colClaw[1] * db;
-      b = b * (1 - db) + colClaw[2] * db;
-    }
-
-    // Modulate by detailed scale/cavity albedo luminance
-    const lum = (aData[i] * 0.299 + aData[i + 1] * 0.587 + aData[i + 2] * 0.114) / 255;
-    const cavityShade = 0.36 + lum * 1.32;
-
-    oData[i] = Math.min(255, Math.max(0, r * cavityShade));
-    oData[i + 1] = Math.min(255, Math.max(0, g * cavityShade));
-    oData[i + 2] = Math.min(255, Math.max(0, b * cavityShade));
-    oData[i + 3] = 255;
-  }
-
-  albedo.ctx.putImageData(out, 0, 0);
-
-  const skinTexture = new THREE.CanvasTexture(albedo.canvas);
-  skinTexture.colorSpace = THREE.SRGBColorSpace;
-  skinTexture.flipY = false;
-  skinTexture.anisotropy = 4;
-
-  // Preserve KHR_texture_transform offset/repeat needed by quantized GLB UVs
-  if (templateMap) {
-    skinTexture.channel = templateMap.channel;
-    skinTexture.offset.copy(templateMap.offset);
-    skinTexture.repeat.copy(templateMap.repeat);
-    skinTexture.center.copy(templateMap.center);
-    skinTexture.rotation = templateMap.rotation;
-    skinTexture.wrapS = templateMap.wrapS;
-    skinTexture.wrapT = templateMap.wrapT;
-  }
-  skinTexture.needsUpdate = true;
-  return skinTexture;
-}
-
-/**
- * Loads the Evrima Omniraptor GLB avatar for SavageZed with KTX2 + Meshopt decoding,
- * Adult morph + composite skin textures, Idle skeletal animation, and lantern pedestal.
+ * Places SavageZed (Evrima Omniraptor) near Central Camp with his warm lantern pedestal.
  */
 export function buildSavageZedNPC(scene, collisionSystem, interactables, materials, renderer = null) {
-  const { x, z } = SAVAGEZED_NPC.position;
-  const y = getTerrainHeight(x, z);
-
-  const root = new THREE.Group();
-  root.position.set(x, y, z);
-  root.rotation.y = -0.35;
-
-  const vestMat = materials?.timberWeathered || new THREE.MeshStandardMaterial({ color: 0x6b5139, roughness: 0.86 });
-  const trimMat = materials?.timberDark || new THREE.MeshStandardMaterial({ color: 0x4b3827, roughness: 0.9 });
-
-  // Timber lantern pedestal beside SavageZed (positioned cleanly to the left flank)
-  const pedX = -1.35;
-  const pedZ = 0.35;
-  const pedestal = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.85, 0.68), vestMat);
-  pedestal.position.set(pedX, 0.42, pedZ);
-  pedestal.rotation.y = 0.2;
-  pedestal.castShadow = true;
-  pedestal.receiveShadow = true;
-  root.add(pedestal);
-
-  const cap = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.08, 0.76), trimMat);
-  cap.position.set(pedX, 0.86, pedZ);
-  cap.rotation.y = 0.2;
-  root.add(cap);
-
-  const lanternFrame = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.3, 0.24), materials?.metalDark || trimMat);
-  lanternFrame.position.set(pedX, 1.04, pedZ);
-  root.add(lanternFrame);
-
-  const lanternGlow = new THREE.Mesh(
-    new THREE.BoxGeometry(0.16, 0.2, 0.16),
-    materials?.lanternGlass ||
-      new THREE.MeshStandardMaterial({ color: 0xffe4ad, emissive: 0xffb347, emissiveIntensity: 1.4 })
-  );
-  lanternGlow.position.set(pedX, 1.04, pedZ);
-  root.add(lanternGlow);
-
-  const guideLight = new THREE.PointLight(0xffbe6b, 2.2, 12, 1.55);
-  guideLight.position.set(pedX, 1.24, pedZ + 0.12);
-  root.add(guideLight);
-
-  // Invisible raycast/interaction proxy so interaction works immediately & accurately across the raptor body
-  const hitProxy = new THREE.Mesh(
-    new THREE.BoxGeometry(1.5, 1.85, 3.2),
-    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
-  );
-  hitProxy.position.set(0, 0.95, 0);
-  root.add(hitProxy);
-
-  scene.add(root);
-  root.updateMatrixWorld(true);
-
-  collisionSystem.addCylinder(x, z, 0.78, 'npc-savagezed');
-
-  const worldPos = new THREE.Vector3();
-  hitProxy.getWorldPosition(worldPos);
-  interactables.push({
-    type: 'npc',
-    destination: SAVAGEZED_NPC,
-    group: root,
-    target: hitProxy,
-    worldPosition: worldPos
-  });
-
-  // Load Omniraptor.glb + KTX2/Meshopt decoders and Evrima skin textures
-  let mixer = null;
+  let guideLight = null;
   let lastElapsed = null;
 
-  const ktx2Loader = new KTX2Loader();
-  ktx2Loader.setTranscoderPath('./basis/');
-  if (renderer) {
-    ktx2Loader.detectSupport(renderer);
-  }
+  const updateMixer = mountDinoAvatar({
+    scene,
+    collisionSystem,
+    interactables,
+    renderer,
+    speciesKey: 'omniraptor',
+    patternVariant: 'adult1',
+    displayName: 'SavageZed',
+    speciesLabel: 'Omniraptor • Outpost Guide',
+    position: SAVAGEZED_NPC.position,
+    lookAt: SAVAGEZED_NPC.approach,
+    targetHeight: 1.88,
+    interactDestination: SAVAGEZED_NPC,
+    colliderTag: 'npc-savagezed',
+    canvasSize: 768,
+    phaseOffset: 0,
+    setupExtra: (root) => {
+      const vestMat =
+        materials?.timberWeathered || new THREE.MeshStandardMaterial({ color: 0x6b5139, roughness: 0.86 });
+      const trimMat =
+        materials?.timberDark || new THREE.MeshStandardMaterial({ color: 0x4b3827, roughness: 0.9 });
 
-  const gltfLoader = new GLTFLoader();
-  gltfLoader.setKTX2Loader(ktx2Loader);
-  gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+      const pedX = -1.35;
+      const pedZ = 0.35;
+      const pedestal = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.85, 0.68), vestMat);
+      pedestal.position.set(pedX, 0.42, pedZ);
+      pedestal.rotation.y = 0.2;
+      pedestal.castShadow = true;
+      pedestal.receiveShadow = true;
+      root.add(pedestal);
 
-  let bodyMaterial = null;
-  let templateBodyMap = null;
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.08, 0.76), trimMat);
+      cap.position.set(pedX, 0.86, pedZ);
+      cap.rotation.y = 0.2;
+      root.add(cap);
 
-  gltfLoader.load(
-    './models/omniraptor/Omniraptor.glb',
-    async (gltf) => {
-      const model = gltf.scene;
+      const lanternFrame = new THREE.Mesh(
+        new THREE.BoxGeometry(0.24, 0.3, 0.24),
+        materials?.metalDark || trimMat
+      );
+      lanternFrame.position.set(pedX, 1.04, pedZ);
+      root.add(lanternFrame);
 
-      model.traverse((obj) => {
-        if (obj.isMesh || obj.isSkinnedMesh) {
-          obj.castShadow = true;
-          obj.receiveShadow = true;
-          obj.frustumCulled = false;
+      const lanternGlow = new THREE.Mesh(
+        new THREE.BoxGeometry(0.16, 0.2, 0.16),
+        materials?.lanternGlass ||
+          new THREE.MeshStandardMaterial({ color: 0xffe4ad, emissive: 0xffb347, emissiveIntensity: 1.4 })
+      );
+      lanternGlow.position.set(pedX, 1.04, pedZ);
+      root.add(lanternGlow);
 
-          // Apply full-grown Adult morph target
-          if (obj.morphTargetDictionary && obj.morphTargetInfluences) {
-            obj.morphTargetInfluences.fill(0);
-            if (obj.morphTargetDictionary.Adult !== undefined) {
-              obj.morphTargetInfluences[obj.morphTargetDictionary.Adult] = 1.0;
-            }
-          }
-
-          if (obj.material && obj.material.name === 'DinoBody') {
-            bodyMaterial = obj.material;
-            templateBodyMap = obj.material.map;
-            obj.material.color.setHex(0xffffff);
-          }
-        }
-      });
-
-      // Start native skeletal Idle animation right away so bone transforms match stance
-      if (gltf.animations && gltf.animations.length > 0) {
-        mixer = new THREE.AnimationMixer(model);
-        const idleClip =
-          THREE.AnimationClip.findByName(gltf.animations, 'Idle') || gltf.animations[0];
-        const action = mixer.clipAction(idleClip);
-        action.play();
-        mixer.update(0.1);
-      }
-
-      const holder = new THREE.Group();
-      holder.add(model);
-      holder.updateMatrixWorld(true);
-
-      model.traverse((obj) => {
-        if (obj.isSkinnedMesh && obj.skeleton) {
-          obj.skeleton.update();
-        }
-      });
-
-      // Align Omniraptor tail -> head axis toward local +Z (facing the player trail)
-      const headBone = model.getObjectByName('DinoHead');
-      const tailBone = model.getObjectByName('DinoTail06') || model.getObjectByName('DinoPelvis');
-      if (headBone && tailBone) {
-        const headPos = new THREE.Vector3();
-        const tailPos = new THREE.Vector3();
-        headBone.getWorldPosition(headPos);
-        tailBone.getWorldPosition(tailPos);
-        const dx = headPos.x - tailPos.x;
-        const dz = headPos.z - tailPos.z;
-        if (Math.hypot(dx, dz) > 0.001) {
-          holder.rotation.y = -Math.atan2(dx, dz);
-          holder.updateMatrixWorld(true);
-        }
-      }
-
-      // Normalize height to ~1.88m and plant feet cleanly at local y = 0
-      const box = new THREE.Box3().setFromObject(holder);
-      const size = new THREE.Vector3();
-      box.getSize(size);
-      if (size.y > 0.001) {
-        const normScale = 1.88 / size.y;
-        holder.scale.setScalar(normScale);
-        holder.updateMatrixWorld(true);
-
-        const scaledBox = new THREE.Box3().setFromObject(holder);
-        const scaledCenter = new THREE.Vector3();
-        scaledBox.getCenter(scaledCenter);
-        holder.position.x -= scaledCenter.x;
-        holder.position.z -= scaledCenter.z;
-        holder.position.y -= scaledBox.min.y;
-      }
-
-      root.add(holder);
-      root.updateMatrixWorld(true);
-
-      // Apply composited Evrima skin map onto DinoBody
-      try {
-        const compositedMap = await createOmniraptorSkinTexture(templateBodyMap);
-        if (bodyMaterial) {
-          bodyMaterial.map = compositedMap;
-          bodyMaterial.roughness = 0.72;
-          bodyMaterial.needsUpdate = true;
-        }
-      } catch (err) {
-        console.warn('Omniraptor composite skin fallback:', err);
-      } finally {
-        ktx2Loader.dispose();
-      }
-    },
-    undefined,
-    (err) => {
-      ktx2Loader.dispose();
-      console.error('Failed to load Omniraptor.glb for SavageZed:', err);
+      guideLight = new THREE.PointLight(0xffbe6b, 2.2, 12, 1.55);
+      guideLight.position.set(pedX, 1.24, pedZ + 0.12);
+      root.add(guideLight);
     }
-  );
+  });
 
   return (elapsed, delta = null) => {
     const dt =
@@ -417,11 +687,74 @@ export function buildSavageZedNPC(scene, collisionSystem, interactables, materia
           : Math.min(0.05, Math.max(0, elapsed - lastElapsed));
     lastElapsed = elapsed;
 
-    if (mixer && dt > 0) {
-      mixer.update(dt);
+    updateMixer(dt);
+    if (guideLight) {
+      guideLight.intensity = 2.1 + Math.sin(elapsed * 3.1) * 0.14;
     }
+  };
+}
 
-    guideLight.intensity = 2.1 + Math.sin(elapsed * 3.1) * 0.14;
+/**
+ * Spawns all 8 named community station dinosaur guides (kift90, kenzy, apollo,
+ * mapotofu, kmy, Zapicy, sai, Dom), each interactive and linked to their assigned station.
+ */
+export function buildStationGuides(scene, collisionSystem, interactables, materials, renderer = null) {
+  const updaters = [];
+  let lastElapsed = null;
+
+  STATION_GUIDES.forEach((guide, idx) => {
+    const dest = DESTINATIONS.find((d) => d.id === guide.stationId);
+    const shortStation = dest ? dest.badge.replace('DESTINATION ', 'S') : '';
+    const stationTag = guide.stationId === 'survival-training' ? 'Survival Camp' : shortStation;
+
+    const interactDestination = {
+      id: `guide-${guide.id}`,
+      isNpc: true,
+      isStationGuide: true,
+      guideId: guide.id,
+      stationId: guide.stationId,
+      displayName: guide.displayName,
+      initials: guide.initials,
+      speciesLabel: guide.speciesLabel,
+      title: guide.displayName,
+      interactRadius: guide.interactRadius,
+      promptLabel: `Talk to ${guide.displayName}`,
+      zoneLabel: `${guide.displayName.toUpperCase()} — ${guide.speciesLabel.toUpperCase()} (${stationTag})`
+    };
+
+    const mixerUpdater = mountDinoAvatar({
+      scene,
+      collisionSystem,
+      interactables,
+      renderer,
+      speciesKey: guide.species,
+      patternVariant: guide.patternVariant,
+      displayName: guide.displayName,
+      speciesLabel: `${guide.speciesLabel} • ${stationTag}`,
+      position: guide.position,
+      lookAt: guide.lookAt,
+      targetHeight: guide.targetHeight,
+      interactDestination,
+      colliderTag: `npc-guide-${guide.id}`,
+      canvasSize: 512,
+      phaseOffset: idx * 0.43
+    });
+
+    updaters.push(mixerUpdater);
+  });
+
+  return (elapsed, delta = null) => {
+    const dt =
+      delta !== null
+        ? Math.min(0.05, delta)
+        : lastElapsed === null
+          ? 0
+          : Math.min(0.05, Math.max(0, elapsed - lastElapsed));
+    lastElapsed = elapsed;
+
+    for (const fn of updaters) {
+      fn(dt);
+    }
   };
 }
 
@@ -459,7 +792,8 @@ export function buildRandomMalaysiaFlags(scene, collisionSystem, flagCount = 9, 
 
     let tooClose = false;
     for (const dest of DESTINATIONS) {
-      if (Math.hypot(x - dest.position.x, z - dest.position.z) < 6.2) {
+      const clearance = dest.id === 'survival-training' ? 12.0 : 6.2;
+      if (Math.hypot(x - dest.position.x, z - dest.position.z) < clearance) {
         tooClose = true;
         break;
       }

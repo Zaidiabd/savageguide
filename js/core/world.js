@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
+import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES } from '../data/tutorialContent.js';
 import { createOutpostMaterials } from './materials.js';
-import { buildSavageZedNPC, buildRandomMalaysiaFlags } from './npc.js';
+import { buildSavageZedNPC, buildStationGuides, buildRandomMalaysiaFlags } from './npc.js';
 
 /**
  * Deterministic pseudo-random generator for reproducible forest placement.
@@ -34,7 +34,9 @@ const TRAIL_SEGMENTS = [
   [0, 0, -24, -14],  // Central Camp -> Steam Station
   [0, 0, 24, -10],   // Central Camp -> Community Outpost
   [0, 0, 20, 18],    // Central Camp -> Companion Station
-  [0, 0, 0, -36]     // Central Camp -> Expedition Departure
+  [0, 0, 0, -36],    // Central Camp -> Expedition Departure
+  [0, 0, -24, 2],    // Central Camp -> Training Camp Entrance
+  [-24, 2, -31, 2]   // Entrance -> Bonfire Core
 ];
 
 function minTrailDistance(x, z) {
@@ -93,11 +95,12 @@ export function getTerrainHeight(x, z) {
     Math.sin(x * 0.048) * Math.cos(z * 0.045) * 1.45 +
     Math.sin(x * 0.11 + z * 0.09) * 0.35;
 
-  // Gently flatten around central camp & each destination pad
+  // Gently flatten around central camp & each destination pad (wider radius for Training Camp enclosure)
   let flattenWeight = 0;
   for (const dest of DESTINATIONS) {
     const d = Math.hypot(x - dest.position.x, z - dest.position.z);
-    const w = Math.max(0, 1 - d / 10);
+    const padRadius = dest.id === 'survival-training' ? 15 : 10;
+    const w = Math.max(0, 1 - d / padRadius);
     flattenWeight = Math.max(flattenWeight, w * w);
   }
 
@@ -127,24 +130,26 @@ export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
   // 2. Animated Forest Pond & Rocky Shoreline
   const updatePond = buildPond(scene, materials, rand);
 
-  // 3. Five Interactive Outpost Stations + Landmarks
+  // 3. Six Interactive Outpost Stations + Landmarks
   buildWelcomeCamp(scene, materials, collisionSystem, interactables);
   buildSteamStation(scene, materials, collisionSystem, interactables);
   buildCommunityOutpost(scene, materials, collisionSystem, interactables);
   buildCompanionStation(scene, materials, collisionSystem, interactables);
   buildDepartureGate(scene, materials, collisionSystem, interactables);
+  const updateBonfire = buildSurvivalTrainingGround(scene, materials, collisionSystem, interactables);
 
   // 4. Instanced Organic Prehistoric Forest, Cycads, Ferns, Grass & Boulders
   buildInstancedForest(scene, materials, collisionSystem, rand, isTouchDevice);
   buildFallenLogs(scene, materials, collisionSystem, rand);
 
-  // 5. Evrima Omniraptor Guide (SavageZed) & Waving Malaysian Flags
+  // 5. Evrima Dinosaur Guides (SavageZed + 8 Station Guides) & Waving Malaysian Flags
   const updateSavageZed = buildSavageZedNPC(scene, collisionSystem, interactables, materials, renderer);
+  const updateGuides = buildStationGuides(scene, collisionSystem, interactables, materials, renderer);
   const updateFlags = buildRandomMalaysiaFlags(scene, collisionSystem, 9, materials);
 
   return {
     interactables,
-    animatedUpdaters: [updatePond, updateSavageZed, updateFlags]
+    animatedUpdaters: [updatePond, updateBonfire, updateSavageZed, updateGuides, updateFlags]
   };
 }
 
@@ -936,11 +941,423 @@ function buildDepartureGate(scene, m, collision, interactables) {
 }
 
 /**
- * Checks minimum clearance against all 5 stations + SavageZed NPC + player conversation sightline.
+ * Generates a high-contrast carved wooden gateway signboard CanvasTexture.
+ */
+function createGatewaySignTexture(mainText, subText) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+
+  // Dark weathered timber backing
+  ctx.fillStyle = '#2d2218';
+  ctx.fillRect(0, 0, 1024, 256);
+
+  // Carved subtle wood plank lines
+  ctx.strokeStyle = 'rgba(20, 14, 9, 0.55)';
+  ctx.lineWidth = 3;
+  for (let y = 42; y < 256; y += 42) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(1024, y);
+    ctx.stroke();
+  }
+
+  // Brass / gold perimeter trim
+  ctx.strokeStyle = '#d4a656';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(14, 14, 996, 228);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f5ecd9';
+  ctx.font = 'bold 54px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(mainText, 512, 118);
+
+  ctx.fillStyle = '#e0a952';
+  ctx.font = 'bold 30px "Segoe UI", Arial, sans-serif';
+  ctx.fillText(subText, 512, 184);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+/**
+ * Builds Station 06 — Survival Training Ground:
+ * Enclosed by a timber palisade wall, featuring an Entrance Gateway with the
+ * PRIMEVAL MALAYSIA TRAINING CAMP signboard, a central animated bonfire, and training boards.
+ */
+function buildSurvivalTrainingGround(scene, m, collision, interactables) {
+  const dest = DESTINATIONS[5];
+  const y = getTerrainHeight(dest.position.x, dest.position.z);
+  const group = new THREE.Group();
+  group.position.set(dest.position.x, y, dest.position.z);
+
+  const halfSpan = 7.2; // 14.4m x 14.4m compound
+  const gateGapHalf = 2.25; // 4.5m clear gateway width on East wall
+
+  // Compacted sandy earth & gravel courtyard floor inside compound
+  const yardGeo = new THREE.CircleGeometry(9.4, 36);
+  yardGeo.rotateX(-Math.PI / 2);
+  const yardMat = new THREE.MeshStandardMaterial({ color: 0x514331, roughness: 0.96 });
+  const yard = new THREE.Mesh(yardGeo, yardMat);
+  yard.position.y = 0.025;
+  yard.receiveShadow = true;
+  group.add(yard);
+
+  // Wooden Palisade Wall Logs (merged via InstancedMesh for silky frame rate)
+  const postRadius = 0.2;
+  const postHeight = 3.05;
+  const logBody = new THREE.CylinderGeometry(postRadius * 0.85, postRadius, postHeight, 8);
+  logBody.translate(0, postHeight * 0.5, 0);
+  const logTip = new THREE.ConeGeometry(postRadius * 0.85, 0.42, 8);
+  logTip.translate(0, postHeight + 0.21, 0);
+  const palisadePostGeo = mergeIndexedGeometries([logBody, logTip]);
+
+  const wallCoords = [];
+  const step = 0.42;
+
+  // North & South walls
+  for (let px = -halfSpan; px <= halfSpan + 0.01; px += step) {
+    wallCoords.push([px, -halfSpan, 0]);
+    wallCoords.push([px, halfSpan, 0]);
+  }
+  // West wall & split East wall (leaving entrance open along z in [-gateGapHalf, +gateGapHalf])
+  for (let pz = -halfSpan + step; pz <= halfSpan - step + 0.01; pz += step) {
+    wallCoords.push([-halfSpan, pz, Math.PI / 2]);
+    if (Math.abs(pz) > gateGapHalf) {
+      wallCoords.push([halfSpan, pz, Math.PI / 2]);
+    }
+  }
+
+  const wallInst = new THREE.InstancedMesh(palisadePostGeo, m.trunk, wallCoords.length);
+  wallInst.castShadow = true;
+  wallInst.receiveShadow = true;
+  const dummy = new THREE.Object3D();
+
+  wallCoords.forEach(([wx, wz, rot], idx) => {
+    const hVar = 0.94 + Math.sin(idx * 2.13) * 0.08;
+    dummy.position.set(wx, 0, wz);
+    dummy.rotation.set(0, rot + Math.sin(idx) * 0.05, 0);
+    dummy.scale.set(1, hVar, 1);
+    dummy.updateMatrix();
+    wallInst.setMatrixAt(idx, dummy.matrix);
+  });
+  group.add(wallInst);
+
+  // Horizontal structural binding beams along North, South, West & split East walls
+  const addRail = (cx, cz, len, isZ) => {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(isZ ? 0.18 : len, 0.16, isZ ? len : 0.18),
+      m.timberDark
+    );
+    rail.position.set(cx, 1.95, cz);
+    rail.castShadow = true;
+    group.add(rail);
+  };
+  addRail(0, -halfSpan, halfSpan * 2, false);
+  addRail(0, halfSpan, halfSpan * 2, false);
+  addRail(-halfSpan, 0, halfSpan * 2, true);
+  const sideLen = halfSpan - gateGapHalf;
+  addRail(halfSpan, -(gateGapHalf + sideLen * 0.5), sideLen, true);
+  addRail(halfSpan, gateGapHalf + sideLen * 0.5, sideLen, true);
+
+  // Four corner watch-posts with warm perimeter lanterns
+  for (const [cx, cz] of [
+    [-halfSpan, -halfSpan],
+    [halfSpan, -halfSpan],
+    [-halfSpan, halfSpan],
+    [halfSpan, halfSpan]
+  ]) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.45, 3.85, 0.45), m.timberDark);
+    post.position.set(cx, 1.92, cz);
+    post.castShadow = true;
+    group.add(post);
+    addLantern(group, cx * 0.92, 3.4, cz * 0.92, m, false);
+  }
+
+  // Palisade Collision Boxes (World space)
+  collision.addBox(dest.position.x, dest.position.z - halfSpan, halfSpan * 2 + 0.5, 0.8, 'training-wall-n');
+  collision.addBox(dest.position.x, dest.position.z + halfSpan, halfSpan * 2 + 0.5, 0.8, 'training-wall-s');
+  collision.addBox(dest.position.x - halfSpan, dest.position.z, 0.8, halfSpan * 2 + 0.5, 'training-wall-w');
+  collision.addBox(
+    dest.position.x + halfSpan,
+    dest.position.z - (gateGapHalf + sideLen * 0.5),
+    0.8,
+    sideLen,
+    'training-wall-en'
+  );
+  collision.addBox(
+    dest.position.x + halfSpan,
+    dest.position.z + (gateGapHalf + sideLen * 0.5),
+    0.8,
+    sideLen,
+    'training-wall-es'
+  );
+
+  // ENTRANCE GATEWAY (East side x = +halfSpan, facing Central Camp)
+  const gateGroup = new THREE.Group();
+  gateGroup.position.set(halfSpan, 0, 0);
+  gateGroup.rotation.y = Math.PI / 2; // Gate front faces +X outward toward Camp
+
+  for (const px of [-2.45, 2.45]) {
+    const footing = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.4, 0.95), m.stone);
+    footing.position.set(px, 0.2, 0);
+    gateGroup.add(footing);
+
+    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.52, 4.75, 0.52), m.timberDark);
+    pillar.position.set(px, 2.42, 0);
+    pillar.castShadow = true;
+    gateGroup.add(pillar);
+
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.22, 1.05, 0.22), m.timberWeathered);
+    brace.position.set(px > 0 ? px - 0.36 : px + 0.36, 3.9, 0);
+    brace.rotation.z = px > 0 ? -0.68 : 0.68;
+    gateGroup.add(brace);
+  }
+
+  const gateBeam = new THREE.Mesh(new THREE.BoxGeometry(6.3, 0.55, 0.56), m.timberWeathered);
+  gateBeam.position.set(0, 4.5, 0);
+  gateBeam.castShadow = true;
+  gateGroup.add(gateBeam);
+
+  const gateRoof = new THREE.Group();
+  addGabledRoof(
+    gateRoof,
+    {
+      width: 1.45,
+      depth: 6.6,
+      ridgeHeight: 0.65,
+      yBase: 4.78,
+      zOffset: 0,
+      overhangX: 0.3,
+      overhangZ: 0.25
+    },
+    m
+  );
+  gateRoof.rotation.y = Math.PI / 2;
+  gateGroup.add(gateRoof);
+
+  // Carved PRIMEVAL MALAYSIA TRAINING CAMP Signboard (visible outside & inside)
+  const signTex = createGatewaySignTexture(
+    'PRIMEVAL MALAYSIA TRAINING CAMP',
+    'ENTRANCE  •  SURVIVAL TRAINING GROUND'
+  );
+  const signMat = new THREE.MeshStandardMaterial({ map: signTex, roughness: 0.65 });
+  const signPanel = new THREE.Mesh(new THREE.BoxGeometry(4.35, 1.08, 0.2), signMat);
+  signPanel.position.set(0, 4.52, 0.32);
+  gateGroup.add(signPanel);
+
+  const signBackPanel = new THREE.Mesh(new THREE.BoxGeometry(4.35, 1.08, 0.06), signMat);
+  signBackPanel.position.set(0, 4.52, -0.32);
+  signBackPanel.rotation.y = Math.PI;
+  gateGroup.add(signBackPanel);
+
+  addLantern(gateGroup, -2.0, 3.85, 0.45, m, true);
+  addLantern(gateGroup, 2.0, 3.85, 0.45, m, false);
+  group.add(gateGroup);
+
+  collision.addBox(dest.position.x + halfSpan, dest.position.z - 2.45, 0.9, 0.9, 'training-gate-n');
+  collision.addBox(dest.position.x + halfSpan, dest.position.z + 2.45, 0.9, 0.9, 'training-gate-s');
+
+  // CENTRAL ANIMATED BONFIRE IN THE MIDDLE (0, 0, 0)
+  const hearthPadGeo = new THREE.CircleGeometry(1.95, 24);
+  hearthPadGeo.rotateX(-Math.PI / 2);
+  const hearthPad = new THREE.Mesh(
+    hearthPadGeo,
+    new THREE.MeshStandardMaterial({ color: 0x221c18, roughness: 0.98 })
+  );
+  hearthPad.position.y = 0.04;
+  group.add(hearthPad);
+
+  const stoneGeo = buildOrganicBoulderGeometry();
+  for (let i = 0; i < 14; i++) {
+    const a = (i / 14) * Math.PI * 2;
+    const rock = new THREE.Mesh(stoneGeo, m.stone);
+    rock.position.set(Math.cos(a) * 1.48, 0.18, Math.sin(a) * 1.48);
+    rock.scale.set(0.36, 0.24, 0.34);
+    rock.rotation.y = a;
+    rock.castShadow = true;
+    group.add(rock);
+  }
+
+  // Stacked firewood teepee & glowing embers
+  const emberBed = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.95, 1.15, 0.14, 14),
+    new THREE.MeshStandardMaterial({
+      color: 0x5c1808,
+      emissive: 0xff4510,
+      emissiveIntensity: 2.1,
+      roughness: 0.5
+    })
+  );
+  emberBed.position.y = 0.12;
+  group.add(emberBed);
+
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const log = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 1.9, 8), m.trunk);
+    log.position.set(Math.cos(a) * 0.36, 0.42, Math.sin(a) * 0.36);
+    log.rotation.z = 0.55;
+    log.rotation.y = a;
+    log.castShadow = true;
+    group.add(log);
+  }
+
+  const flameCore = new THREE.Mesh(
+    new THREE.ConeGeometry(0.55, 1.65, 10),
+    new THREE.MeshBasicMaterial({ color: 0xffcc48, transparent: true, opacity: 0.88 })
+  );
+  flameCore.position.y = 0.95;
+  group.add(flameCore);
+
+  const flameOuter = new THREE.Mesh(
+    new THREE.ConeGeometry(0.82, 1.95, 10),
+    new THREE.MeshBasicMaterial({ color: 0xff5a18, transparent: true, opacity: 0.55 })
+  );
+  flameOuter.position.y = 1.02;
+  group.add(flameOuter);
+
+  const sparks = [];
+  const sparkMat = new THREE.MeshBasicMaterial({ color: 0xffd26a });
+  const sparkGeo = new THREE.BoxGeometry(0.055, 0.055, 0.055);
+  for (let i = 0; i < 12; i++) {
+    const sp = new THREE.Mesh(sparkGeo, sparkMat);
+    sp.position.set(Math.sin(i * 1.7) * 0.5, 0.6 + (i / 12) * 2.4, Math.cos(i * 2.3) * 0.5);
+    group.add(sp);
+    sparks.push({ mesh: sp, phase: i * 0.72, rad: 0.25 + (i % 4) * 0.14 });
+  }
+
+  const bonfireLight = new THREE.PointLight(0xff8e36, 3.8, 22, 1.45);
+  bonfireLight.position.set(0, 1.95, 0);
+  group.add(bonfireLight);
+
+  collision.addCylinder(dest.position.x, dest.position.z, 1.65, 'training-bonfire');
+
+  // INTERIOR SURVIVAL TRAINING MANUAL BOARD (west side of bonfire, facing +X entrance)
+  const boardGroup = new THREE.Group();
+  boardGroup.position.set(-4.3, 0, 0);
+  boardGroup.rotation.y = Math.PI / 2;
+
+  for (const px of [-1.45, 1.45]) {
+    const footing = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.2, 0.32), m.stone);
+    footing.position.set(px, 0.1, 0);
+    boardGroup.add(footing);
+
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 2.7, 0.2), m.timberDark);
+    post.position.set(px, 1.38, 0);
+    post.castShadow = true;
+    boardGroup.add(post);
+  }
+
+  const boardFrame = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.75, 0.18), m.timberWeathered);
+  boardFrame.position.set(0, 1.72, 0);
+  boardFrame.castShadow = true;
+  boardGroup.add(boardFrame);
+
+  const boardFace = new THREE.Mesh(new THREE.BoxGeometry(2.85, 1.45, 0.2), m.boardSlate);
+  boardFace.position.set(0, 1.72, 0);
+  boardGroup.add(boardFace);
+
+  // Field diagram notes pinned on Survival Board
+  const noteA = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.88, 0.025), m.noticePaper);
+  noteA.position.set(-0.78, 1.76, 0.11);
+  noteA.rotation.z = 0.03;
+  boardGroup.add(noteA);
+
+  const noteB = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.65, 0.025), m.noticeAmber);
+  noteB.position.set(0.35, 1.82, 0.11);
+  noteB.rotation.z = -0.02;
+  boardGroup.add(noteB);
+
+  const boardRoof = new THREE.Group();
+  addGabledRoof(
+    boardRoof,
+    {
+      width: 0.9,
+      depth: 3.4,
+      ridgeHeight: 0.42,
+      yBase: 2.68,
+      zOffset: 0,
+      overhangX: 0.22,
+      overhangZ: 0.15
+    },
+    m
+  );
+  boardRoof.rotation.y = Math.PI / 2;
+  boardGroup.add(boardRoof);
+
+  addLantern(boardGroup, 1.45, 2.35, 0.35, m, false);
+  group.add(boardGroup);
+
+  collision.addBox(dest.position.x - 4.3, dest.position.z, 0.9, 3.2, 'survival-training-board');
+
+  // Seating log benches & sparring training posts inside the compound
+  for (const [bx, bz, rot] of [
+    [0, -3.1, 0],
+    [0, 3.1, 0],
+    [3.0, -3.2, 0.65],
+    [3.0, 3.2, -0.65]
+  ]) {
+    const bench = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.24, 2.2, 10), m.trunk);
+    bench.rotation.z = Math.PI / 2;
+    bench.rotation.y = rot;
+    bench.position.set(bx, 0.24, bz);
+    bench.castShadow = true;
+    bench.receiveShadow = true;
+    group.add(bench);
+  }
+
+  for (const [tx, tz] of [
+    [-4.8, -4.6],
+    [-4.8, 4.6],
+    [4.4, -4.8],
+    [4.4, 4.8]
+  ]) {
+    const dummyPost = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 1.9, 10), m.timberWeathered);
+    dummyPost.position.set(tx, 0.95, tz);
+    dummyPost.castShadow = true;
+    group.add(dummyPost);
+
+    const crossbar = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.18, 0.18), m.plankLight);
+    crossbar.position.set(tx, 1.48, tz);
+    crossbar.rotation.y = 0.4;
+    group.add(crossbar);
+  }
+
+  scene.add(group);
+  group.updateMatrixWorld(true);
+
+  registerStation(5, group, boardFace, interactables);
+
+  return (elapsed) => {
+    const flickerA = 1 + Math.sin(elapsed * 9.5) * 0.12 + Math.cos(elapsed * 15.2) * 0.08;
+    const flickerB = 1 + Math.cos(elapsed * 8.1) * 0.15;
+    flameCore.scale.set(0.95 + Math.sin(elapsed * 11) * 0.08, flickerA, 0.95);
+    flameOuter.scale.set(1.0 + Math.cos(elapsed * 7.5) * 0.09, flickerB, 1.0);
+    flameCore.rotation.y = elapsed * 1.6;
+    flameOuter.rotation.y = -elapsed * 1.1;
+    bonfireLight.intensity = 3.6 + Math.sin(elapsed * 11.4) * 0.45 + Math.cos(elapsed * 19.3) * 0.2;
+
+    for (const sp of sparks) {
+      const cycle = (elapsed * 0.72 + sp.phase) % 1;
+      sp.mesh.position.y = 0.55 + cycle * 2.65;
+      sp.mesh.position.x = Math.sin(elapsed * 2.4 + sp.phase) * sp.rad;
+      sp.mesh.position.z = Math.cos(elapsed * 2.1 + sp.phase) * sp.rad;
+      sp.mesh.scale.setScalar(Math.max(0.15, 1 - cycle));
+    }
+  };
+}
+
+/**
+ * Checks minimum clearance against all 6 stations (wide compound exclusion for Training Camp),
+ * SavageZed, and all 8 station dinosaur guides so trees/rocks/logs stay out of paths & interiors.
  */
 function isNearStation(x, z, minClearance) {
   for (const dest of DESTINATIONS) {
-    if (Math.hypot(x - dest.position.x, z - dest.position.z) < minClearance) {
+    const clearance = dest.id === 'survival-training' ? minClearance + 7.2 : minClearance;
+    if (Math.hypot(x - dest.position.x, z - dest.position.z) < clearance) {
       return true;
     }
   }
@@ -949,6 +1366,11 @@ function isNearStation(x, z, minClearance) {
   }
   if (Math.hypot(x - SAVAGEZED_NPC.approach.x, z - SAVAGEZED_NPC.approach.z) < Math.max(3.5, minClearance * 0.7)) {
     return true;
+  }
+  for (const guide of STATION_GUIDES) {
+    if (Math.hypot(x - guide.position.x, z - guide.position.z) < Math.max(3.8, minClearance * 0.7)) {
+      return true;
+    }
   }
   return false;
 }
