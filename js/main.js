@@ -11,11 +11,13 @@ import { InterfaceController } from './ui/interface.js';
 
 function init() {
   const container = document.getElementById('viewport-container');
-  const { scene, renderer } = createSceneContext(container);
+  const { scene, renderer, isTouchDevice, updateAtmosphere } = createSceneContext(container);
   const camera = createCamera();
 
   const collisionSystem = new CollisionSystem(60);
-  const { interactables, animatedUpdaters } = createPrehistoricWorld(scene, collisionSystem);
+  const { interactables, animatedUpdaters } = createPrehistoricWorld(scene, collisionSystem, {
+    isTouchDevice
+  });
 
   const player = new PlayerController(camera, renderer.domElement, collisionSystem);
   const interaction = new InteractionSystem(camera, interactables);
@@ -59,6 +61,8 @@ function init() {
     requestAnimationFrame(animate);
     const delta = clock.getDelta();
     const elapsed = clock.elapsedTime;
+
+    updateAtmosphere(elapsed);
 
     for (const updateFn of animatedUpdaters) {
       updateFn(elapsed);

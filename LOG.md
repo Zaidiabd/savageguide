@@ -88,6 +88,17 @@
   * Persisted `welcomeReviewed`, `communityReviewed`, and `isleLinkAgeStatus` in `localStorage`.
   * Added full **English**, **Bahasa Melayu**, and **Kecek KL** translations for Destination 01 and Destination 03.
 
+### Stage 9 — High-Detail Polygon, Procedural PBR & Foliage Render Upgrade
+* **Added Procedural PBR Material Library (`js/core/materials.js`):**
+  * Generated procedural CanvasTextures with paired normal/bump maps for dark structural timber, weathered planks, roofing shingles, furrowed conifer bark, mossy craggy boulders, fine loam/trail soil (`terrainBump`), and reptilian scales (`scaleBump`), plus alpha-cutout feathery pine boughs, pinnate fern/cycad fronds, and grass tufts.
+* **Atmosphere & Lighting Upgrade (`js/core/scene.js`, `js/main.js`):**
+  * Replaced flat background clearing with a procedural vertical-gradient atmospheric sky dome shader (`createSkyDome`), drifting sunlit forest dust motes (`createDustMotes`), and secondary cool fill lighting while preserving mobile-adaptive shadow map and pixel-ratio caps.
+* **Organic Prehistoric Flora, Architecture & NPC (`js/core/world.js`, `js/core/npc.js`):**
+  * Upgraded terrain resolution to `196×196` segments with `terrainBump`, animated pond water/ripples with shore rocks, and added fallen mossy logs across forest clearings.
+  * Upgraded all 5 outpost structures with stone plinths, corner log posts, knee braces, gabled double-slope shingle roofs with exposed rafter tails, framed glowing windows, desk hardware, and detailed hanging cage lanterns.
+  * Replaced low-poly 7-sided cone trees and faceted dodecahedron rocks with 12-segment bark trunks + multi-whorl drooping pine-bough `InstancedMesh` canopies, UV-mapped pinnate fern rosettes, cycad palms, ground grass tufts, and smoothly subdivided spherical-noise boulders (`IcosahedronGeometry(1, 2)`), scaled proportionally on touch devices.
+  * Sculpted an organic **SavageZed** theropod mesh (`LatheGeometry` tail, capsule snout/jaw, brow ridges, amber eyes, head crest, scaly bump skin, explorer vest & backpack) and subdivided `14×6` smoothly rippling *Jalur Gemilang* flags.
+
 ---
 
 ## 2. Git Commit Milestones (`main`)
@@ -98,6 +109,7 @@
 * `3d7a980` — Deleted `AGY.md` on remote
 * `58831bf` — Added mobile touch controls, tappable prompts, and responsive layouts
 * `a8b3295` — Restored `AGY.md` and added `LOG.md`
+* `e80b639` — Implemented Destination 01 (Welcome) and Destination 03 (Community Outpost)
 
 ---
 
