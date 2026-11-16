@@ -77,7 +77,16 @@
 
 ### Stage 7 — Spec Recovery & Log
 * Restored `AGY.md` from commit `6ffe12f` after it was removed in remote commit `3d7a980`.
-* Created this `LOG.md` file summarizing all completed work.
+* Created this `LOG.md` file summarizing all completed work (`a8b3295`).
+
+### Stage 8 — Destination 01 (Welcome Centre) & Destination 03 (Community Outpost)
+* **Added `js/data/serverDirectory.js`:** Modular verified community directory config with **IsleLink** (`https://discord.gg/islelink`, `18+` Adults Only, `website: null`, `companionApp: null`) and **Obsidian Isle** (`https://discord.gg/4CKwnyJ72C`, `"Distributed through Discord"`, 5-step companion instructions).
+* **Added `js/systems/destinations.js`:**
+  * `WelcomeStationController` (Destination 01): *The Isle* & Evrima intro, onboarding purpose, basic PC readiness guidelines + official Steam Store link, interactive 5-destination cards with direct station jump buttons, desktop/mobile navigation instructions, and `START EXPEDITION` CTA.
+  * `CommunityDirectoryController` (Destination 03): Search input, category filters (`All`, `Open / No 18+`, `18+ Restricted`, `Has Companion App`), strict 18+ age-verification gate on IsleLink (hides Discord/join actions unless confirmed 18+, blocks underage users), and Obsidian Isle `OPEN DISCORD`, `SERVER INFORMATION` (verified-only policy, zero invented IP/stats), and `COMPANION APPLICATION` drawers.
+* **Extended `js/systems/progress.js`, `js/data/i18n.js`, `js/ui/interface.js`, and `css/interface.css`:**
+  * Persisted `welcomeReviewed`, `communityReviewed`, and `isleLinkAgeStatus` in `localStorage`.
+  * Added full **English**, **Bahasa Melayu**, and **Kecek KL** translations for Destination 01 and Destination 03.
 
 ---
 
@@ -88,12 +97,11 @@
 * `6ffe12f` — Added detailed `README.md`
 * `3d7a980` — Deleted `AGY.md` on remote
 * `58831bf` — Added mobile touch controls, tappable prompts, and responsive layouts
+* `a8b3295` — Restored `AGY.md` and added `LOG.md`
 
 ---
 
 ## 3. Next Planned Milestones (Pending per `AGY.md`)
-* **Destination 01 (Welcome Centre):** Full orientation cards & PC requirements panel.
-* **Destination 03 (Community Outpost):** `js/data/serverDirectory.js` with searchable/filterable cards, **IsleLink** 18+ age restriction gating, and **Obsidian Isle** Discord/companion instructions.
 * **Destination 04 (Companion Application Station):** Full companion app details, checklists, and troubleshooting.
 * **Destination 05 (Expedition Departure):** Full 11-point interactive readiness checklist synced with `ProgressSystem` and completion state.
 * **Polish & Optimization:** Minimap (`M` toggle, `js/systems/minimap.js`), ambient Web Audio soundscape, graphics settings panel (`js/ui/controlPanel.js`), and full desktop/mobile QA pass.

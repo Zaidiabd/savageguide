@@ -29,9 +29,9 @@ This repository currently provides a playable **3D skeleton outpost** alongside 
 ### 4. Five Outpost Destinations
 | Station | Status | Purpose |
 | :--- | :--- | :--- |
-| **01 — Welcome Centre & Noticeboard** | Skeleton Preview | Orientation to *The Isle: Evrima*, camp overview, and hardware expectations |
+| **01 — Welcome Centre & Noticeboard** | **Functional (v1)** | *The Isle* & Evrima intro, PC readiness, 5-station overview with quick-jump, controls, and `START EXPEDITION` |
 | **02 — Steam & Easy Anti-Cheat Terminal** | **Functional (v1)** | 10-step Steam/Evrima guide, EAC System Verification terminal, troubleshooting, and persistent checklist |
-| **03 — Community Directory Board** | Skeleton Preview | Planned directory for IsleLink (18+ gated) and Obsidian Isle Discord communities |
+| **03 — Community Directory Board** | **Functional (v1)** | Searchable/filterable directory (`serverDirectory.js`), strict IsleLink 18+ age gate, and Obsidian Isle Discord & companion guides |
 | **04 — Companion Application Desk** | Skeleton Preview | Planned official companion app setup and safety guidance |
 | **05 — Expedition Departure Gate** | Skeleton Preview | Planned 11-item final pre-launch readiness checklist |
 
@@ -86,9 +86,11 @@ savageguide/
 │   │   └── world.js            # Terrain, pond, 5 station structures, and instanced forest
 │   ├── data/
 │   │   ├── i18n.js             # English, Bahasa Melayu, and Kecek KL translation bundles
+│   │   ├── serverDirectory.js  # Modular verified community directory config
 │   │   └── tutorialContent.js  # Destination coordinates, SavageZed dialog, Steam/EAC data
 │   ├── systems/
 │   │   ├── collision.js        # XZ bounding-box collision & world perimeter clamping
+│   │   ├── destinations.js     # Destination 01 (Welcome Centre) & Destination 03 (Community Directory)
 │   │   ├── navigation.js       # Quick-jump teleportation to SavageZed & stations
 │   │   ├── progress.js         # LocalStorage persistence for language, steps & checklists
 │   │   └── tutorial.js         # Steam & EAC terminal UI controller + UI illustrations

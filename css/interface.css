@@ -1081,6 +1081,222 @@
   background: rgba(89, 134, 68, 0.14);
 }
 
+/* Destination 01 — Welcome Centre */
+.welcome-station-shell,
+.community-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.welcome-section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.welcome-dest-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.welcome-dest-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(178, 166, 134, 0.16);
+  border-radius: 7px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcome-dest-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.welcome-dest-card p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.welcome-jump-btn {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 6px 11px;
+  font-size: 0.76rem;
+}
+
+.welcome-station-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+/* Destination 03 — Community Outpost Directory */
+.community-intro {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.community-toolbar {
+  display: grid;
+  gap: 10px;
+}
+
+.community-search {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(12, 15, 13, 0.82);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+
+.community-search:focus {
+  outline: none;
+  border-color: var(--accent-sun);
+}
+
+.community-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.community-card {
+  background: rgba(12, 15, 13, 0.68);
+  border: 1px solid rgba(178, 166, 134, 0.22);
+  border-radius: 8px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.community-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.community-card-head h3 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.community-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.community-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: rgba(111, 128, 84, 0.22);
+  border: 1px solid rgba(111, 128, 84, 0.55);
+  color: #cbe0b6;
+}
+
+.community-badge.age {
+  background: rgba(201, 122, 64, 0.2);
+  border-color: #c97a40;
+  color: #f3cba8;
+}
+
+.community-desc {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.community-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.community-meta {
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.age-gate-box {
+  padding: 12px;
+  border-radius: 7px;
+  background: rgba(201, 122, 64, 0.1);
+  border: 1px solid rgba(201, 122, 64, 0.45);
+  display: grid;
+  gap: 8px;
+}
+
+.age-gate-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: #f3cba8;
+}
+
+.age-gate-box p {
+  font-size: 0.83rem;
+  color: var(--text-primary);
+}
+
+.community-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.community-drawer {
+  margin-top: 6px;
+  padding: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(178, 166, 134, 0.18);
+  display: grid;
+  gap: 8px;
+}
+
+.community-drawer h5 {
+  font-size: 0.86rem;
+  color: var(--accent-sun);
+}
+
+.community-drawer p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.community-footer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Mobile Touch Controls (hidden on desktop, enabled via body.touch-device) */
 .touch-controls {
   display: none;
@@ -1231,7 +1447,10 @@ body.touch-device .hud-bottom-left {
 
   .diagram-split,
   .eac-options-grid,
-  .trouble-grid {
+  .trouble-grid,
+  .welcome-section-grid,
+  .welcome-dest-grid,
+  .community-grid {
     grid-template-columns: 1fr;
   }
 

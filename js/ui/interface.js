@@ -1,6 +1,7 @@
 import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
 import { getLocaleBundle } from '../data/i18n.js';
 import { SteamTutorialController } from '../systems/tutorial.js';
+import { WelcomeStationController, CommunityDirectoryController } from '../systems/destinations.js';
 
 /**
  * Manages DOM UI overlays, HUD status, destination selector,
@@ -13,6 +14,14 @@ export class InterfaceController {
     this.navigation = navigation;
     this.progress = progress;
     this.steamTutorial = new SteamTutorialController(progress);
+    this.welcomeStation = new WelcomeStationController(progress, {
+      onStartExpedition: () => this.closeStationModal(true),
+      onJumpToStation: (destId) => {
+        const dest = this.navigation.jumpTo(destId);
+        if (dest) this.openStationModal(dest);
+      }
+    });
+    this.communityDirectory = new CommunityDirectoryController(progress);
     this.onOpenStation = onOpenStation;
     this.onCloseStation = onCloseStation;
 
@@ -416,10 +425,18 @@ export class InterfaceController {
     const stationCard = this.els.stationModal.querySelector('.station-card');
     const footerTag = this.els.stationModal.querySelector('.skeleton-tag');
 
-    if (destination.id === 'steam-station') {
+    if (destination.id === 'welcome-centre') {
+      stationCard.classList.add('wide');
+      footerTag.textContent = b.ui.functionalTag;
+      this.welcomeStation.mount(this.els.stationBody);
+    } else if (destination.id === 'steam-station') {
       stationCard.classList.add('wide');
       footerTag.textContent = b.ui.functionalTag;
       this.steamTutorial.mount(this.els.stationBody);
+    } else if (destination.id === 'community-outpost') {
+      stationCard.classList.add('wide');
+      footerTag.textContent = b.ui.functionalTag;
+      this.communityDirectory.mount(this.els.stationBody);
     } else {
       stationCard.classList.remove('wide');
       footerTag.textContent = b.ui.skeletonTag;

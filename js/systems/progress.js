@@ -6,6 +6,9 @@ const DEFAULT_STATE = {
   steamCompletedSteps: [],
   eacOptionAComplete: false,
   eacOptionBComplete: false,
+  welcomeReviewed: false,
+  communityReviewed: false,
+  isleLinkAgeStatus: 'unknown', // 'unknown' | 'adult' | 'underage'
   checklist: {
     steamObtained: false,
     evrimaSelected: false,
@@ -121,5 +124,33 @@ export class ProgressSystem {
       optionA: this.state.eacOptionAComplete,
       optionB: this.state.eacOptionBComplete
     };
+  }
+
+  isWelcomeReviewed() {
+    return Boolean(this.state.welcomeReviewed);
+  }
+
+  setWelcomeReviewed(value = true) {
+    this.state.welcomeReviewed = Boolean(value);
+    this._save();
+  }
+
+  isCommunityReviewed() {
+    return Boolean(this.state.communityReviewed);
+  }
+
+  setCommunityReviewed(value = true) {
+    this.state.communityReviewed = Boolean(value);
+    this._save();
+  }
+
+  getIsleLinkAgeStatus() {
+    return this.state.isleLinkAgeStatus || 'unknown';
+  }
+
+  setIsleLinkAgeStatus(status) {
+    if (!['unknown', 'adult', 'underage'].includes(status)) return;
+    this.state.isleLinkAgeStatus = status;
+    this._save();
   }
 }

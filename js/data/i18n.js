@@ -358,6 +358,71 @@ const LOCALES = {
         filesVerified: 'Game file verification completed if necessary',
         gameLaunched: 'The Isle: Evrima successfully launched'
       }
+    },
+    welcome: {
+      introTitle: 'Welcome to The Isle & Evrima',
+      introBody:
+        'The Isle is an open-world dinosaur survival game. Evrima is its active primary branch featuring updated mechanics, dinosaurs, and ongoing development. This 3D outpost walks you through every step needed before joining a community server.',
+      purposeTitle: 'Purpose of This Onboarding Outpost',
+      purposeBody:
+        'Instead of reading scattered links, walk through the five research stations (or use Quick Jump) to install Evrima via Steam, verify Easy Anti-Cheat, review verified communities, and complete your departure checklist.',
+      pcTitle: 'Basic PC Readiness Guidelines',
+      pcItems: [
+        '64-bit Windows OS with an up-to-date DirectX 11/12 dedicated graphics card',
+        'Quad-core+ processor and 16 GB RAM recommended for stable frame rates',
+        'SSD storage with generous free space for Evrima downloads and patches',
+        'Stable broadband connection for multiplayer servers and Easy Anti-Cheat'
+      ],
+      steamSpecsLink: 'Check Exact Live System Requirements on Steam Store ↗',
+      destinationsTitle: 'The Five Expedition Destinations',
+      destinationCards: [
+        { id: 'welcome-centre', code: '01', name: 'Welcome Centre', desc: 'Overview, Evrima intro, PC readiness, and controls.' },
+        { id: 'steam-station', code: '02', name: 'Steam & EAC Terminal', desc: '10-step Steam install, Evrima branch switch, and EAC verification.' },
+        { id: 'community-outpost', code: '03', name: 'Community Outpost', desc: 'Verified community directory with Discord portals & access rules.' },
+        { id: 'companion-station', code: '04', name: 'Companion Desk', desc: 'Official companion utility guidance and safety rules.' },
+        { id: 'expedition-departure', code: '05', name: 'Expedition Departure', desc: 'Final pre-launch readiness checklist before playing.' }
+      ],
+      jumpBtn: 'Visit Station →',
+      navTitle: 'Outpost Navigation Instructions',
+      navDesktop: 'Desktop: WASD / Arrows to walk • Shift to sprint • Mouse to look • E to interact • ESC to close panels.',
+      navMobile: 'Mobile / Touch: Left thumbstick to walk • Swipe screen to look • Tap the [E] prompt when near a station.',
+      startBtn: 'START EXPEDITION',
+      goSteamBtn: 'Proceed to Steam Station →',
+      reviewedBadge: '✓ ORIENTATION REVIEWED'
+    },
+    community: {
+      intro:
+        'Browse verified community entries loaded dynamically from serverDirectory.js. Only administrator-verified Discord portals and official policies are displayed.',
+      searchPlaceholder: 'Search communities by name or info...',
+      filterAll: 'All Communities',
+      filterUnrestricted: 'Open / No 18+ Tag',
+      filterAge18: '18+ Restricted',
+      filterCompanion: 'Has Companion App',
+      emptyState: 'No community entries match your current search or filter.',
+      ageGateLabel: '18+ ADULTS ONLY RESTRICTION',
+      ageGatePrompt:
+        'This community publishes an 18+ adults-only restriction. Please confirm your age status before any join option is shown:',
+      confirmAdultBtn: 'I confirm I am 18 or older',
+      confirmUnderageBtn: 'I am under 18',
+      underageBlocked:
+        'Access Restricted: IsleLink is an 18+ adults-only community. Community join actions are hidden for underage users.',
+      resetAgeBtn: 'Change age confirmation',
+      verifiedSourceTag: 'OFFICIAL DISCORD SOURCE',
+      noWebsiteTag: 'Website: Not used (Discord is official source)',
+      noCompanionTag: 'Companion App: None offered here',
+      companionTag: (val) => `Companion App: ${val}`,
+      regionTag: (val) => `Region: ${val || 'Verified inside official Discord'}`,
+      openDiscordBtn: 'OPEN DISCORD ↗',
+      serverInfoBtn: 'SERVER INFORMATION',
+      companionAppBtn: 'COMPANION APPLICATION',
+      serverInfoTitle: 'Verified Server Information Policy',
+      serverInfoBody:
+        'Server rules, announcements, and connection requirements are maintained by community administrators inside the official Discord. Server IP addresses, player population, capacity, and gameplay settings are intentionally not fabricated here—always check the official Discord for live verified details.',
+      companionPanelTitle: 'Companion Application Instructions (Official Discord Only)',
+      companionWarning:
+        'Official Source Only: Do not download companion installers from unofficial third-party mirrors. Only use the download published by Obsidian Isle administrators inside their official Discord.',
+      markReviewedBtn: 'Mark Community Directory Reviewed',
+      reviewedBadge: '✓ COMMUNITY DIRECTORY REVIEWED'
     }
   },
 
@@ -714,6 +779,71 @@ const LOCALES = {
         filesVerified: 'Pengesahan fail permainan diselesaikan jika perlu',
         gameLaunched: 'The Isle: Evrima berjaya dilancarkan'
       }
+    },
+    welcome: {
+      introTitle: 'Selamat Datang ke The Isle & Evrima',
+      introBody:
+        'The Isle ialah permainan survival dinosaur dunia terbuka. Evrima ialah cabang utama aktif yang menampilkan mekanik baharu, dinosaur terkini, dan kemas kini berterusan. Pos 3D ini membimbing anda langkah demi langkah sebelum menyertai pelayan komuniti.',
+      purposeTitle: 'Tujuan Pengalaman Panduan Ini',
+      purposeBody:
+        'Daripada mencari pautan secara berasingan, terokai lima stesen penyelidikan (atau guna Lompat Terus) untuk memasang Evrima melalui Steam, menyemak Easy Anti-Cheat, meneliti komuniti rasmi, dan melengkapkan senarai semak akhir.',
+      pcTitle: 'Panduan Asas Kesediaan PC',
+      pcItems: [
+        'Sistem operasi Windows 64-bit dengan kad grafik khusus DirectX 11/12 terkini',
+        'Pemproses 4-teras ke atas dan 16 GB RAM disyorkan untuk prestasi stabil',
+        'Storan SSD dengan ruang kosong mencukupi untuk muat turun & kemas kini Evrima',
+        'Sambungan internet jalur lebar stabil untuk pelayan berbilang pemain & Easy Anti-Cheat'
+      ],
+      steamSpecsLink: 'Semak Spesifikasi Rasmi Terkini di Steam Store ↗',
+      destinationsTitle: 'Lima Destinasi Ekspedisi',
+      destinationCards: [
+        { id: 'welcome-centre', code: '01', name: 'Pusat Alu-aluan', desc: 'Pengenalan Evrima, kesediaan PC, dan kawalan asas.' },
+        { id: 'steam-station', code: '02', name: 'Terminal Steam & EAC', desc: 'Panduan 10 langkah Steam, cabang Evrima, dan semakan EAC.' },
+        { id: 'community-outpost', code: '03', name: 'Pos Komuniti', desc: 'Direktori komuniti disahkan berserta Discord rasmi & polisi akses.' },
+        { id: 'companion-station', code: '04', name: 'Meja Aplikasi Pendamping', desc: 'Panduan aplikasi pendamping rasmi dan langkah keselamatan.' },
+        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan Ekspedisi', desc: 'Senarai semak persediaan akhir sebelum mula bermain.' }
+      ],
+      jumpBtn: 'Lawat Stesen →',
+      navTitle: 'Arahan Navigasi Pos',
+      navDesktop: 'Komputer: WASD / Anak Panah untuk bergerak • Shift untuk pecut • Tetikus untuk melihat • E untuk berinteraksi • ESC untuk tutup panel.',
+      navMobile: 'Mudah Alih / Sentuh: Kayu ria kiri untuk berjalan • Leret skrin untuk melihat • Ketik butang [E] apabila berdekatan stesen.',
+      startBtn: 'MULAKAN EKSPEDISI',
+      goSteamBtn: 'Terus ke Stesen Steam →',
+      reviewedBadge: '✓ TAKLIMAT DISEMAK'
+    },
+    community: {
+      intro:
+        'Layari senarai komuniti yang disahkan daripada fail konfigurasi serverDirectory.js. Hanya pautan Discord dan polisi rasmi yang disahkan oleh pentadbir dipaparkan.',
+      searchPlaceholder: 'Cari komuniti mengikut nama atau maklumat...',
+      filterAll: 'Semua Komuniti',
+      filterUnrestricted: 'Terbuka / Tiada Had 18+',
+      filterAge18: 'Sekatan 18+',
+      filterCompanion: 'Ada Aplikasi Pendamping',
+      emptyState: 'Tiada komuniti sepadan dengan carian atau penapis anda.',
+      ageGateLabel: 'SEKATAN KOMUNITI DEWASA 18+',
+      ageGatePrompt:
+        'Komuniti ini menetapkan sekatan umur 18+ sahaja. Sila sahkan status umur anda sebelum tindakan sertai dipaparkan:',
+      confirmAdultBtn: 'Saya sahkan saya berumur 18 tahun ke atas',
+      confirmUnderageBtn: 'Saya berumur bawah 18 tahun',
+      underageBlocked:
+        'Akses Disekat: IsleLink ialah komuniti dewasa 18+ sahaja. Pautan dan tindakan menyertai tidak didedahkan kepada pengguna bawah umur.',
+      resetAgeBtn: 'Tukar pengesahan umur',
+      verifiedSourceTag: 'SUMBER DISCORD RASMI',
+      noWebsiteTag: 'Laman Web: Tidak digunakan (Discord sumber rasmi)',
+      noCompanionTag: 'Aplikasi Pendamping: Tiada ditawarkan di sini',
+      companionTag: (val) => `Aplikasi Pendamping: ${val}`,
+      regionTag: (val) => `Wilayah: ${val || 'Disahkan dalam Discord rasmi'}`,
+      openDiscordBtn: 'BUKA DISCORD ↗',
+      serverInfoBtn: 'MAKLUMAT PELAYAN',
+      companionAppBtn: 'APLIKASI PENDAMPING',
+      serverInfoTitle: 'Polisi Maklumat Pelayan Disahkan',
+      serverInfoBody:
+        'Peraturan pelayan, pengumuman, dan syarat sambungan diuruskan oleh pentadbir komuniti di dalam Discord rasmi. Alamat IP, jumlah pemain, kapasiti, dan tetapan pelayan tidak direka di sini—sentiasa rujuk Discord rasmi untuk maklumat sahih terkini.',
+      companionPanelTitle: 'Arahan Aplikasi Pendamping (Discord Rasmi Sahaja)',
+      companionWarning:
+        'Sumber Rasmi Sahaja: Jangan muat turun pemasang daripada laman pihak ketiga. Hanya gunakan pautan muat turun yang diterbitkan oleh pentadbir Obsidian Isle di dalam Discord rasmi mereka.',
+      markReviewedBtn: 'Tanda Direktori Komuniti Telah Disemak',
+      reviewedBadge: '✓ DIREKTORI KOMUNITI DISEMAK'
     }
   },
 
@@ -1068,6 +1198,71 @@ const LOCALES = {
         filesVerified: 'Dah verify game files kalau perlu',
         gameLaunched: 'The Isle: Evrima dah berjaya masuk menu'
       }
+    },
+    welcome: {
+      introTitle: 'Welcome ke The Isle & Evrima',
+      introBody:
+        'The Isle ni game survival dinosaur open-world. Evrima tu branch utama yang aktif sekarang dengan mekanik baru, dino baru, dan update berterusan. Kem 3D ni guide korang step-by-step sebelum korang masuk server komuniti.',
+      purposeTitle: 'Kenapa Kena Pusing Kem Ni?',
+      purposeBody:
+        'Daripada korang pening cari link merata, singgah je lima stesen kat sini (atau pakai Teleport) untuk install Evrima kat Steam, check Easy Anti-Cheat, tengok senarai komuniti verified, dan habiskan checklist akhir.',
+      pcTitle: 'Spec PC Asas Biar Ngam',
+      pcItems: [
+        'Windows 64-bit dengan kad grafik dedicated DirectX 11/12 yang elok',
+        'CPU quad-core ke atas dan 16 GB RAM memang digalakkan biar tak sangkut',
+        'SSD dengan ruang kosong cukup untuk download dengan update Evrima',
+        'Internet stabil untuk main multiplayer dan jalankan Easy Anti-Cheat'
+      ],
+      steamSpecsLink: 'Check Spec Rasmi Penuh Kat Steam Store ↗',
+      destinationsTitle: 'Lima Stesen Dalam Kem Ni',
+      destinationCards: [
+        { id: 'welcome-centre', code: '01', name: 'Pusat Welcome', desc: 'Intro Evrima, spec PC asas, dengan cara kawal.' },
+        { id: 'steam-station', code: '02', name: 'Terminal Steam & EAC', desc: '10 step install Steam, tukar branch Evrima, dan check EAC.' },
+        { id: 'community-outpost', code: '03', name: 'Port Komuniti', desc: 'Senarai komuniti verified dengan link Discord & rules akses.' },
+        { id: 'companion-station', code: '04', name: 'Meja Companion App', desc: 'Panduan app tambahan yang official dengan tips elak scam.' },
+        { id: 'expedition-departure', code: '05', name: 'Pintu Pelepasan', desc: 'Checklist last sebelum korang terjun masuk server.' }
+      ],
+      jumpBtn: 'Pergi Stesen →',
+      navTitle: 'Cara Gerak Kat Kem',
+      navDesktop: 'PC: WASD / Arrow untuk jalan • Shift untuk lari • Mouse untuk pusing • E untuk tekan • ESC untuk tutup panel.',
+      navMobile: 'Phone / Touch: Joystick kiri untuk jalan • Swipe skrin untuk pusing kamera • Tap button [E] bila dah dekat stesen.',
+      startBtn: 'JOM MULA EKSPEDISI',
+      goSteamBtn: 'Terus ke Stesen Steam →',
+      reviewedBadge: '✓ ORIENTASI DAH CHECK'
+    },
+    community: {
+      intro:
+        'Tengok senarai komuniti verified yang tarik terus dari serverDirectory.js. Link Discord rasmi dan rules yang admin sahkan je keluar kat sini.',
+      searchPlaceholder: 'Cari nama komuniti atau info...',
+      filterAll: 'Semua Komuniti',
+      filterUnrestricted: 'Terbuka / Bukan 18+',
+      filterAge18: 'Had Umur 18+',
+      filterCompanion: 'Ada Companion App',
+      emptyState: 'Tak jumpa komuniti yang ngam dengan carian atau filter korang.',
+      ageGateLabel: 'HAD UMUR DEWASA 18+',
+      ageGatePrompt:
+        'Komuniti ni khusus untuk 18 tahun ke atas je. Sahkan dulu umur korang sebelum button join dibuka:',
+      confirmAdultBtn: 'Ya, saya 18 tahun ke atas',
+      confirmUnderageBtn: 'Saya bawah 18 tahun',
+      underageBlocked:
+        'Akses Disekat: IsleLink ni komuniti 18+ sahaja. Link dengan button join memang disembunyikan untuk pengguna bawah umur.',
+      resetAgeBtn: 'Tukar pengesahan umur',
+      verifiedSourceTag: 'DISCORD RASMI SAHAJA',
+      noWebsiteTag: 'Website: Tak pakai (Discord sumber rasmi)',
+      noCompanionTag: 'Companion App: Memang takde kat sini',
+      companionTag: (val) => `Companion App: ${val}`,
+      regionTag: (val) => `Region: ${val || 'Check dalam Discord rasmi'}`,
+      openDiscordBtn: 'BUKA DISCORD ↗',
+      serverInfoBtn: 'INFO SERVER',
+      companionAppBtn: 'COMPANION APP',
+      serverInfoTitle: 'Polisi Info Server Sahih',
+      serverInfoBody:
+        'Rules server, announcement, dengan cara connect semua diuruskan admin dalam Discord rasmi. IP server, jumlah player, slot, atau setting pelik-pelik memang tak direka kat sini—check terus kat Discord rasmi diaorang.',
+      companionPanelTitle: 'Step Companion Application (Ikut Discord Rasmi Je)',
+      companionWarning:
+        'Sumber Rasmi Je: Jangan sesekali download installer dari website luar. Guna download yang admin Obsidian Isle sendiri post kat Discord rasmi diaorang.',
+      markReviewedBtn: 'Tanda Direktori Komuniti Dah Check',
+      reviewedBadge: '✓ DIREKTORI KOMUNITI DAH CHECK'
     }
   }
 };
