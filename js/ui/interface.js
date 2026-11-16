@@ -2,8 +2,14 @@ import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
 import { getLocaleBundle } from '../data/i18n.js';
 import { GUIDE_TRANSLATIONS, SHANKS_MUTATIONS } from '../data/survivalContent.js';
 import { SteamTutorialController } from '../systems/tutorial.js';
-import { WelcomeStationController, CommunityDirectoryController } from '../systems/destinations.js';
+import {
+  WelcomeStationController,
+  CommunityDirectoryController,
+  CompanionStationController,
+  DepartureStationController
+} from '../systems/destinations.js';
 import { SurvivalGuideController } from '../systems/survivalGuide.js';
+import { GatewayMapViewer, getMapLocaleTitle } from '../systems/gatewayMap.js';
 
 const SESSION_NAME_KEY = 'the-isle-expedition-player-name';
 
@@ -34,7 +40,16 @@ export class InterfaceController {
       }
     });
     this.communityDirectory = new CommunityDirectoryController(progress);
+    this.companionStation = new CompanionStationController(progress);
+    this.departureStation = new DepartureStationController(progress, {
+      onReturnToExpedition: () => this.closeStationModal(true),
+      onJumpToStation: (destId) => {
+        const dest = this.navigation.jumpTo(destId);
+        if (dest) this.openStationModal(dest);
+      }
+    });
     this.survivalGuide = new SurvivalGuideController(progress);
+    this.gatewayMapViewer = new GatewayMapViewer();
     this.onOpenStation = onOpenStation;
     this.onCloseStation = onCloseStation;
 
@@ -44,6 +59,7 @@ export class InterfaceController {
     this.selectedMutationId = 'reniculate';
     this.currentActiveStation = null;
     this.isModalOpen = false;
+    this.isMapOpen = false;
     this.isNpcDialogOpen = false;
     this.hasEnteredWorld = false;
     this.joystickTouchId = null;
@@ -64,6 +80,7 @@ export class InterfaceController {
       languageSelect: document.getElementById('language-select'),
       hudDestLabel: document.getElementById('hud-dest-label'),
       destinationSelect: document.getElementById('destination-select'),
+      btnGatewayMap: document.getElementById('btn-gateway-map'),
       btnControlsHelp: document.getElementById('btn-controls-help'),
       hudStatusLabel: document.getElementById('hud-status-label'),
       hudHint: document.getElementById('hud-hint'),
@@ -110,6 +127,9 @@ export class InterfaceController {
       npcDialogHint: document.getElementById('npc-dialog-hint'),
       btnCloseNpc: document.getElementById('btn-close-npc'),
       btnNpcWhatToDo: document.getElementById('btn-npc-what-to-do'),
+      btnNpcPremise: document.getElementById('btn-npc-premise'),
+      btnNpcMapGuide: document.getElementById('btn-npc-map-guide'),
+      btnNpcOpenMap: document.getElementById('btn-npc-open-map'),
       btnNpcGreeting: document.getElementById('btn-npc-greeting'),
       btnNpcJumpSteam: document.getElementById('btn-npc-jump-steam'),
       btnNpcBye: document.getElementById('btn-npc-bye')
@@ -186,6 +206,9 @@ export class InterfaceController {
     // HUD strings
     this.els.hudLangLabel.textContent = u.langLabel;
     this.els.hudDestLabel.textContent = u.destLabel;
+    if (this.els.btnGatewayMap) {
+      this.els.btnGatewayMap.textContent = u.mapHudBtn || '[M] MAP';
+    }
     this.els.btnControlsHelp.textContent = u.controlsBtn;
     this.els.hudStatusLabel.textContent = u.statusLabel;
     this.els.hudHint.innerHTML = u.hudHint.replace('ESC', '<kbd>ESC</kbd>');
@@ -205,7 +228,9 @@ export class InterfaceController {
     this._populateDestinationMenu();
 
     // Refresh currently open modal or NPC dialog immediately
-    if (this.isModalOpen && this.currentModalIndex >= 0) {
+    if (this.isMapOpen) {
+      this.openGatewayMapModal();
+    } else if (this.isModalOpen && this.currentModalIndex >= 0) {
       this.openStationModal(DESTINATIONS[this.currentModalIndex]);
     }
     if (this.isNpcDialogOpen) {
@@ -283,6 +308,12 @@ export class InterfaceController {
       this.showWelcome();
     });
 
+    if (this.els.btnGatewayMap) {
+      this.els.btnGatewayMap.addEventListener('click', () => {
+        this.openGatewayMapModal();
+      });
+    }
+
     this.els.destinationSelect.addEventListener('change', (e) => {
       const id = e.target.value;
       if (!id) return;
@@ -323,6 +354,18 @@ export class InterfaceController {
     this.els.btnCloseNpc.addEventListener('click', () => this.closeNpcDialog(false));
     this.els.btnNpcBye.addEventListener('click', () => this.closeNpcDialog(true));
     this.els.btnNpcWhatToDo.addEventListener('click', () => this._renderNpcPage('what-to-do'));
+    if (this.els.btnNpcPremise) {
+      this.els.btnNpcPremise.addEventListener('click', () => this._renderNpcPage('premise'));
+    }
+    if (this.els.btnNpcMapGuide) {
+      this.els.btnNpcMapGuide.addEventListener('click', () => this._renderNpcPage('gateway-map'));
+    }
+    if (this.els.btnNpcOpenMap) {
+      this.els.btnNpcOpenMap.addEventListener('click', () => {
+        this.closeNpcDialog(false);
+        this.openGatewayMapModal();
+      });
+    }
     this.els.btnNpcGreeting.addEventListener('click', () => this._renderNpcPage('greeting'));
     this.els.btnNpcJumpSteam.addEventListener('click', () => {
       const targetStationId =
@@ -542,6 +585,9 @@ export class InterfaceController {
 
       this.els.btnNpcWhatToDo.classList.toggle('hidden', pageId === 'what-to-do');
       this.els.btnNpcGreeting.classList.toggle('hidden', pageId === 'greeting');
+      if (this.els.btnNpcPremise) this.els.btnNpcPremise.classList.add('hidden');
+      if (this.els.btnNpcMapGuide) this.els.btnNpcMapGuide.classList.add('hidden');
+      if (this.els.btnNpcOpenMap) this.els.btnNpcOpenMap.classList.add('hidden');
       return;
     }
 
@@ -560,6 +606,18 @@ export class InterfaceController {
     this.els.npcDialogHint.textContent = this._withName(page.hint);
 
     this.els.btnNpcWhatToDo.textContent = u.npcBtnWhatToDo;
+    if (this.els.btnNpcPremise) {
+      this.els.btnNpcPremise.textContent = u.npcBtnPremise || 'Game Premise';
+      this.els.btnNpcPremise.classList.toggle('hidden', pageId === 'premise');
+    }
+    if (this.els.btnNpcMapGuide) {
+      this.els.btnNpcMapGuide.textContent = u.npcBtnMapGuide || 'Gateway Map & Legends';
+      this.els.btnNpcMapGuide.classList.toggle('hidden', pageId === 'gateway-map');
+    }
+    if (this.els.btnNpcOpenMap) {
+      this.els.btnNpcOpenMap.textContent = u.npcBtnOpenMap || 'Open Gateway Map Viewer';
+      this.els.btnNpcOpenMap.classList.remove('hidden');
+    }
     this.els.btnNpcGreeting.textContent = u.npcBtnGreeting;
     this.els.btnNpcJumpSteam.textContent = u.npcBtnJumpSteam;
     this.els.btnNpcBye.textContent = u.npcBtnBye;
@@ -640,11 +698,39 @@ export class InterfaceController {
     }
   }
 
+  openGatewayMapModal() {
+    const lang = this.progress.getLanguage();
+    const u = this._bundle().ui;
+    const t = getMapLocaleTitle(lang);
+
+    this.currentModalIndex = -1;
+    this.isMapOpen = true;
+    this.isModalOpen = true;
+    this.player.setEnabled(false);
+    this.player.unlockPointer();
+
+    this.els.stationBadge.textContent = t.badge;
+    this.els.stationTitle.textContent = t.title;
+    this.els.stationSubtitle.textContent = t.subtitle;
+
+    const stationCard = this.els.stationModal.querySelector('.station-card');
+    const footerTag = this.els.stationModal.querySelector('.skeleton-tag');
+    stationCard.classList.add('wide');
+    footerTag.textContent = u.functionalTag;
+    this.els.btnPrevStation.classList.add('hidden');
+    this.els.btnNextStation.classList.add('hidden');
+
+    this.gatewayMapViewer.mount(this.els.stationBody, lang);
+    this.els.stationModal.classList.remove('hidden');
+    this.els.objectiveText.textContent = this._withName(u.inspecting(t.title));
+  }
+
   openStationModal(destination) {
     const b = this._bundle();
     const loc = b.destinations[destination.id] || destination;
 
     this.currentModalIndex = DESTINATIONS.findIndex((d) => d.id === destination.id);
+    this.isMapOpen = false;
     this.isModalOpen = true;
     this.player.setEnabled(false);
     this.player.unlockPointer();
@@ -652,6 +738,9 @@ export class InterfaceController {
     this.els.stationBadge.textContent = loc.badge || destination.badge;
     this.els.stationTitle.textContent = loc.title || destination.title;
     this.els.stationSubtitle.textContent = loc.subtitle || destination.subtitle;
+
+    this.els.btnPrevStation.classList.remove('hidden');
+    this.els.btnNextStation.classList.remove('hidden');
 
     const stationCard = this.els.stationModal.querySelector('.station-card');
     const footerTag = this.els.stationModal.querySelector('.skeleton-tag');
@@ -668,6 +757,14 @@ export class InterfaceController {
       stationCard.classList.add('wide');
       footerTag.textContent = b.ui.functionalTag;
       this.communityDirectory.mount(this.els.stationBody);
+    } else if (destination.id === 'companion-station') {
+      stationCard.classList.add('wide');
+      footerTag.textContent = b.ui.functionalTag;
+      this.companionStation.mount(this.els.stationBody);
+    } else if (destination.id === 'expedition-departure') {
+      stationCard.classList.add('wide');
+      footerTag.textContent = b.ui.functionalTag;
+      this.departureStation.mount(this.els.stationBody);
     } else if (destination.id === 'survival-training') {
       stationCard.classList.add('wide');
       footerTag.textContent = b.ui.functionalTag;
@@ -693,6 +790,9 @@ export class InterfaceController {
   closeStationModal(reLockPointer = false) {
     if (!this.isModalOpen) return;
     this.isModalOpen = false;
+    this.isMapOpen = false;
+    this.els.btnPrevStation.classList.remove('hidden');
+    this.els.btnNextStation.classList.remove('hidden');
     this.els.stationModal.classList.add('hidden');
     this.player.setEnabled(true);
     this.els.objectiveText.textContent = this._withName(this._bundle().ui.objectiveDefault);

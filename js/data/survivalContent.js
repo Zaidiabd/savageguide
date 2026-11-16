@@ -42,15 +42,15 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Open the Community Directory Board below, {name}, to inspect server policies and Discord portals.'
       },
       mapotofu: {
-        role: 'Tyrannosaurus • Station 04 Apex Companion Specialist',
+        role: 'Tyrannosaurus • Station 04 Apex Companion & Server Guide',
         greeting:
-          'Grrr… greetings, {name}! I am mapotofu, keeping watch over the Companion Application Station in full Tyrannosaurus scale. Tools only help if you grab them from the right official channels—never shady links!',
+          'Grrr… greetings, {name}! I am mapotofu, keeping watch over the Companion Application Station in full Tyrannosaurus scale. Just so you know—our Primeval Malaysia crew plays across a lot of servers, but our main ones are IsleLink and Obsidian Isle!',
         tips:
-          'Station 04 Briefing for {name} (Companion Application Desk):\n' +
-          '• Inspect the dual-monitor desk with [E] for safety rules and official Discord-only companion distribution notes.\n' +
-          '• Never download third-party executables or "anticheat tweaks"—only trust admin-pinned channels.\n' +
-          '• Rex Pro Tip: Large carnivores burn massive calories—plan hunts around waterholes and manage ambush stamina!',
-        hint: 'Inspect the Companion Desk below, {name}, for verified safety & setup information.'
+          'Station 04 Briefing for {name} (Main Servers & Companion Apps):\n' +
+          '• Main Servers: We play across many Evrima servers, but the main two are IsleLink (18+, official companion download at https://islelink.gg/download) and Obsidian Isle (companion distributed inside their official Discord).\n' +
+          '• Community Extras: Check Noctua Isle and Dino Den inside Destination 03 too!\n' +
+          '• Rex Pro Tip: Large carnivores burn massive calories—plan hunts around waterholes and only install companion tools from official links!',
+        hint: 'Inspect the Companion Desk below, {name}, for official IsleLink (islelink.gg/download) & Obsidian Isle links.'
       },
       kmy: {
         role: 'Tyrannosaurus • Station 05 Northern Departure Warden',
@@ -141,15 +141,15 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Buka Papan Direktori Komuniti di bawah, {name}, untuk menyemak pautan Discord rasmi.'
       },
       mapotofu: {
-        role: 'Tyrannosaurus • Pakar Aplikasi Pendamping Stesen 04',
+        role: 'Tyrannosaurus • Pakar Aplikasi Pendamping & Pelayan Stesen 04',
         greeting:
-          'Grrr… salam perkenalan, {name}! Saya mapotofu, mengawal Stesen Aplikasi Pendamping dengan gagah sebagai Tyrannosaurus. Alat bantu hanya berguna jika dimuat turun daripada saluran rasmi—elakkan pautan meragukan!',
+          'Grrr… salam perkenalan, {name}! Saya mapotofu, mengawal Stesen Aplikasi Pendamping sebagai Tyrannosaurus. Untuk makluman—geng kami bermain di banyak pelayan The Isle, tetapi pelayan utama kami ialah IsleLink dan Obsidian Isle!',
         tips:
-          'Taklimat Stesen 04 untuk {name} (Meja Aplikasi Pendamping):\n' +
-          '• Periksa meja berkembar monitor ([E]) untuk panduan keselamatan dan saluran Discord rasmi.\n' +
-          '• Jangan sekali-kali memuat turun pemintas EAC atau fail pihak ketiga yang tidak disahkan admin.\n' +
-          '• Tip Rex: Karnivor besar memerlukan kalori tinggi—rancang pemburuan dekat sumber air dan kawal stamina serang hendap!',
-        hint: 'Periksa Meja Aplikasi Pendamping di bawah, {name}, untuk langkah keselamatan muat turun.'
+          'Taklimat Stesen 04 untuk {name} (Pelayan Utama & Aplikasi Pendamping):\n' +
+          '• Pelayan Utama: Kami bermain di pelbagai pelayan, namun dua pelayan utama ialah IsleLink (18+, muat turun companion rasmi di https://islelink.gg/download) dan Obsidian Isle (diedar melalui Discord rasmi).\n' +
+          '• Komuniti Tambahan: Anda juga boleh meneroka Noctua Isle & Dino Den di Destinasi 03!\n' +
+          '• Tip Rex: Sentiasa muat turun aplikasi pendamping daripada pautan rasmi sahaja!',
+        hint: 'Periksa Meja Aplikasi Pendamping di bawah, {name}, untuk pautan rasmi IsleLink & Obsidian Isle.'
       },
       kmy: {
         role: 'Tyrannosaurus • Pengawal Gerbang Utara Stesen 05',
@@ -240,15 +240,15 @@ export const GUIDE_TRANSLATIONS = {
         hint: 'Buka Direktori Komuniti kat bawah ni, {name}, untuk tengok link Discord rasmi!'
       },
       mapotofu: {
-        role: 'Tyrannosaurus • Otai Stesen 04 Companion App',
+        role: 'Tyrannosaurus • Otai Stesen 04 Companion & Server Utama',
         greeting:
-          'Grrr… apa khabar {name}! Aku mapotofu, jaga Meja Companion App pakai T-Rex kat sini. Ingat ya, apa-apa companion tool kena ambil dari Discord rasmi je—jangan sesekali klik link pelik!',
+          'Grrr… apa khabar {name}! Aku mapotofu, jaga Meja Companion App pakai T-Rex kat sini. Bagitahu awal-awal ya—geng Primeval Malaysia memang main banyak server, tapi dua server utama kitaorang ialah IsleLink dengan Obsidian Isle!',
         tips:
-          'Briefing Stesen 04 untuk {name} (Meja Companion App):\n' +
-          '• Tekan [E] kat meja monitor kembar tu untuk baca safety guidelines & sumber download sah.\n' +
-          '• Jangan download fail third-party merata kalau tak nak kena scam atau kena ban EAC.\n' +
-          '• Tip Rex: Dino besar cepat lapar—plan elok-elok bila nak sprint ambush mangsa kat tepi sungai!',
-        hint: 'Tekan bawah ni, {name}, untuk check Meja Companion App dengan lebih detail.'
+          'Briefing Stesen 04 untuk {name} (Server Utama & Companion App):\n' +
+          '• Server Utama: Memang kitaorang pusing banyak server, tapi main server ialah IsleLink (18+, link rasmi companion kat https://islelink.gg/download) dan Obsidian Isle (ambil companion kat Discord rasmi diaorang).\n' +
+          '• Server Extra: Boleh check juga Noctua Isle dengan Dino Den kat Destinasi 03!\n' +
+          '• Tip Rex: Download companion app dari sumber official je—elak link scam!',
+        hint: 'Tekan bawah ni, {name}, untuk tengok link rasmi IsleLink & Obsidian Isle!'
       },
       kmy: {
         role: 'Tyrannosaurus • Warden Pintu Pelepasan Stesen 05',

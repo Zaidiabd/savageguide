@@ -1,0 +1,45 @@
+{
+  "tile": 512,
+  "maxZ": 4,
+  "nativeWidth": 7800,
+  "nativeHeight": 7817,
+  "levels": [
+    {
+      "z": 0,
+      "width": 488,
+      "height": 489,
+      "cols": 1,
+      "rows": 1
+    },
+    {
+      "z": 1,
+      "width": 975,
+      "height": 978,
+      "cols": 2,
+      "rows": 2
+    },
+    {
+      "z": 2,
+      "width": 1950,
+      "height": 1955,
+      "cols": 4,
+      "rows": 4
+    },
+    {
+      "z": 3,
+      "width": 3900,
+      "height": 3909,
+      "cols": 8,
+      "rows": 8
+    },
+    {
+      "z": 4,
+      "width": 7800,
+      "height": 7817,
+      "cols": 16,
+      "rows": 16
+    }
+  ],
+  "source": "Gateway v0.21.7 composite (VulnonaMAP base+water), sliced locally",
+  "builtFrom": "public/assets/isle-satellite-map.webp"
+}

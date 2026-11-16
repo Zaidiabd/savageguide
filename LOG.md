@@ -135,6 +135,25 @@
   * Placed `Shanks` in a crouched/resting leaf-and-stone hollow (`sittingPose: true`) right outside the Training Camp palisade gateway (`(-21.8, -3.2)`).
   * Built an interactive whispering dialog panel asking `{name}` about Evrima's **Hidden Mutations** (`Reniculate Kidneys`, `Reinforced Tendons`, `Osteophagic`, and `Augmented Tapetum` — kill 5 players at night) and revealing their exact unlock conditions and survival effects.
 
+### Stage 13 — Community Servers, Destination 04/05 Completion, Gateway Map & Colorful Skins
+* **Community & Companion Directory Updates (`js/data/serverDirectory.js`, `js/systems/destinations.js`, `js/data/survivalContent.js`):**
+  * Added **Noctua Isle** (`https://discord.gg/Z2NAfTgNVv`) and **Dino Den** (`https://discord.gg/thedinoden`, `https://dinoden.gg`) to `communities`.
+  * Updated **IsleLink** with the official companion app download URL (`https://islelink.gg/download`) behind 18+ confirmation and implemented `CompanionStationController` (Destination 04).
+  * Updated `mapotofu`'s dialog across `en`, `ms`, and `kl` stating that players roam many servers, with the main two being **IsleLink** and **Obsidian Isle**.
+* **Destination 05 Departure Checklist & Animated Exit Portal (`js/systems/destinations.js`, `js/systems/progress.js`, `js/data/i18n.js`, `js/core/world.js`):**
+  * Completed `DepartureStationController` with the full **11-point interactive readiness checklist** synced to `ProgressSystem` / `localStorage`, progress meter, and **`EXPEDITION PREPARATION COMPLETE`** completion banner.
+  * Added an animated swirling Exit Portal inside the Destination 05 Departure Gate (`ShaderMaterial` emerald/cyan/gold spiral vortex, 3 counter-rotating additive halo rings, 22 orbiting crystal motes, ground energy pad, and pulsing beacon light).
+* **SavageZed Game Premise & Tiled Gateway Map (`public/map-tiles/`, `js/systems/gatewayMap.js`, `js/ui/interface.js`, `js/core/world.js`, `js/main.js`):**
+  * Bundled the Gateway `z0..z4` map tileset into `public/map-tiles/` and pinned the island overview chart onto the Welcome Noticeboard.
+  * Built `GatewayMapViewer` (`[M]` hotkey & HUD button + SavageZed dialog trigger) supporting zoom/pan canvas rendering and a localized **Evrima Map Legends** guide explaining freshwater, saltwater/cliffs, sanctuaries, migrations, and grid coordinates.
+  * Expanded **SavageZed**'s dialog with `'premise'` (game premise & permadeath survival) and `'gateway-map'` pages in `en`, `ms`, and `kl`.
+* **Colorful Randomized Dinosaur Skins & Signature SavageZed Palette (`js/core/npc.js`):**
+  * Injected a **Gold, Black, and Red** Evrima skin (`SAVAGEZED_GOLD_BLACK_RED`) onto SavageZed (`Omniraptor.glb`) and vibrant randomized multi-hue palettes onto all 9 other dinosaur station guides.
+* **Procedural Grass, Insects & Crawling Wildlife (`js/core/wildlife.js`, `js/core/world.js`):**
+  * Generated `2,700` desktop (`1,350` touch) 5-blade curved procedural grass clumps (`7,000–13,500` animated blades) driven by a GPU wind vertex shader (`onBeforeCompile`) across glades and forest floors.
+  * Added instanced flapping **dragonflies**, **butterflies**, and additive glowing **fireflies** across the pond and trails.
+  * Added terrain-clamped crawling **iridescent beetles**, **darting forest lizards**, and **segmented millipedes** patrolling clearings and pond banks.
+
 ---
 
 ## 2. Git Commit Milestones (`main`)
@@ -149,10 +168,9 @@
 * `0caf690` — Upgraded 3D polygon detail, procedural PBR textures, foliage, structures, and SavageZed
 * `db7e078` — Replaced SavageZed avatar with Omniraptor GLB model and Evrima skin
 * `dced2d7` — Added Survival Training Ground (Station 06), gateway signboard, bonfire, and 8 station dino guides
+* `8aec835` — Added session survivor name prompt, `Space` jumping, Shanks Ceratosaurus & Augmented Tapetum hidden mutation
 
 ---
 
 ## 3. Next Planned Milestones (Pending per `AGY.md`)
-* **Destination 04 (Companion Application Station):** Full companion app details, checklists, and troubleshooting.
-* **Destination 05 (Expedition Departure):** Full 11-point interactive readiness checklist synced with `ProgressSystem` and completion state.
-* **Polish & Optimization:** Minimap (`M` toggle, `js/systems/minimap.js`), ambient Web Audio soundscape, graphics settings panel (`js/ui/controlPanel.js`), and full desktop/mobile QA pass.
+* **Polish & Optimization:** Ambient Web Audio soundscape, graphics settings panel (`js/ui/controlPanel.js`), and full desktop/mobile QA pass.

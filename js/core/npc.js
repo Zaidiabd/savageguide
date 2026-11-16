@@ -212,13 +212,69 @@ function loadImageCached(src) {
 }
 
 /**
+ * Converts HSL (h in 0..360, s/l in 0..1) into an RGB byte triplet [r, g, b].
+ */
+function hslToRgbBytes(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0];
+  else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  return [
+    Math.round((r + m) * 255),
+    Math.round((g + m) * 255),
+    Math.round((b + m) * 255)
+  ];
+}
+
+const SAVAGEZED_GOLD_BLACK_RED = {
+  id: 'savagezed-gold-black-red',
+  red: [0xee, 0xbc, 0x26],     // Radiant Gold
+  green: [0xd9, 0x9b, 0x1e],   // Warm Gold-Amber belly
+  blue: [0x16, 0x14, 0x16],    // Deep Obsidian Black
+  cyan: [0xc4, 0x1e, 0x24],    // Crimson Red
+  magenta: [0x11, 0x10, 0x12], // Jet Black stripes
+  yellow: [0xe6, 0x24, 0x2c]   // Bright Red highlights
+};
+
+/**
+ * Generates a vibrant, random multi-hue Evrima skin palette so every station dinosaur pops visually.
+ */
+function createRandomColorfulPalette(id, hueIndex = 0) {
+  const baseHue = (Math.random() * 360 + hueIndex * 47) % 360;
+  return {
+    id: `colorful-${id}`,
+    red: hslToRgbBytes(baseHue, 0.78, 0.5),
+    green: hslToRgbBytes((baseHue + 52) % 360, 0.65, 0.66),
+    blue: hslToRgbBytes((baseHue + 145) % 360, 0.76, 0.42),
+    cyan: hslToRgbBytes((baseHue + 215) % 360, 0.82, 0.54),
+    magenta: hslToRgbBytes((baseHue + 285) % 360, 0.72, 0.24),
+    yellow: hslToRgbBytes((baseHue + 35) % 360, 0.9, 0.58)
+  };
+}
+
+/**
  * Composites Evrima albedo cavity, CMYRGB pattern mask, and detail mask into a CanvasTexture
  * and clones glTF quantized UV transform attributes onto the generated texture.
  */
-async function getSpeciesSkinTexture(speciesKey, variantKey, templateMap, canvasSize = 512) {
+async function getSpeciesSkinTexture(
+  speciesKey,
+  variantKey,
+  templateMap,
+  canvasSize = 512,
+  paletteOverride = null
+) {
   const spec = SPECIES_CATALOG[speciesKey];
   const patternFile = spec.patterns[variantKey] || spec.patterns.adult1;
-  const cacheKey = `${speciesKey}:${variantKey}:${canvasSize}`;
+  const paletteId = paletteOverride?.id || 'default';
+  const cacheKey = `${speciesKey}:${variantKey}:${paletteId}:${canvasSize}`;
 
   if (!skinTextureCache.has(cacheKey)) {
     const [albedoImg, patternImg, detailImg] = await Promise.all([
@@ -239,7 +295,7 @@ async function getSpeciesSkinTexture(speciesKey, variantKey, templateMap, canvas
     const albedo = makeBuffer(albedoImg);
     const pattern = makeBuffer(patternImg);
     const detail = makeBuffer(detailImg);
-    const c = spec.colors;
+    const c = paletteOverride ? { ...spec.colors, ...paletteOverride } : spec.colors;
 
     const out = albedo.ctx.createImageData(canvasSize, canvasSize);
     const oData = out.data;
@@ -402,6 +458,7 @@ function mountDinoAvatar({
   canvasSize = 512,
   phaseOffset = 0,
   sittingPose = false,
+  paletteOverride = null,
   setupExtra = null
 }) {
   const y = getTerrainHeight(position.x, position.z);
@@ -572,7 +629,8 @@ function mountDinoAvatar({
           speciesKey,
           patternVariant,
           templateBodyMap,
-          canvasSize
+          canvasSize,
+          paletteOverride
         );
         if (bodyMaterial) {
           bodyMaterial.map = compositedMap;
@@ -680,6 +738,7 @@ export function buildSavageZedNPC(scene, collisionSystem, interactables, materia
     colliderTag: 'npc-savagezed',
     canvasSize: 768,
     phaseOffset: 0,
+    paletteOverride: SAVAGEZED_GOLD_BLACK_RED,
     setupExtra: (root) => {
       const vestMat =
         materials?.timberWeathered || new THREE.MeshStandardMaterial({ color: 0x6b5139, roughness: 0.86 });
@@ -786,7 +845,8 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
       colliderTag: `npc-guide-${guide.id}`,
       canvasSize: 512,
       phaseOffset: idx * 0.43,
-      sittingPose: Boolean(guide.sittingPose)
+      sittingPose: Boolean(guide.sittingPose),
+      paletteOverride: createRandomColorfulPalette(guide.id, idx)
     });
 
     updaters.push(mixerUpdater);

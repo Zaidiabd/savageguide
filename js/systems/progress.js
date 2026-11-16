@@ -17,7 +17,11 @@ const DEFAULT_STATE = {
     eacChecked: false,
     eacRepaired: false,
     filesVerified: false,
-    gameLaunched: false
+    gameLaunched: false,
+    communityReviewed: false,
+    companionReviewed: false,
+    rulesReviewed: false,
+    readyToExplore: false
   }
 };
 
@@ -142,6 +146,16 @@ export class ProgressSystem {
 
   setCommunityReviewed(value = true) {
     this.state.communityReviewed = Boolean(value);
+    this.state.checklist.communityReviewed = Boolean(value);
+    this._save();
+  }
+
+  isCompanionReviewed() {
+    return Boolean(this.state.checklist?.companionReviewed);
+  }
+
+  setCompanionReviewed(value = true) {
+    this.state.checklist.companionReviewed = Boolean(value);
     this._save();
   }
 

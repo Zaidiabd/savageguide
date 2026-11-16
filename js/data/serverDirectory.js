@@ -1,28 +1,27 @@
 /**
  * Modular Community Directory configuration (per AGY.md Section 5 & Section 8).
- * Adding a new community only requires appending an entry to `communities`.
- * Only administrator-verified facts are included—no invented IPs, populations,
- * capacities, or unofficial download URLs.
+ * Only administrator-verified facts & user-verified links are included.
  */
 export const communities = [
   {
     id: 'islelink',
     name: 'IsleLink',
     discord: 'https://discord.gg/islelink',
-    website: null,
-    companionApp: null,
+    website: 'https://islelink.gg',
+    companionApp: 'Official IsleLink Companion App',
+    companionUrl: 'https://islelink.gg/download',
     ageRestriction: '18+',
     accessNotice: 'Adults only',
     region: null,
     description: {
-      en: 'Official IsleLink community hub. All verified community information and announcements are provided through the official Discord server.',
-      ms: 'Hab komuniti rasmi IsleLink. Semua maklumat komuniti yang disahkan dan pengumuman disediakan melalui pelayan Discord rasmi.',
-      kl: 'Port komuniti rasmi IsleLink. Semua info sahih dengan pengumuman memang ada kat Discord rasmi diaorang je.'
+      en: 'Main Primeval Malaysia server partner & IsleLink community hub. Announcements, rules, and verified Discord portals are maintained for adults 18+, alongside the official IsleLink companion download.',
+      ms: 'Rakan pelayan utama Primeval Malaysia & hab komuniti IsleLink. Pengumuman, peraturan, dan portal Discord sahih diselenggara untuk dewasa 18+, bersama muat turun rasmi aplikasi pendamping IsleLink.',
+      kl: 'Antara server main Primeval Malaysia dengan port komuniti IsleLink. Rules, announcement, dan Discord sahih untuk 18+ disediakan, termasuk link rasmi download companion app IsleLink.'
     },
     verificationNote: {
-      en: 'Official Discord is the primary information source. No separate website or companion app download is offered here.',
-      ms: 'Discord rasmi ialah sumber maklumat utama. Tiada laman web berasingan atau muat turun aplikasi pendamping ditawarkan di sini.',
-      kl: 'Discord rasmi je sumber info utama. Takde website lain atau download companion app kat sini.'
+      en: 'Official Discord & Official Companion Download (islelink.gg/download). Strictly 18+ adults-only community.',
+      ms: 'Discord Rasmi & Muat Turun Aplikasi Pendamping Rasmi (islelink.gg/download). Komuniti dewasa 18+ sahaja.',
+      kl: 'Discord Rasmi & Download Companion App Sahih (islelink.gg/download). Khas untuk komuniti dewasa 18+ sahaja.'
     }
   },
   {
@@ -31,13 +30,14 @@ export const communities = [
     discord: 'https://discord.gg/4CKwnyJ72C',
     website: null,
     companionApp: 'Distributed through Discord',
+    companionUrl: null,
     ageRestriction: null,
     accessNotice: null,
     region: null,
     description: {
-      en: 'Obsidian Isle community for The Isle: Evrima. Server rules, announcements, and the companion application are published by administrators on the official Discord.',
-      ms: 'Komuniti Obsidian Isle untuk The Isle: Evrima. Peraturan pelayan, pengumuman, dan aplikasi pendamping diterbitkan oleh pentadbir di Discord rasmi.',
-      kl: 'Komuniti Obsidian Isle untuk The Isle: Evrima. Rules server, announcement, dengan companion app semua admin letak kat Discord rasmi diaorang.'
+      en: 'Main Primeval Malaysia server hub for The Isle: Evrima. Server rules, announcements, and the Obsidian companion application are published by administrators inside the official Discord.',
+      ms: 'Salah satu pelayan utama Primeval Malaysia untuk The Isle: Evrima. Peraturan pelayan, pengumuman, dan aplikasi pendamping diterbitkan oleh pentadbir di dalam Discord rasmi.',
+      kl: 'Antara server main Primeval Malaysia untuk The Isle: Evrima. Rules server, announcement, dengan companion app semua admin post terus dalam Discord rasmi.'
     },
     companionInstructions: {
       en: [
@@ -61,6 +61,48 @@ export const communities = [
         'Ikut step install yang admin dah tulis.',
         'Baca rules server dengan syarat nak masuk server.'
       ]
+    }
+  },
+  {
+    id: 'noctua-isle',
+    name: 'Noctua Isle',
+    discord: 'https://discord.gg/Z2NAfTgNVv',
+    website: null,
+    companionApp: null,
+    companionUrl: null,
+    ageRestriction: null,
+    accessNotice: null,
+    region: null,
+    description: {
+      en: 'Noctua Isle community Discord server for The Isle: Evrima players seeking structured packs, server announcements, and event coordination.',
+      ms: 'Pelayan Discord komuniti Noctua Isle untuk pemain The Isle: Evrima yang mencari kumpulan, pengumuman pelayan, dan acara komuniti.',
+      kl: 'Server Discord komuniti Noctua Isle untuk player The Isle: Evrima cari geng pack, check announcement server, dengan event komuniti.'
+    },
+    verificationNote: {
+      en: 'Join the official Noctua Isle Discord for server rules, active events, and player channels.',
+      ms: 'Sertai Discord rasmi Noctua Isle untuk peraturan pelayan, acara aktif, dan saluran pemain.',
+      kl: 'Join Discord rasmi Noctua Isle untuk tengok rules server, event aktif, dengan channel lepak.'
+    }
+  },
+  {
+    id: 'dino-den',
+    name: 'Dino Den',
+    discord: 'https://discord.gg/thedinoden',
+    website: 'https://dinoden.gg',
+    companionApp: null,
+    companionUrl: null,
+    ageRestriction: null,
+    accessNotice: null,
+    region: null,
+    description: {
+      en: 'The Dino Den community portal for The Isle: Evrima—connect with active herds/packs, review community guidelines, and coordinate hunts on Discord.',
+      ms: 'Portal komuniti The Dino Den untuk The Isle: Evrima—sertai kawanan aktif, semak garis panduan komuniti, dan rancang pemburuan di Discord.',
+      kl: 'Port komuniti The Dino Den untuk The Isle: Evrima—cari geng pack/herd aktif, baca guideline komuniti, dan rancang hunt kat Discord.'
+    },
+    verificationNote: {
+      en: 'Check dinoden.gg or the official Discord for verified server updates and community rules.',
+      ms: 'Semak dinoden.gg atau Discord rasmi untuk maklumat pelayan sahih dan peraturan komuniti.',
+      kl: 'Check dinoden.gg atau Discord rasmi untuk info server sahih dengan rules komuniti.'
     }
   }
 ];

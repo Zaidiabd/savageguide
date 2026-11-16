@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { DESTINATIONS, SAVAGEZED_NPC, STATION_GUIDES } from '../data/tutorialContent.js';
 import { createOutpostMaterials } from './materials.js';
 import { buildSavageZedNPC, buildStationGuides, buildRandomMalaysiaFlags } from './npc.js';
+import { createPrehistoricWildlife } from './wildlife.js';
 
 /**
  * Deterministic pseudo-random generator for reproducible forest placement.
@@ -135,12 +136,19 @@ export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
   buildSteamStation(scene, materials, collisionSystem, interactables);
   buildCommunityOutpost(scene, materials, collisionSystem, interactables);
   buildCompanionStation(scene, materials, collisionSystem, interactables);
-  buildDepartureGate(scene, materials, collisionSystem, interactables);
+  const updatePortal = buildDepartureGate(scene, materials, collisionSystem, interactables);
   const updateBonfire = buildSurvivalTrainingGround(scene, materials, collisionSystem, interactables);
 
   // 4. Instanced Organic Prehistoric Forest, Cycads, Ferns, Grass & Boulders
   buildInstancedForest(scene, materials, collisionSystem, rand, isTouchDevice);
   buildFallenLogs(scene, materials, collisionSystem, rand);
+  const updateWildlife = createPrehistoricWildlife(scene, {
+    rand,
+    getTerrainHeight,
+    minTrailDistance,
+    isNearStation,
+    isTouchDevice
+  });
 
   // 5. Evrima Dinosaur Guides (SavageZed + 8 Station Guides) & Waving Malaysian Flags
   const updateSavageZed = buildSavageZedNPC(scene, collisionSystem, interactables, materials, renderer);
@@ -149,7 +157,15 @@ export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
 
   return {
     interactables,
-    animatedUpdaters: [updatePond, updateBonfire, updateSavageZed, updateGuides, updateFlags]
+    animatedUpdaters: [
+      updatePond,
+      updatePortal,
+      updateBonfire,
+      updateWildlife,
+      updateSavageZed,
+      updateGuides,
+      updateFlags
+    ]
   };
 }
 
@@ -536,6 +552,16 @@ function buildWelcomeCamp(scene, m, collision, interactables) {
   const note3 = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.42, 0.025), m.noticePaper);
   note3.position.set(0.62, 1.34, 0.09);
   boardGroup.add(note3);
+
+  // Actual Gateway Island map chart pinned on the right side of the Welcome Noticeboard
+  const mapTex = new THREE.TextureLoader().load('./map-tiles/z0/0_0.webp');
+  mapTex.colorSpace = THREE.SRGBColorSpace;
+  const gatewayPin = new THREE.Mesh(
+    new THREE.BoxGeometry(0.72, 0.72, 0.03),
+    new THREE.MeshStandardMaterial({ map: mapTex, roughness: 0.72 })
+  );
+  gatewayPin.position.set(0.82, 1.72, 0.092);
+  boardGroup.add(gatewayPin);
 
   addGabledRoof(boardGroup, {
     width: 0.72,
@@ -930,6 +956,123 @@ function buildDepartureGate(scene, m, collision, interactables) {
   addLantern(group, -2.05, 3.65, 0.48, m, true);
   addLantern(group, 2.05, 3.65, 0.48, m, false);
 
+  // Flashy animated Exit Portal suspended inside the Departure Gate archway
+  const portalGroup = new THREE.Group();
+  portalGroup.position.set(0, 2.04, 0);
+
+  const portalUniforms = {
+    uTime: { value: 0 }
+  };
+
+  const vortexMat = new THREE.ShaderMaterial({
+    uniforms: portalUniforms,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      varying vec2 vUv;
+      void main() {
+        vec2 p = (vUv - 0.5) * 2.0;
+        float r = length(p);
+        if (r > 1.0) discard;
+
+        float a = atan(p.y, p.x);
+        float spiral = sin(a * 5.0 - r * 11.0 + uTime * 3.8);
+        float ripple = cos(r * 16.0 - uTime * 4.6 + sin(a * 3.0 + uTime));
+        float energy = smoothstep(1.0, 0.08, r) * (0.55 + 0.45 * spiral * 0.6 + ripple * 0.25);
+        float rim = smoothstep(0.68, 0.96, r) * (1.0 - smoothstep(0.95, 1.0, r));
+        float coreGlow = exp(-r * 3.6) * 0.85;
+
+        vec3 emerald = vec3(0.14, 0.95, 0.62);
+        vec3 cyan    = vec3(0.22, 0.88, 1.00);
+        vec3 gold    = vec3(1.00, 0.80, 0.28);
+
+        vec3 col = mix(emerald, cyan, clamp(energy + 0.25, 0.0, 1.0));
+        col = mix(col, gold, clamp(rim * 1.4 + coreGlow * 0.65, 0.0, 1.0));
+
+        float alpha = clamp(energy * 0.78 + rim * 1.25 + coreGlow, 0.0, 0.96) * smoothstep(1.0, 0.86, r);
+        gl_FragColor = vec4(col * 1.25, alpha);
+      }
+    `
+  });
+
+  const vortexDisc = new THREE.Mesh(new THREE.PlaneGeometry(3.85, 3.85, 1, 1), vortexMat);
+  portalGroup.add(vortexDisc);
+
+  const ringOuterMat = new THREE.MeshBasicMaterial({
+    color: 0xffc84d,
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending
+  });
+  const ringMidMat = new THREE.MeshBasicMaterial({
+    color: 0x3bf7b4,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const ringInnerMat = new THREE.MeshBasicMaterial({
+    color: 0x70f3ff,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+
+  const ringOuter = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.055, 14, 56), ringOuterMat);
+  const ringMid = new THREE.Mesh(new THREE.TorusGeometry(1.72, 0.04, 12, 48), ringMidMat);
+  const ringInner = new THREE.Mesh(new THREE.TorusGeometry(1.48, 0.032, 12, 48), ringInnerMat);
+  portalGroup.add(ringOuter, ringMid, ringInner);
+
+  // Ground arcane threshold disc beneath the portal
+  const padGeo = new THREE.CircleGeometry(2.2, 40);
+  padGeo.rotateX(-Math.PI / 2);
+  const padMat = new THREE.MeshBasicMaterial({
+    color: 0x3ef5b2,
+    transparent: true,
+    opacity: 0.22,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  });
+  const groundPad = new THREE.Mesh(padGeo, padMat);
+  groundPad.position.set(0, 0.05, 0);
+  group.add(groundPad);
+
+  // Orbiting shimmering portal motes
+  const orbGeo = new THREE.OctahedronGeometry(0.065, 0);
+  const orbMat = new THREE.MeshBasicMaterial({
+    color: 0xfff0a8,
+    transparent: true,
+    opacity: 0.92,
+    blending: THREE.AdditiveBlending
+  });
+  const portalOrbs = [];
+  for (let i = 0; i < 22; i++) {
+    const orb = new THREE.Mesh(orbGeo, orbMat);
+    portalGroup.add(orb);
+    portalOrbs.push({
+      mesh: orb,
+      angle: (i / 22) * Math.PI * 2,
+      radius: 1.42 + (i % 4) * 0.19,
+      speed: (i % 2 === 0 ? 1 : -1.35) * (0.95 + (i % 3) * 0.3),
+      zAmp: 0.28 + (i % 3) * 0.14
+    });
+  }
+
+  const portalLight = new THREE.PointLight(0x4bf5b8, 3.8, 19, 1.4);
+  portalLight.position.set(0, 2.05, 0.65);
+  group.add(portalLight);
+
+  group.add(portalGroup);
+
   scene.add(group);
   group.updateMatrixWorld(true);
 
@@ -938,6 +1081,35 @@ function buildDepartureGate(scene, m, collision, interactables) {
   collision.addBox(dest.position.x - 1.6, dest.position.z + 0.9, 1.1, 0.9, 'gate-lectern');
 
   registerStation(4, group, plaque, interactables);
+
+  return (elapsed) => {
+    portalUniforms.uTime.value = elapsed;
+
+    ringOuter.rotation.x = Math.sin(elapsed * 1.1) * 0.14;
+    ringOuter.rotation.y = Math.cos(elapsed * 0.85) * 0.18;
+    ringOuter.rotation.z = elapsed * 0.55;
+
+    ringMid.rotation.x = Math.cos(elapsed * 1.4) * 0.22;
+    ringMid.rotation.y = Math.sin(elapsed * 1.15) * 0.16;
+    ringMid.rotation.z = -elapsed * 1.1;
+
+    ringInner.rotation.x = Math.sin(elapsed * 1.8) * 0.18;
+    ringInner.rotation.z = elapsed * 1.85;
+
+    portalLight.intensity = 3.5 + Math.sin(elapsed * 4.2) * 0.85;
+    padMat.opacity = 0.18 + Math.sin(elapsed * 3.1) * 0.07;
+
+    for (const item of portalOrbs) {
+      const a = item.angle + elapsed * item.speed;
+      item.mesh.position.set(
+        Math.cos(a) * item.radius,
+        Math.sin(a) * item.radius,
+        Math.sin(elapsed * 2.6 + item.angle * 2.0) * item.zAmp
+      );
+      item.mesh.rotation.x = elapsed * 2.2;
+      item.mesh.rotation.y = elapsed * 1.7;
+    }
+  };
 }
 
 /**

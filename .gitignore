@@ -4,6 +4,6 @@ dist/
 .env.*
 .DS_Store
 *.log
-skin-models-v2/
-assets/
-map-tiles/
+/skin-models-v2/
+/assets/
+/map-tiles/

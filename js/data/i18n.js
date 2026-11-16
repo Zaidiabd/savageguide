@@ -51,6 +51,10 @@ const LOCALES = {
       npcCommunityTag: 'PRIMEVAL MALAYSIA COMMUNITY',
       npcByeEsc: 'GOODBYE [ESC]',
       npcBtnWhatToDo: 'What should I do here?',
+      npcBtnPremise: 'Game Premise & Survival',
+      npcBtnMapGuide: 'Gateway Map & Legends',
+      npcBtnOpenMap: 'Open Gateway Map Viewer',
+      mapHudBtn: '[M] GATEWAY MAP',
       npcBtnGreeting: 'Back to Welcome',
       npcBtnJumpSteam: 'Go to Steam Station',
       npcBtnBye: 'Thank you, SavageZed!',
@@ -65,8 +69,32 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Primeval Malaysia Community Guide',
           text:
-            'Selamat datang and warm greetings, {name}! I am SavageZed, and I am truly delighted to welcome you to the Primeval Malaysia Community outpost. Take your time soaking in the prehistoric camp—we are happy to have you with us!',
-          hint: 'Use the buttons below to ask what to do here, or press ESC anytime to continue exploring, {name}.'
+            'Selamat datang and warm greetings, {name}! I am SavageZed, thrilled to welcome you to the Primeval Malaysia Community outpost.\n\n' +
+            'The Premise of The Isle: Evrima: You spawn into a ruthless prehistoric island as a tiny, vulnerable dinosaur. Every life is permadeath—you must track water, match your 3-nutrient diet to grow faster, defend against predators or ambush prey, and master the Gateway Map to survive!',
+          hint: 'Ask me about the Game Premise, Gateway Map & Legends, or Outpost Stations below, {name}.'
+        },
+        premise: {
+          speaker: 'SavageZed',
+          role: 'What Is The Isle: Evrima?',
+          text:
+            'In The Isle: Evrima, there are no quests, shops, or second chances—nature is your only arena, {name}:\n' +
+            '• Growth & Nutrients: Hatch as a Juvenile, hide in thick cover, and balance S / Dots / Lines diet icons to grow swiftly to Sub-Adult and Adult.\n' +
+            '• Instincts & Risks: Every drink from a river risks a Deinosuchus ambush; every sprint burns precious stamina; every wrong jump fractures bones.\n' +
+            '• Primeval Malaysia Survival: Knowing the terrain via the Gateway Map and its Legends turns helpless hatchlings into apex survivors!',
+          hint: 'Want to see the actual Gateway Map and learn why Legends save lives? Click "Gateway Map & Legends" below!'
+        },
+        'gateway-map': {
+          speaker: 'SavageZed',
+          role: 'Gateway Map & Importance of Legends',
+          text:
+            'Gateway is the sprawling Evrima island where you spawn, {name}—packed with twisting rivers, swamps, steep cliffs, highlands, and the giant central Dome.\n\n' +
+            'Why Understanding Map Legends Matters:\n' +
+            '• Water Icons (Cyan vs Deep Navy): Tells safe shallow freshwater apart from saltwater coasts and crocodile-infested deep rivers.\n' +
+            '• Elevation & Cliff Shadows: Prevents fatal cliff drops and broken legs while navigating in storms or fog.\n' +
+            '• Scent & Resource Icons (Q): Red Palm = Juvenile Sanctuaries; Footprints = Herbivore Migration feeding corridors.\n' +
+            '• Map Grid (A1–H8): Lets you call exact coordinates so Primeval Malaysia friends can regroup fast!\n\n' +
+            'Click "Open Gateway Map Viewer" below (or press [M] anytime) to explore our live rendered Gateway Map!',
+          hint: 'Tip: Inspect the rendered Gateway Map right now, {name}, to memorize safe waterholes and coastal cliffs.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
@@ -434,6 +462,8 @@ const LOCALES = {
       companionTag: (val) => `Companion App: ${val}`,
       regionTag: (val) => `Region: ${val || 'Verified inside official Discord'}`,
       openDiscordBtn: 'OPEN DISCORD ↗',
+      companionDownloadBtn: 'DOWNLOAD COMPANION ↗',
+      websiteBtn: 'WEBSITE ↗',
       serverInfoBtn: 'SERVER INFORMATION',
       companionAppBtn: 'COMPANION APPLICATION',
       serverInfoTitle: 'Verified Server Information Policy',
@@ -444,6 +474,54 @@ const LOCALES = {
         'Official Source Only: Do not download companion installers from unofficial third-party mirrors. Only use the download published by Obsidian Isle administrators inside their official Discord.',
       markReviewedBtn: 'Mark Community Directory Reviewed',
       reviewedBadge: '✓ COMMUNITY DIRECTORY REVIEWED'
+    },
+    companion: {
+      intro:
+        'Companion utilities help Primeval Malaysia players coordinate maps, server tools, and packs. Only use official sources provided by server administrators—we play on many servers, with our main two being IsleLink and Obsidian Isle.',
+      islelinkTitle: 'IsleLink Companion App (Main Server #1)',
+      islelinkDesc: 'Official companion application download portal for IsleLink (islelink.gg/download). Requires 18+ confirmation to match server access rules.',
+      islelinkDownloadBtn: 'DOWNLOAD ISLELINK COMPANION ↗',
+      islelinkAgeNote: 'IsleLink is 18+ adults only. Confirm your age status to view the official companion download link:',
+      islelinkUnderage: 'Access Restricted: IsleLink (18+) links stay hidden for underage players.',
+      confirm18: 'I confirm I am 18 or older',
+      confirmUnder18: 'I am under 18',
+      obsidianTitle: 'Obsidian Isle Companion (Main Server #2)',
+      obsidianDesc: 'Distributed strictly through official admin posts inside the Obsidian Isle Discord—never from third-party reupload sites.',
+      obsidianDiscordBtn: 'OPEN OBSIDIAN DISCORD ↗',
+      safetyTitle: 'Companion Setup & Security Guidelines',
+      safetyItems: [
+        'Download IsleLink Companion strictly from https://islelink.gg/download and Obsidian Isle utilities directly from their official Discord.',
+        'Never run "EAC bypasses" or unverified third-party executables claiming secret radar hacks.',
+        'Keep your Steam & Easy Anti-Cheat files clean and verified before joining community servers.'
+      ],
+      markReviewedBtn: 'Mark Companion Guidelines Understood',
+      reviewedBadge: '✓ COMPANION SETUP REVIEWED'
+    },
+    departure: {
+      intro:
+        'Complete every readiness item below before stepping onto Gateway Island. Items sync automatically with your Steam/EAC terminal, Community Directory, Companion Desk, and Survival Camp progress!',
+      heading: 'FINAL EXPEDITION PREPARATION CHECKLIST (11 ITEMS)',
+      items: {
+        steamObtained: 'The Isle obtained through Steam',
+        evrimaSelected: 'Evrima branch selected in Steam Properties',
+        filesDownloaded: 'Game files downloaded successfully',
+        eacChecked: 'Easy Anti-Cheat installation checked',
+        eacRepaired: 'EAC repaired if required (skip if Steam handled automatically)',
+        filesVerified: 'Game file verification completed if necessary',
+        gameLaunched: 'The Isle: Evrima successfully launched',
+        communityReviewed: 'Community information reviewed (IsleLink, Obsidian Isle, Noctua Isle, Dino Den)',
+        companionReviewed: 'Relevant companion application reviewed/installed from official source',
+        rulesReviewed: 'Community rules & Gateway Map Legends understood',
+        readyToExplore: 'Ready to explore The Isle: Evrima!'
+      },
+      eacPolicyNote:
+        'Reminder: Never use unofficial external EAC installers—use Steam file verification or the bundled EAC installer only if needed.',
+      completeTitle: 'EXPEDITION PREPARATION COMPLETE',
+      completeTagline: 'YOUR JOURNEY INTO THE ISLE BEGINS HERE.',
+      completeBody:
+        'Outstanding work, survivor! Every technical check, community guide, and survival habit is ready. Good luck on Gateway—watch the rivers and trust your instincts!',
+      returnBtn: 'RETURN TO EXPEDITION',
+      visitSurvivalBtn: 'Visit Survival Training Camp →'
     }
   },
 
@@ -493,6 +571,10 @@ const LOCALES = {
       npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
       npcByeEsc: 'SELAMAT TINGGAL [ESC]',
       npcBtnWhatToDo: 'Apa perlu saya buat di sini?',
+      npcBtnPremise: 'Konsep Permainan & Survival',
+      npcBtnMapGuide: 'Peta Gateway & Petunjuk',
+      npcBtnOpenMap: 'Buka Pemapar Peta Gateway',
+      mapHudBtn: '[M] PETA GATEWAY',
       npcBtnGreeting: 'Kembali ke Ucapan',
       npcBtnJumpSteam: 'Pergi ke Stesen Steam',
       npcBtnBye: 'Terima kasih, SavageZed!',
@@ -507,8 +589,32 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Pemandu Komuniti Primeval Malaysia',
           text:
-            'Selamat datang dan salam mesra, {name}! Saya SavageZed, dan saya amat gembira menyambut kedatangan anda ke pos Komuniti Primeval Malaysia. Luangkan masa untuk meneroka kem prasejarah kami—kami berbesar hati menerima kehadiran anda!',
-          hint: 'Gunakan butang di bawah untuk bertanya apa yang boleh dilakukan di sini, atau tekan ESC bila-bila masa, {name}.'
+            'Selamat datang dan salam mesra, {name}! Saya SavageZed, gembira menyambut anda ke pos Komuniti Primeval Malaysia.\n\n' +
+            'Konsep Permainan The Isle: Evrima: Anda bermula sebagai dinosaur kecil yang terdedah di pulau prasejarah. Permainan ini bersifat permadeath—anda mesti mencari air selamat, melengkapkan 3 nutrien diet untuk membesar, mengelak atau memburu pemangsa, dan memahami Peta Gateway!',
+          hint: 'Tanya saya tentang Konsep Permainan, Peta Gateway & Petunjuk, atau Stesen Pos di bawah, {name}.'
+        },
+        premise: {
+          speaker: 'SavageZed',
+          role: 'Apakah The Isle: Evrima?',
+          text:
+            'Dalam The Isle: Evrima tiada misi automatik atau kedai—alam semula jadi ialah gelanggang sebenar anda, {name}:\n' +
+            '• Tumbesaran & Nutrien: Lahir sebagai Juvenile, bersembunyi di semak, dan lengkapkan ikon diet S / Titik / Garis supaya membesar pantas ke Sub-Adult dan Adult.\n' +
+            '• Risiko & Naluri: Minum di sungai mendedahkan anda kepada Deinosuchus; pecutan tanpa kawalan menghabiskan stamina; lompatan silap mematahkan kaki.\n' +
+            '• Survival Primeval Malaysia: Menguasai Peta Gateway dan simbol Petunjuknya mengubah pemain baharu menjadi pemandiri sejati!',
+          hint: 'Mahu lihat Peta Gateway sebenar dan fahami kepentingan Legends? Klik "Peta Gateway & Petunjuk" di bawah!'
+        },
+        'gateway-map': {
+          speaker: 'SavageZed',
+          role: 'Peta Gateway & Kepentingan Legends',
+          text:
+            'Gateway ialah pulau luas dalam Evrima, {name}—dipenuhi sungai berliku, paya, tebing curam, bukit tinggi, dan Kubah (Dome) gergasi di tengah pulau.\n\n' +
+            'Kenapa Faham Petunjuk (Legends) Peta Sangat Penting:\n' +
+            '• Simbol Air (Biru Muda vs Biru Gelap): Membezakan sungai air tawar cetek yang selamat daripada air masin serta lubuk buaya Deinosuchus.\n' +
+            '• Kontur & Cerun Bukit: Mengelakkan anda terjatuh gaung curam atau patah kaki dalam gelap dan ribut.\n' +
+            '• Ikon Deria Bau [Q]: Palma Merah = Sanctuary anak dino; Tapak Kaki = Zon Migrasi herbivor.\n' +
+            '• Grid Koordinat (A1–H8): Memudahkan rakan Primeval Malaysia mencari lokasi anda dengan tepat!\n\n' +
+            'Klik "Buka Pemapar Peta Gateway" di bawah (atau tekan [M] bila-bila masa) untuk melihat peta interaktif Gateway!',
+          hint: 'Tip: Periksa Peta Gateway interaktif sekarang, {name}, untuk mengenali sungai selamat dan tebing berbahaya.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
@@ -876,6 +982,8 @@ const LOCALES = {
       companionTag: (val) => `Aplikasi Pendamping: ${val}`,
       regionTag: (val) => `Wilayah: ${val || 'Disahkan dalam Discord rasmi'}`,
       openDiscordBtn: 'BUKA DISCORD ↗',
+      companionDownloadBtn: 'MUAT TURUN PENDAMPING ↗',
+      websiteBtn: 'LAMAN WEB ↗',
       serverInfoBtn: 'MAKLUMAT PELAYAN',
       companionAppBtn: 'APLIKASI PENDAMPING',
       serverInfoTitle: 'Polisi Maklumat Pelayan Disahkan',
@@ -886,6 +994,54 @@ const LOCALES = {
         'Sumber Rasmi Sahaja: Jangan muat turun pemasang daripada laman pihak ketiga. Hanya gunakan pautan muat turun yang diterbitkan oleh pentadbir Obsidian Isle di dalam Discord rasmi mereka.',
       markReviewedBtn: 'Tanda Direktori Komuniti Telah Disemak',
       reviewedBadge: '✓ DIREKTORI KOMUNITI DISEMAK'
+    },
+    companion: {
+      intro:
+        'Aplikasi pendamping membantu pemain Primeval Malaysia menyelaraskan peta dan kumpulan. Gunakan sumber rasmi sahaja—kami bermain di banyak pelayan, namun dua pelayan utama kami ialah IsleLink dan Obsidian Isle.',
+      islelinkTitle: 'Aplikasi Pendamping IsleLink (Pelayan Utama #1)',
+      islelinkDesc: 'Portal muat turun rasmi aplikasi pendamping IsleLink (islelink.gg/download). Pengesahan umur 18+ diperlukan.',
+      islelinkDownloadBtn: 'MUAT TURUN ISLELINK COMPANION ↗',
+      islelinkAgeNote: 'IsleLink khusus untuk dewasa 18+. Sahkan status umur anda untuk memaparkan pautan muat turun rasmi:',
+      islelinkUnderage: 'Akses Disekat: Pautan IsleLink (18+) disembunyikan untuk pengguna bawah umur.',
+      confirm18: 'Saya berumur 18 tahun ke atas',
+      confirmUnder18: 'Saya bawah 18 tahun',
+      obsidianTitle: 'Aplikasi Pendamping Obsidian Isle (Pelayan Utama #2)',
+      obsidianDesc: 'Diedarkan secara rasmi oleh pentadbir di dalam Discord Obsidian Isle sahaja—jangan muat turun daripada laman pihak ketiga.',
+      obsidianDiscordBtn: 'BUKA DISCORD OBSIDIAN ↗',
+      safetyTitle: 'Garis Panduan Keselamatan Pemasangan',
+      safetyItems: [
+        'Muat turun IsleLink Companion hanya dari https://islelink.gg/download dan alat Obsidian Isle dari Discord rasmi mereka.',
+        'Jangan sekali-kali menjalankan pemintas EAC atau fail tidak disahkan.',
+        'Pastikan fail Steam dan Easy Anti-Cheat anda sah sebelum menyertai pelayan komuniti.'
+      ],
+      markReviewedBtn: 'Tanda Panduan Aplikasi Pendamping Difahami',
+      reviewedBadge: '✓ PENDAMPING TELAH DISEMAK'
+    },
+    departure: {
+      intro:
+        'Lengkapkan kesemua 11 item kesediaan di bawah sebelum melangkah ke Pulau Gateway. Kemajuan disegerakkan automatik dengan stesen lain!',
+      heading: 'SENARAI SEMAK PERSEDIAAN EKSPEDISI AKHIR (11 PERKARA)',
+      items: {
+        steamObtained: 'The Isle diperoleh melalui Steam',
+        evrimaSelected: 'Cabang Evrima dipilih dalam Steam Properties',
+        filesDownloaded: 'Fail permainan berjaya dimuat turun',
+        eacChecked: 'Pemasangan Easy Anti-Cheat disemak',
+        eacRepaired: 'EAC dibaiki jika diperlukan (skip jika Steam pasang automatik)',
+        filesVerified: 'Pengesahan fail permainan (Verify Files) selesai jika perlu',
+        gameLaunched: 'The Isle: Evrima berjaya dilancarkan',
+        communityReviewed: 'Maklumat komuniti disemak (IsleLink, Obsidian Isle, Noctua Isle, Dino Den)',
+        companionReviewed: 'Aplikasi pendamping rasmi disemak / dimuat turun',
+        rulesReviewed: 'Peraturan komuniti & Peta Gateway / Legends difahami',
+        readyToExplore: 'Sedia meneroka The Isle: Evrima!'
+      },
+      eacPolicyNote:
+        'Peringatan: Jangan guna pemasang EAC luar yang tidak rasmi—guna Steam Verify Integrity atau pemasang terbina dalam permainan jika perlu.',
+      completeTitle: 'PERSEDIAAN EKSPEDISI SELESAI',
+      completeTagline: 'PERJALANAN ANDA KE DALAM THE ISLE BERMULA DI SINI.',
+      completeBody:
+        'Tahniah pengembara! Semua semakan teknikal, panduan komuniti, dan asas survival telah bersedia. Selamat berjuang di Pulau Gateway!',
+      returnBtn: 'KEMBALI KE EKSPEDISI',
+      visitSurvivalBtn: 'Lawat Kem Latihan Survival →'
     }
   },
 
@@ -935,6 +1091,10 @@ const LOCALES = {
       npcCommunityTag: 'KOMUNITI PRIMEVAL MALAYSIA',
       npcByeEsc: 'GERAK DULU [ESC]',
       npcBtnWhatToDo: 'Nak buat apa kat sini bro?',
+      npcBtnPremise: 'Cerita Game & Cara Survive',
+      npcBtnMapGuide: 'Peta Gateway & Legends',
+      npcBtnOpenMap: 'Buka Peta Gateway Interaktif',
+      mapHudBtn: '[M] PETA GATEWAY',
       npcBtnGreeting: 'Balik Ucapan Mula',
       npcBtnJumpSteam: 'Terus ke Stesen Steam',
       npcBtnBye: 'Okay cun, thanks SavageZed!',
@@ -949,8 +1109,32 @@ const LOCALES = {
           speaker: 'SavageZed',
           role: 'Guide Komuniti Primeval Malaysia',
           text:
-            'Wey selamat datang {name}! Aku SavageZed, happy gila dapat sambut korang masuk kem Komuniti Primeval Malaysia ni. Rilek dulu, cuci mata tengok kem dino kita ni—memang ngam {name} join kitorang kat sini!',
-          hint: 'Tekan button kat bawah kalau nak tahu apa benda boleh buat kat sini, {name}, atau tekan ESC kalau nak sambung jalan.'
+            'Wey selamat datang {name}! Aku SavageZed, happy gila sambut korang masuk kem Komuniti Primeval Malaysia ni.\n\n' +
+            'Konsep Game The Isle: Evrima: Korang spawn jadi dino kecik yang lemah kat pulau prasejarah. Game ni permadeath terus—kena cari air selamat, cukupkan 3 diet nutrien biar cepat besar, elak predator atau serang hendap mangsa, dan faham betul-betul Peta Gateway!',
+          hint: 'Tanya aku pasal Cerita Game, Peta Gateway & Legends, atau Stesen kat bawah ni, {name}.'
+        },
+        premise: {
+          speaker: 'SavageZed',
+          role: 'Apa Benda The Isle: Evrima Ni?',
+          text:
+            'Kat The Isle: Evrima takde kedai atau quest auto—alam liar tu betul-betul arena korang, {name}:\n' +
+            '• Growth & Diet: Mula-mula jadi Juvenile menyorok dalam semak, campur ikon diet S / 3 Titik / 2 Garis biar laju naik Sub-Adult sampai Adult.\n' +
+            '• Risiko Sebenar: Silap minum kat sungai kena ngap buaya Deinosuchus; sprint kering habis stamina; terjun gaung terus patah kaki.\n' +
+            '• Survival Primeval Malaysia: Kalau korang master Peta Gateway dengan Legends dia, senang je survive lama!',
+          hint: 'Nak tengok Peta Gateway sebenar & tahu kenapa Legends tu penting gila? Tekan "Peta Gateway & Legends" kat bawah!'
+        },
+        'gateway-map': {
+          speaker: 'SavageZed',
+          role: 'Peta Gateway & Kepentingan Legends',
+          text:
+            'Gateway ni map pulau besar Evrima, {name}—penuh dengan sungai bercabang, paya, gaung tinggi, bukit batu, dengan Dome raksasa kat tengah.\n\n' +
+            'Kenapa Kena Faham Map Legends:\n' +
+            '• Warna Air (Biru Cyan vs Biru Gelap): Senang beza air tawar cetek selamat dengan laut masin dan sungai dalam penuh Deinosuchus.\n' +
+            '• Kontur & Bayang Bukit: Elak terjun gaung curam waktu malam atau ribut gelap.\n' +
+            '• Icon Bau [Q]: Palma Merah = Sanctuary selamat budak kecik; Tapak Kaki = Zon Migrasi herbivor makan.\n' +
+            '• Grid Koordinat (A1–H8): Senang nak bagi koordinat tepat kat member Primeval Malaysia bila nak berkumpul!\n\n' +
+            'Klik "Buka Peta Gateway Interaktif" kat bawah (atau tekan [M] bila-bila) untuk zoom dan tengok Peta Gateway sekarang!',
+          hint: 'Tip: Bukak Peta Gateway tu kejap, {name}, biar biasa tengok sungai dengan daratan dia.'
         },
         'what-to-do': {
           speaker: 'SavageZed',
@@ -1316,6 +1500,8 @@ const LOCALES = {
       companionTag: (val) => `Companion App: ${val}`,
       regionTag: (val) => `Region: ${val || 'Check dalam Discord rasmi'}`,
       openDiscordBtn: 'BUKA DISCORD ↗',
+      companionDownloadBtn: 'DOWNLOAD COMPANION ↗',
+      websiteBtn: 'WEBSITE ↗',
       serverInfoBtn: 'INFO SERVER',
       companionAppBtn: 'COMPANION APP',
       serverInfoTitle: 'Polisi Info Server Sahih',
@@ -1326,6 +1512,54 @@ const LOCALES = {
         'Sumber Rasmi Je: Jangan sesekali download installer dari website luar. Guna download yang admin Obsidian Isle sendiri post kat Discord rasmi diaorang.',
       markReviewedBtn: 'Tanda Direktori Komuniti Dah Check',
       reviewedBadge: '✓ DIREKTORI KOMUNITI DAH CHECK'
+    },
+    companion: {
+      intro:
+        'Companion app tolong player Primeval Malaysia check peta dengan koordinasi geng. Guna link rasmi je ya—kitaorang main kat banyak server, tapi dua server utama ialah IsleLink dengan Obsidian Isle.',
+      islelinkTitle: 'IsleLink Companion App (Server Utama #1)',
+      islelinkDesc: 'Link rasmi download companion app IsleLink (islelink.gg/download). Kena sahkan umur 18+ dulu ikut rules server.',
+      islelinkDownloadBtn: 'DOWNLOAD ISLELINK COMPANION ↗',
+      islelinkAgeNote: 'IsleLink ni server 18+. Sahkan umur korang dulu sebelum nampak link download rasmi:',
+      islelinkUnderage: 'Akses Disekat: Link IsleLink (18+) memang disembunyikan untuk bawah umur.',
+      confirm18: 'Ya, saya 18 tahun ke atas',
+      confirmUnder18: 'Saya bawah 18 tahun',
+      obsidianTitle: 'Obsidian Isle Companion (Server Utama #2)',
+      obsidianDesc: 'Admin Obsidian Isle post companion app diaorang dalam Discord rasmi je—jangan download dari luar.',
+      obsidianDiscordBtn: 'BUKA DISCORD OBSIDIAN ↗',
+      safetyTitle: 'Langkah Selamat & Setup',
+      safetyItems: [
+        'Download IsleLink Companion dari https://islelink.gg/download je, dan companion Obsidian terus dalam Discord rasmi diaorang.',
+        'Jangan sesekali run fail "EAC bypass" atau tool scam pihak ketiga.',
+        'Pastikan fail Steam dengan Easy Anti-Cheat elok sebelum masuk server komuniti.'
+      ],
+      markReviewedBtn: 'Tanda Panduan Companion Dah Faham',
+      reviewedBadge: '✓ COMPANION DAH CHECK'
+    },
+    departure: {
+      intro:
+        'Habiskan semua 11 checklist kat bawah ni sebelum terjun masuk Pulau Gateway. Progress auto-sync dengan stesen lain!',
+      heading: 'CHECKLIST AKHIR PERSEDIAAN EKSPEDISI (11 PERKARA)',
+      items: {
+        steamObtained: 'Dah dapat The Isle kat Steam',
+        evrimaSelected: 'Dah pilih branch Evrima dalam Steam Properties',
+        filesDownloaded: 'Dah habis download semua fail game',
+        eacChecked: 'Dah check pemasangan Easy Anti-Cheat',
+        eacRepaired: 'Dah repair EAC kalau perlu (skip kalau Steam settlekan)',
+        filesVerified: 'Dah verify game files kat Steam kalau perlu',
+        gameLaunched: 'The Isle: Evrima dah berjaya masuk game',
+        communityReviewed: 'Dah check info komuniti (IsleLink, Obsidian Isle, Noctua Isle, Dino Den)',
+        companionReviewed: 'Dah check / download companion app dari sumber rasmi',
+        rulesReviewed: 'Dah faham rules komuniti dengan Peta Gateway / Legends',
+        readyToExplore: 'Memang ready nak terjun ke The Isle: Evrima!'
+      },
+      eacPolicyNote:
+        'Peringatan: Jangan pakai installer EAC luar—guna Steam Verify Files atau installer rasmi dalam folder game je kalau sangkut.',
+      completeTitle: 'PERSEDIAAN EKSPEDISI COMPLETE!',
+      completeTagline: 'ADVENTURE KORANG KAT THE ISLE MULA KAT SINI.',
+      completeBody:
+        'Padu gila bro! Semua benda teknikal, komuniti, dengan ilmu survival dah settle. Good luck kat Gateway—jaga sungai dan jaga stamina!',
+      returnBtn: 'SAMBUNG JALAN KAT KEM',
+      visitSurvivalBtn: 'Pergi Kem Latihan Survival →'
     }
   }
 };

@@ -44,6 +44,9 @@ function init() {
         e.preventDefault();
         ui.openInteraction(activeStation);
       }
+    } else if (e.code === 'KeyM' && !ui.hasOpenOverlay) {
+      e.preventDefault();
+      ui.openGatewayMapModal();
     } else if (e.code === 'Escape' && ui.hasOpenOverlay) {
       e.preventDefault();
       ui.closeActiveOverlay(false);
