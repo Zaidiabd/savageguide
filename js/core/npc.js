@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { getTerrainHeight } from './world.js';
 import { DESTINATIONS, SAVAGEZED_NPC } from '../data/tutorialContent.js';
 
@@ -66,27 +69,160 @@ function createMalaysiaFlagTexture() {
 }
 
 /**
- * Builds an organic tapered tail geometry via LatheGeometry.
+ * Loads an image from a URL and resolves when decoded.
  */
-function createTailGeometry() {
-  const pts = [
-    new THREE.Vector2(0.01, 1.45),
-    new THREE.Vector2(0.04, 1.15),
-    new THREE.Vector2(0.085, 0.8),
-    new THREE.Vector2(0.145, 0.42),
-    new THREE.Vector2(0.21, 0.05),
-    new THREE.Vector2(0.18, 0.0)
-  ];
-  const geo = new THREE.LatheGeometry(pts, 14);
-  geo.rotateX(-Math.PI / 2 + 0.22);
-  return geo;
+function loadImageAsset(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = (err) => reject(err);
+    img.src = src;
+  });
 }
 
 /**
- * Builds the anthropomorphic dinosaur guide "SavageZed" with sculpted theropod
- * silhouette, reptilian scale bump texture, detailed explorer gear, and idle animation.
+ * Composites Evrima Omniraptor albedo cavity, Adult Pattern 1 mask, and detail mask
+ * into a unified sRGB CanvasTexture using Omniraptor.json layer colors.
  */
-export function buildSavageZedNPC(scene, collisionSystem, interactables, materials) {
+async function createOmniraptorSkinTexture(templateMap) {
+  const [albedoImg, patternImg, detailImg] = await Promise.all([
+    loadImageAsset('./models/omniraptor/T_Omniraptor_Albedo.webp'),
+    loadImageAsset('./models/omniraptor/T_Omniraptor_Adult_Pattern_1.webp'),
+    loadImageAsset('./models/omniraptor/T_Omniraptor_Detail_M.webp')
+  ]);
+
+  const size = 1024;
+  const makeBuffer = (img) => {
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, size, size);
+    return { canvas: c, ctx, data: ctx.getImageData(0, 0, size, size).data };
+  };
+
+  const albedo = makeBuffer(albedoImg);
+  const pattern = makeBuffer(patternImg);
+  const detail = makeBuffer(detailImg);
+
+  // Layer & anatomy colors sourced from skin-models-v2/Omniraptor/Omniraptor.json
+  const colRed = [0x95, 0x6e, 0x3c];
+  const colGreen = [0xaa, 0x98, 0x7f];
+  const colBlue = [0x6c, 0x4d, 0x41];
+  const colCyan = [0x89, 0x69, 0x4a];
+  const colMagenta = [0x38, 0x31, 0x2c];
+  const colYellow = [0x24, 0x1e, 0x1a];
+  const colTeeth = [0xa0, 0x8a, 0x74];
+  const colMouth = [0xaa, 0x82, 0x75];
+  const colClaw = [0x59, 0x54, 0x48];
+
+  const out = albedo.ctx.createImageData(size, size);
+  const oData = out.data;
+  const aData = albedo.data;
+  const pData = pattern.data;
+  const dData = detail.data;
+
+  for (let i = 0; i < oData.length; i += 4) {
+    const pr = pData[i] / 255;
+    const pg = pData[i + 1] / 255;
+    const pb = pData[i + 2] / 255;
+
+    const wRed = pr * (1 - pg) * (1 - pb);
+    const wGreen = (1 - pr) * pg * (1 - pb);
+    const wBlue = (1 - pr) * (1 - pg) * pb;
+    const wCyan = (1 - pr) * pg * pb;
+    const wMagenta = pr * (1 - pg) * pb;
+    const wYellow = pr * pg * (1 - pb);
+    const wSum = wRed + wGreen + wBlue + wCyan + wMagenta + wYellow;
+
+    let r = colBlue[0];
+    let g = colBlue[1];
+    let b = colBlue[2];
+
+    if (wSum > 0.01) {
+      r =
+        (wRed * colRed[0] +
+          wGreen * colGreen[0] +
+          wBlue * colBlue[0] +
+          wCyan * colCyan[0] +
+          wMagenta * colMagenta[0] +
+          wYellow * colYellow[0]) /
+        wSum;
+      g =
+        (wRed * colRed[1] +
+          wGreen * colGreen[1] +
+          wBlue * colBlue[1] +
+          wCyan * colCyan[1] +
+          wMagenta * colMagenta[1] +
+          wYellow * colYellow[1]) /
+        wSum;
+      b =
+        (wRed * colRed[2] +
+          wGreen * colGreen[2] +
+          wBlue * colBlue[2] +
+          wCyan * colCyan[2] +
+          wMagenta * colMagenta[2] +
+          wYellow * colYellow[2]) /
+        wSum;
+    }
+
+    // Blend teeth (red), mouth/tongue (green), and claws/scutes (blue) from Detail_M
+    const dr = dData[i] / 255;
+    const dg = dData[i + 1] / 255;
+    const db = dData[i + 2] / 255;
+    if (dr > 0.25) {
+      r = r * (1 - dr) + colTeeth[0] * dr;
+      g = g * (1 - dr) + colTeeth[1] * dr;
+      b = b * (1 - dr) + colTeeth[2] * dr;
+    }
+    if (dg > 0.25) {
+      r = r * (1 - dg) + colMouth[0] * dg;
+      g = g * (1 - dg) + colMouth[1] * dg;
+      b = b * (1 - dg) + colMouth[2] * dg;
+    }
+    if (db > 0.25) {
+      r = r * (1 - db) + colClaw[0] * db;
+      g = g * (1 - db) + colClaw[1] * db;
+      b = b * (1 - db) + colClaw[2] * db;
+    }
+
+    // Modulate by detailed scale/cavity albedo luminance
+    const lum = (aData[i] * 0.299 + aData[i + 1] * 0.587 + aData[i + 2] * 0.114) / 255;
+    const cavityShade = 0.36 + lum * 1.32;
+
+    oData[i] = Math.min(255, Math.max(0, r * cavityShade));
+    oData[i + 1] = Math.min(255, Math.max(0, g * cavityShade));
+    oData[i + 2] = Math.min(255, Math.max(0, b * cavityShade));
+    oData[i + 3] = 255;
+  }
+
+  albedo.ctx.putImageData(out, 0, 0);
+
+  const skinTexture = new THREE.CanvasTexture(albedo.canvas);
+  skinTexture.colorSpace = THREE.SRGBColorSpace;
+  skinTexture.flipY = false;
+  skinTexture.anisotropy = 4;
+
+  // Preserve KHR_texture_transform offset/repeat needed by quantized GLB UVs
+  if (templateMap) {
+    skinTexture.channel = templateMap.channel;
+    skinTexture.offset.copy(templateMap.offset);
+    skinTexture.repeat.copy(templateMap.repeat);
+    skinTexture.center.copy(templateMap.center);
+    skinTexture.rotation = templateMap.rotation;
+    skinTexture.wrapS = templateMap.wrapS;
+    skinTexture.wrapT = templateMap.wrapT;
+  }
+  skinTexture.needsUpdate = true;
+  return skinTexture;
+}
+
+/**
+ * Loads the Evrima Omniraptor GLB avatar for SavageZed with KTX2 + Meshopt decoding,
+ * Adult morph + composite skin textures, Idle skeletal animation, and lantern pedestal.
+ */
+export function buildSavageZedNPC(scene, collisionSystem, interactables, materials, renderer = null) {
   const { x, z } = SAVAGEZED_NPC.position;
   const y = getTerrainHeight(x, z);
 
@@ -94,248 +230,26 @@ export function buildSavageZedNPC(scene, collisionSystem, interactables, materia
   root.position.set(x, y, z);
   root.rotation.y = -0.35;
 
-  const skinMat = new THREE.MeshStandardMaterial({
-    color: 0x456b3d,
-    bumpMap: materials?.scaleBump || null,
-    bumpScale: 0.025,
-    roughness: 0.72
-  });
-  const bellyMat = new THREE.MeshStandardMaterial({
-    color: 0xa2ad6f,
-    bumpMap: materials?.scaleBump || null,
-    bumpScale: 0.015,
-    roughness: 0.82
-  });
   const vestMat = materials?.timberWeathered || new THREE.MeshStandardMaterial({ color: 0x6b5139, roughness: 0.86 });
   const trimMat = materials?.timberDark || new THREE.MeshStandardMaterial({ color: 0x4b3827, roughness: 0.9 });
-  const scarfMat = new THREE.MeshStandardMaterial({ color: 0xc98836, roughness: 0.75 });
-  const brassMat = new THREE.MeshStandardMaterial({ color: 0xd4a656, roughness: 0.32, metalness: 0.65 });
-  const clawMat = new THREE.MeshStandardMaterial({ color: 0x22201c, roughness: 0.48 });
-  const eyeWhiteMat = new THREE.MeshStandardMaterial({ color: 0xf6f3e8, roughness: 0.25 });
-  const irisMat = new THREE.MeshStandardMaterial({ color: 0xc87e28, roughness: 0.22 });
-  const pupilMat = new THREE.MeshStandardMaterial({ color: 0x151715, roughness: 0.15 });
 
-  // Sculpted digitigrade legs + three-toed clawed feet
-  for (const side of [-1, 1]) {
-    const hip = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), skinMat);
-    hip.position.set(side * 0.22, 0.88, -0.02);
-    hip.castShadow = true;
-    root.add(hip);
-
-    const thigh = new THREE.Mesh(new THREE.CapsuleGeometry(0.155, 0.36, 10, 14), skinMat);
-    thigh.position.set(side * 0.22, 0.65, 0.03);
-    thigh.rotation.x = -0.24;
-    thigh.castShadow = true;
-    root.add(thigh);
-
-    const shin = new THREE.Mesh(new THREE.CapsuleGeometry(0.105, 0.4, 10, 14), skinMat);
-    shin.position.set(side * 0.22, 0.28, -0.05);
-    shin.rotation.x = 0.26;
-    shin.castShadow = true;
-    root.add(shin);
-
-    const ankle = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 10), skinMat);
-    ankle.position.set(side * 0.22, 0.08, 0.02);
-    root.add(ankle);
-
-    for (const toeAngle of [-0.28, 0, 0.28]) {
-      const toe = new THREE.Mesh(new THREE.CapsuleGeometry(0.042, 0.2, 6, 10), skinMat);
-      toe.rotation.x = Math.PI / 2;
-      toe.rotation.z = -toeAngle;
-      toe.position.set(side * 0.22 + Math.sin(toeAngle) * 0.08, 0.045, 0.14);
-      toe.castShadow = true;
-      root.add(toe);
-
-      const claw = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.09, 8), clawMat);
-      claw.rotation.x = Math.PI / 2 + 0.18;
-      claw.rotation.z = -toeAngle;
-      claw.position.set(side * 0.22 + Math.sin(toeAngle) * 0.13, 0.038, 0.28);
-      root.add(claw);
-    }
-  }
-
-  // Torso group
-  const upperBody = new THREE.Group();
-  upperBody.position.set(0, 0.92, 0);
-  root.add(upperBody);
-
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 0.48, 12, 18), skinMat);
-  torso.position.set(0, 0.34, 0);
-  torso.scale.set(1.04, 1, 0.92);
-  torso.castShadow = true;
-  upperBody.add(torso);
-
-  const belly = new THREE.Mesh(new THREE.CapsuleGeometry(0.24, 0.4, 10, 16), bellyMat);
-  belly.position.set(0, 0.32, 0.12);
-  upperBody.add(belly);
-
-  // Explorer Leather Vest + Pockets + Belt + Brass Buckle + Backpack
-  const vest = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.37, 0.56, 20, 1, true), vestMat);
-  vest.position.set(0, 0.36, -0.01);
-  vest.castShadow = true;
-  upperBody.add(vest);
-
-  const belt = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.04, 10, 24), trimMat);
-  belt.rotation.x = Math.PI / 2;
-  belt.position.set(0, 0.12, 0);
-  upperBody.add(belt);
-
-  const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.09, 0.06), brassMat);
-  buckle.position.set(0, 0.12, 0.35);
-  upperBody.add(buckle);
-
-  for (const side of [-1, 1]) {
-    const pocket = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.15, 0.06), trimMat);
-    pocket.position.set(side * 0.21, 0.28, 0.27);
-    pocket.rotation.y = side * 0.42;
-    upperBody.add(pocket);
-  }
-
-  const pack = new THREE.Mesh(new THREE.CapsuleGeometry(0.16, 0.22, 8, 12), trimMat);
-  pack.position.set(0, 0.38, -0.34);
-  pack.castShadow = true;
-  upperBody.add(pack);
-
-  const neckerchief = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.055, 10, 22), scarfMat);
-  neckerchief.rotation.x = Math.PI / 2 + 0.14;
-  neckerchief.position.set(0, 0.68, 0.02);
-  upperBody.add(neckerchief);
-
-  // Smooth tapered tail
-  const tailPivot = new THREE.Group();
-  tailPivot.position.set(0, 0.08, -0.22);
-  upperBody.add(tailPivot);
-
-  const tailMesh = new THREE.Mesh(createTailGeometry(), skinMat);
-  tailMesh.castShadow = true;
-  tailPivot.add(tailMesh);
-
-  // Sculpted Neck & Theropod Head
-  const headPivot = new THREE.Group();
-  headPivot.position.set(0, 0.72, 0.04);
-  upperBody.add(headPivot);
-
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.145, 0.19, 0.32, 16), skinMat);
-  neck.position.set(0, 0.11, 0.02);
-  neck.rotation.x = 0.12;
-  neck.castShadow = true;
-  headPivot.add(neck);
-
-  const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.24, 18, 16), skinMat);
-  cranium.position.set(0, 0.32, 0.03);
-  cranium.scale.set(0.94, 0.88, 1.18);
-  cranium.castShadow = true;
-  headPivot.add(cranium);
-
-  // Tapered organic upper snout (ellipsoid capsule instead of box)
-  const snout = new THREE.Mesh(new THREE.CapsuleGeometry(0.115, 0.24, 10, 16), skinMat);
-  snout.rotation.x = Math.PI / 2 + 0.04;
-  snout.scale.set(1.05, 1, 0.78);
-  snout.position.set(0, 0.3, 0.25);
-  snout.castShadow = true;
-  headPivot.add(snout);
-
-  // Nostril ridges
-  for (const side of [-1, 1]) {
-    const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), trimMat);
-    nostril.position.set(side * 0.06, 0.34, 0.39);
-    headPivot.add(nostril);
-
-    const brow = new THREE.Mesh(new THREE.CapsuleGeometry(0.038, 0.12, 6, 10), skinMat);
-    brow.rotation.x = Math.PI / 2 - 0.15;
-    brow.rotation.z = side * -0.18;
-    brow.position.set(side * 0.135, 0.42, 0.16);
-    headPivot.add(brow);
-  }
-
-  // Friendly lower jaw
-  const lowerJaw = new THREE.Mesh(new THREE.CapsuleGeometry(0.088, 0.22, 8, 14), bellyMat);
-  lowerJaw.rotation.x = Math.PI / 2 + 0.12;
-  lowerJaw.scale.set(1.02, 1, 0.62);
-  lowerJaw.position.set(0, 0.2, 0.23);
-  headPivot.add(lowerJaw);
-
-  // Expressive eyes with amber iris & pupil
-  for (const side of [-1, 1]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.058, 12, 12), eyeWhiteMat);
-    eye.position.set(side * 0.155, 0.36, 0.18);
-    headPivot.add(eye);
-
-    const iris = new THREE.Mesh(new THREE.SphereGeometry(0.038, 10, 10), irisMat);
-    iris.position.set(side * 0.172, 0.36, 0.212);
-    headPivot.add(iris);
-
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 10), pupilMat);
-    pupil.position.set(side * 0.182, 0.36, 0.228);
-    headPivot.add(pupil);
-  }
-
-  // Layered head crest plumes
-  for (let i = 0; i < 4; i++) {
-    const crest = new THREE.Mesh(new THREE.ConeGeometry(0.042 - i * 0.004, 0.14 - i * 0.015, 10), scarfMat);
-    crest.position.set(0, 0.51 - i * 0.045, 0.04 - i * 0.095);
-    crest.rotation.x = -0.45 - i * 0.08;
-    headPivot.add(crest);
-  }
-
-  // Articulated Left Arm
-  const leftArm = new THREE.Mesh(new THREE.CapsuleGeometry(0.072, 0.24, 8, 12), skinMat);
-  leftArm.position.set(-0.37, 0.44, 0.06);
-  leftArm.rotation.z = 0.32;
-  leftArm.rotation.x = -0.25;
-  leftArm.castShadow = true;
-  upperBody.add(leftArm);
-
-  const leftForearm = new THREE.Mesh(new THREE.CapsuleGeometry(0.058, 0.2, 8, 12), skinMat);
-  leftForearm.position.set(-0.44, 0.26, 0.19);
-  leftForearm.rotation.x = -0.95;
-  leftForearm.castShadow = true;
-  upperBody.add(leftForearm);
-
-  // Articulated Right Arm (friendly wave)
-  const rightArmPivot = new THREE.Group();
-  rightArmPivot.position.set(0.34, 0.56, 0.04);
-  upperBody.add(rightArmPivot);
-
-  const rightUpperArm = new THREE.Mesh(new THREE.CapsuleGeometry(0.072, 0.22, 8, 12), skinMat);
-  rightUpperArm.position.set(0.13, 0.08, 0.04);
-  rightUpperArm.rotation.z = -0.85;
-  rightUpperArm.castShadow = true;
-  rightArmPivot.add(rightUpperArm);
-
-  const rightForearm = new THREE.Mesh(new THREE.CapsuleGeometry(0.058, 0.2, 8, 12), skinMat);
-  rightForearm.position.set(0.28, 0.24, 0.11);
-  rightForearm.rotation.z = -0.25;
-  rightForearm.rotation.x = -0.35;
-  rightForearm.castShadow = true;
-  rightArmPivot.add(rightForearm);
-
-  const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMat);
-  rightHand.position.set(0.32, 0.37, 0.15);
-  rightArmPivot.add(rightHand);
-
-  for (const cIdx of [-1, 0, 1]) {
-    const finger = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.065, 7), clawMat);
-    finger.position.set(0.32 + cIdx * 0.03, 0.43, 0.16);
-    finger.rotation.z = -cIdx * 0.2;
-    rightArmPivot.add(finger);
-  }
-
-  // Timber lantern pedestal beside SavageZed
+  // Timber lantern pedestal beside SavageZed (positioned cleanly to the left flank)
+  const pedX = -1.35;
+  const pedZ = 0.35;
   const pedestal = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.85, 0.68), vestMat);
-  pedestal.position.set(-0.96, 0.42, 0.2);
+  pedestal.position.set(pedX, 0.42, pedZ);
   pedestal.rotation.y = 0.2;
   pedestal.castShadow = true;
   pedestal.receiveShadow = true;
   root.add(pedestal);
 
   const cap = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.08, 0.76), trimMat);
-  cap.position.set(-0.96, 0.86, 0.2);
+  cap.position.set(pedX, 0.86, pedZ);
   cap.rotation.y = 0.2;
   root.add(cap);
 
   const lanternFrame = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.3, 0.24), materials?.metalDark || trimMat);
-  lanternFrame.position.set(-0.96, 1.04, 0.2);
+  lanternFrame.position.set(pedX, 1.04, pedZ);
   root.add(lanternFrame);
 
   const lanternGlow = new THREE.Mesh(
@@ -343,33 +257,171 @@ export function buildSavageZedNPC(scene, collisionSystem, interactables, materia
     materials?.lanternGlass ||
       new THREE.MeshStandardMaterial({ color: 0xffe4ad, emissive: 0xffb347, emissiveIntensity: 1.4 })
   );
-  lanternGlow.position.set(-0.96, 1.04, 0.2);
+  lanternGlow.position.set(pedX, 1.04, pedZ);
   root.add(lanternGlow);
 
-  const guideLight = new THREE.PointLight(0xffbe6b, 2.0, 11, 1.6);
-  guideLight.position.set(-0.96, 1.2, 0.32);
+  const guideLight = new THREE.PointLight(0xffbe6b, 2.2, 12, 1.55);
+  guideLight.position.set(pedX, 1.24, pedZ + 0.12);
   root.add(guideLight);
+
+  // Invisible raycast/interaction proxy so interaction works immediately & accurately across the raptor body
+  const hitProxy = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 1.85, 3.2),
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+  );
+  hitProxy.position.set(0, 0.95, 0);
+  root.add(hitProxy);
 
   scene.add(root);
   root.updateMatrixWorld(true);
 
-  collisionSystem.addCylinder(x, z, 0.65, 'npc-savagezed');
+  collisionSystem.addCylinder(x, z, 0.78, 'npc-savagezed');
 
   const worldPos = new THREE.Vector3();
-  torso.getWorldPosition(worldPos);
+  hitProxy.getWorldPosition(worldPos);
   interactables.push({
     type: 'npc',
     destination: SAVAGEZED_NPC,
     group: root,
-    target: torso,
+    target: hitProxy,
     worldPosition: worldPos
   });
 
-  return (elapsed) => {
-    upperBody.position.y = 0.92 + Math.sin(elapsed * 2.1) * 0.018;
-    tailPivot.rotation.y = Math.sin(elapsed * 2.4) * 0.18;
-    headPivot.rotation.y = Math.sin(elapsed * 0.9) * 0.12;
-    rightArmPivot.rotation.z = Math.sin(elapsed * 3.8) * 0.2;
+  // Load Omniraptor.glb + KTX2/Meshopt decoders and Evrima skin textures
+  let mixer = null;
+  let lastElapsed = null;
+
+  const ktx2Loader = new KTX2Loader();
+  ktx2Loader.setTranscoderPath('./basis/');
+  if (renderer) {
+    ktx2Loader.detectSupport(renderer);
+  }
+
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.setKTX2Loader(ktx2Loader);
+  gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+
+  let bodyMaterial = null;
+  let templateBodyMap = null;
+
+  gltfLoader.load(
+    './models/omniraptor/Omniraptor.glb',
+    async (gltf) => {
+      const model = gltf.scene;
+
+      model.traverse((obj) => {
+        if (obj.isMesh || obj.isSkinnedMesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+          obj.frustumCulled = false;
+
+          // Apply full-grown Adult morph target
+          if (obj.morphTargetDictionary && obj.morphTargetInfluences) {
+            obj.morphTargetInfluences.fill(0);
+            if (obj.morphTargetDictionary.Adult !== undefined) {
+              obj.morphTargetInfluences[obj.morphTargetDictionary.Adult] = 1.0;
+            }
+          }
+
+          if (obj.material && obj.material.name === 'DinoBody') {
+            bodyMaterial = obj.material;
+            templateBodyMap = obj.material.map;
+            obj.material.color.setHex(0xffffff);
+          }
+        }
+      });
+
+      // Start native skeletal Idle animation right away so bone transforms match stance
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        const idleClip =
+          THREE.AnimationClip.findByName(gltf.animations, 'Idle') || gltf.animations[0];
+        const action = mixer.clipAction(idleClip);
+        action.play();
+        mixer.update(0.1);
+      }
+
+      const holder = new THREE.Group();
+      holder.add(model);
+      holder.updateMatrixWorld(true);
+
+      model.traverse((obj) => {
+        if (obj.isSkinnedMesh && obj.skeleton) {
+          obj.skeleton.update();
+        }
+      });
+
+      // Align Omniraptor tail -> head axis toward local +Z (facing the player trail)
+      const headBone = model.getObjectByName('DinoHead');
+      const tailBone = model.getObjectByName('DinoTail06') || model.getObjectByName('DinoPelvis');
+      if (headBone && tailBone) {
+        const headPos = new THREE.Vector3();
+        const tailPos = new THREE.Vector3();
+        headBone.getWorldPosition(headPos);
+        tailBone.getWorldPosition(tailPos);
+        const dx = headPos.x - tailPos.x;
+        const dz = headPos.z - tailPos.z;
+        if (Math.hypot(dx, dz) > 0.001) {
+          holder.rotation.y = -Math.atan2(dx, dz);
+          holder.updateMatrixWorld(true);
+        }
+      }
+
+      // Normalize height to ~1.88m and plant feet cleanly at local y = 0
+      const box = new THREE.Box3().setFromObject(holder);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      if (size.y > 0.001) {
+        const normScale = 1.88 / size.y;
+        holder.scale.setScalar(normScale);
+        holder.updateMatrixWorld(true);
+
+        const scaledBox = new THREE.Box3().setFromObject(holder);
+        const scaledCenter = new THREE.Vector3();
+        scaledBox.getCenter(scaledCenter);
+        holder.position.x -= scaledCenter.x;
+        holder.position.z -= scaledCenter.z;
+        holder.position.y -= scaledBox.min.y;
+      }
+
+      root.add(holder);
+      root.updateMatrixWorld(true);
+
+      // Apply composited Evrima skin map onto DinoBody
+      try {
+        const compositedMap = await createOmniraptorSkinTexture(templateBodyMap);
+        if (bodyMaterial) {
+          bodyMaterial.map = compositedMap;
+          bodyMaterial.roughness = 0.72;
+          bodyMaterial.needsUpdate = true;
+        }
+      } catch (err) {
+        console.warn('Omniraptor composite skin fallback:', err);
+      } finally {
+        ktx2Loader.dispose();
+      }
+    },
+    undefined,
+    (err) => {
+      ktx2Loader.dispose();
+      console.error('Failed to load Omniraptor.glb for SavageZed:', err);
+    }
+  );
+
+  return (elapsed, delta = null) => {
+    const dt =
+      delta !== null
+        ? Math.min(0.05, delta)
+        : lastElapsed === null
+          ? 0
+          : Math.min(0.05, Math.max(0, elapsed - lastElapsed));
+    lastElapsed = elapsed;
+
+    if (mixer && dt > 0) {
+      mixer.update(dt);
+    }
+
+    guideLight.intensity = 2.1 + Math.sin(elapsed * 3.1) * 0.14;
   };
 }
 

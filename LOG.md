@@ -99,6 +99,14 @@
   * Replaced low-poly 7-sided cone trees and faceted dodecahedron rocks with 12-segment bark trunks + multi-whorl drooping pine-bough `InstancedMesh` canopies, UV-mapped pinnate fern rosettes, cycad palms, ground grass tufts, and smoothly subdivided spherical-noise boulders (`IcosahedronGeometry(1, 2)`), scaled proportionally on touch devices.
   * Sculpted an organic **SavageZed** theropod mesh (`LatheGeometry` tail, capsule snout/jaw, brow ridges, amber eyes, head crest, scaly bump skin, explorer vest & backpack) and subdivided `14×6` smoothly rippling *Jalur Gemilang* flags.
 
+### Stage 10 — SavageZed Omniraptor GLB Model Replacement
+* **Deployed Omniraptor Model & Basis Transcoder (`public/models/omniraptor/`, `public/basis/`, `.gitignore`):**
+  * Bundled `Omniraptor.glb` along with `T_Omniraptor_Albedo.webp`, `T_Omniraptor_Adult_Pattern_1.webp`, `T_Omniraptor_Detail_M.webp`, and Three.js `basis_transcoder.{js,wasm}` for KTX2 + Meshopt decoding, while ignoring the raw 500+ MB source asset folders in `.gitignore`.
+* **Evrima Skin Compositor & Skeletal Idle Loader (`js/core/npc.js`, `js/core/world.js`, `js/main.js`):**
+  * Replaced the procedural SavageZed dino mesh with `Omniraptor.glb` loaded via `GLTFLoader` + `KTX2Loader` + `MeshoptDecoder`.
+  * Applied the `Adult` morph target, aligned the head-to-tail skeleton axis toward the player trail (`+Z`), normalized stature (`1.88m`) flush to terrain, and played the embedded `'Idle'` skeletal `AnimationClip` loop via `THREE.AnimationMixer`.
+  * Composited `T_Omniraptor_Albedo.webp`, `T_Omniraptor_Adult_Pattern_1.webp`, and `T_Omniraptor_Detail_M.webp` with the `Omniraptor.json` layer/anatomy palette while preserving quantized glTF UV transforms (`offset`, `repeat`, `channel`).
+
 ---
 
 ## 2. Git Commit Milestones (`main`)
@@ -110,6 +118,7 @@
 * `58831bf` — Added mobile touch controls, tappable prompts, and responsive layouts
 * `a8b3295` — Restored `AGY.md` and added `LOG.md`
 * `e80b639` — Implemented Destination 01 (Welcome) and Destination 03 (Community Outpost)
+* `0caf690` — Upgraded 3D polygon detail, procedural PBR textures, foliage, structures, and SavageZed
 
 ---
 

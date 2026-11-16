@@ -116,7 +116,7 @@ export function getTerrainHeight(x, z) {
  * Builds the prehistoric terrain, animated water basin, instanced flora, and 5 stations.
  */
 export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
-  const { isTouchDevice = false } = options;
+  const { isTouchDevice = false, renderer = null } = options;
   const rand = createSeededRandom(1842);
   const interactables = [];
   const materials = createOutpostMaterials();
@@ -138,8 +138,8 @@ export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
   buildInstancedForest(scene, materials, collisionSystem, rand, isTouchDevice);
   buildFallenLogs(scene, materials, collisionSystem, rand);
 
-  // 5. Anthropomorphic Theropod Guide (SavageZed) & Waving Malaysian Flags
-  const updateSavageZed = buildSavageZedNPC(scene, collisionSystem, interactables, materials);
+  // 5. Evrima Omniraptor Guide (SavageZed) & Waving Malaysian Flags
+  const updateSavageZed = buildSavageZedNPC(scene, collisionSystem, interactables, materials, renderer);
   const updateFlags = buildRandomMalaysiaFlags(scene, collisionSystem, 9, materials);
 
   return {

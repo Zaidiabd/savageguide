@@ -16,7 +16,8 @@ function init() {
 
   const collisionSystem = new CollisionSystem(60);
   const { interactables, animatedUpdaters } = createPrehistoricWorld(scene, collisionSystem, {
-    isTouchDevice
+    isTouchDevice,
+    renderer
   });
 
   const player = new PlayerController(camera, renderer.domElement, collisionSystem);
@@ -65,7 +66,7 @@ function init() {
     updateAtmosphere(elapsed);
 
     for (const updateFn of animatedUpdaters) {
-      updateFn(elapsed);
+      updateFn(elapsed, delta);
     }
 
     player.update(delta);
