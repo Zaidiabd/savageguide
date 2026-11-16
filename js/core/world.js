@@ -1538,7 +1538,9 @@ function buildSurvivalTrainingGround(scene, m, collision, interactables) {
 function buildCarnotaurusNest(scene, m, collision) {
   const cx = 11;
   const cz = -22;
-  const group = createStationRoot(scene, cx, cz);
+  const y = getTerrainHeight(cx, cz);
+  const group = new THREE.Group();
+  group.position.set(cx, y, cz);
 
   // Compacted earth/mud bowl mound
   const outerRim = new THREE.Mesh(
@@ -1618,7 +1620,8 @@ function buildCarnotaurusNest(scene, m, collision) {
   signBoard.castShadow = true;
   group.add(signBoard);
 
-  collision.addCircleCollider(cx, cz, 1.9, 'carnotaurus-nest');
+  scene.add(group);
+  collision.addCylinder(cx, cz, 1.9, 'carnotaurus-nest');
 }
 
 /**
