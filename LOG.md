@@ -154,6 +154,18 @@
   * Added instanced flapping **dragonflies**, **butterflies**, and additive glowing **fireflies** across the pond and trails.
   * Added terrain-clamped crawling **iridescent beetles**, **darting forest lizards**, and **segmented millipedes** patrolling clearings and pond banks.
 
+### Stage 14: Carnotaurus Courting & Nesting Coaches, `theisle.info` Fact-Checking, Playable Roster & Setup Videos
+* **Carnotaurus Courting & Nesting Clearing (`js/core/world.js`, `js/core/npc.js`, `js/data/tutorialContent.js`, `js/data/survivalContent.js`):**
+  * Bundled `Carnotaurus.glb` & Evrima CMYRGB mask/pattern textures under `public/models/carnotaurus/` and built the `Carnotaurus Nesting Ground` at `(11, -22)` between S4 and S5 featuring a twig/earth nest crater, trailside signboard, and **3 speckled eggs**.
+  * Spawned **Cocomelon** (Light Blue Carnotaurus) and **J5** (Pink Carnotaurus) flanking the nest with full localized dialogs (`en`, `ms`, `kl`) teaching Evrima courting rules (same species, opposite sex, ungrouped, face-to-face Hold `N`), nest placement & debris gathering (`G`/`E`), egg temperature & rotten-egg cleanup (Hold `E`), `TAB` public/private passcode invites (`Space` to hatch), feeding hatchlings, and mutation inheritance.
+* **Training Camp Fact-Check & HUD Icons (`js/data/survivalContent.js`, `js/systems/survivalGuide.js`, `js/data/i18n.js`, `public/icons/`):**
+  * Fact-checked all Training Camp controls and survival mechanics against `https://www.theisle.info/`: clarified **`X`** for Night Vision (vs Hold **`N`** for Courting/Nesting and Hold **`H`** for Sleep/Safe-Log), documented **Alpha ($\alpha$)** / **Beta ($\beta$)** / **Gamma ($\gamma$)** nutrient symbols (including carnivore organs: Lungs $\alpha$, Hearts $\beta$, Intestines $\gamma$) & Elder Entombing (`100%` Elder -> Hold `H` sleep -> `TAB` Mutations -> Entomb).
+  * Copied the provided game HUD icons into `public/icons/` and rendered the **Evrima HUD Status & Diet Symbols Reference** grid inside `SurvivalGuideController`.
+* **Playable Dinosaurs Roster at S1 (`js/data/survivalContent.js`, `js/systems/destinations.js`):**
+  * Added an interactive, category-filterable **Playable Dinosaurs in The Isle: Evrima (22 Species)** roster (12 Carnivores, 8 Herbivores, 2 Omnivores) fact-checked from `https://www.theisle.info/` inside Station 01 (`WelcomeStationController`).
+* **Evrima & EAC Setup Walkthrough Videos (`public/videos/`, `js/systems/tutorial.js`, `js/systems/destinations.js`, `css/interface.css`):**
+  * Bundled `envrimasetup.mp4` and `eacsetup.mp4` from `assets/so3/` into `public/videos/` and embedded responsive `<video controls>` players across Station 02 (`SteamTutorialController` Walkthrough & EAC tabs) and Station 03 (`CommunityDirectoryController`).
+
 ---
 
 ## 2. Git Commit Milestones (`main`)

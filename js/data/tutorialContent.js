@@ -526,5 +526,51 @@ export const STATION_GUIDES = [
     position: { x: -21.8, z: -3.2 },
     lookAt: { x: -20.5, z: 2.0 },
     interactRadius: 5.0
+  },
+  {
+    id: 'cocomelon',
+    displayName: 'Cocomelon',
+    initials: 'CM',
+    species: 'carnotaurus',
+    speciesLabel: 'Carnotaurus',
+    badgeRole: 'Courting & Nesting',
+    patternVariant: 'adult1',
+    stationId: 'survival-training',
+    targetHeight: 2.55,
+    position: { x: 8.6, z: -20.8 },
+    lookAt: { x: 11.4, z: -22.2 },
+    interactRadius: 5.0,
+    customPalette: {
+      id: 'carno-cocomelon-lightblue',
+      red: [0x6e, 0xb8, 0xe8],
+      green: [0xb8, 0xe3, 0xf8],
+      blue: [0x3b, 0x7c, 0xb8],
+      cyan: [0xd4, 0xf1, 0xff],
+      magenta: [0x1f, 0x48, 0x73],
+      yellow: [0x19, 0x35, 0x57]
+    }
+  },
+  {
+    id: 'j5',
+    displayName: 'J5',
+    initials: 'J5',
+    species: 'carnotaurus',
+    speciesLabel: 'Carnotaurus',
+    badgeRole: 'Courting & Nesting',
+    patternVariant: 'adult2',
+    stationId: 'survival-training',
+    targetHeight: 2.48,
+    position: { x: 13.4, z: -20.8 },
+    lookAt: { x: 10.6, z: -22.2 },
+    interactRadius: 5.0,
+    customPalette: {
+      id: 'carno-j5-pink',
+      red: [0xe8, 0x7a, 0xae],
+      green: [0xfc, 0xc7, 0xe0],
+      blue: [0xba, 0x46, 0x82],
+      cyan: [0xff, 0xe0, 0xef],
+      magenta: [0x7d, 0x22, 0x54],
+      yellow: [0x59, 0x16, 0x3a]
+    }
   }
 ];

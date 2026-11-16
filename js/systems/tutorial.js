@@ -1,5 +1,6 @@
 import { STEAM_TUTORIAL } from '../data/tutorialContent.js';
 import { getLocaleBundle } from '../data/i18n.js';
+import { renderVideoGuideGrid } from '../data/survivalContent.js';
 
 /**
  * Generates clearly labelled interface illustrations (not fabricated screenshots)
@@ -261,6 +262,8 @@ export class SteamTutorialController {
         <button type="button" class="secondary-btn" id="btn-step-prev" ${stepIndex === 0 ? 'disabled' : ''}>${t.prevStep}</button>
         <button type="button" class="primary-btn" id="btn-step-next">${stepIndex === total - 1 ? t.reviewChecklist : t.nextStep}</button>
       </div>
+
+      ${renderVideoGuideGrid(this.progress.getLanguage())}
     `;
   }
 
@@ -319,6 +322,8 @@ export class SteamTutorialController {
             </div>
           </section>
         </div>
+
+        ${renderVideoGuideGrid(this.progress.getLanguage())}
       </div>
     `;
   }

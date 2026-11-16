@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- HEALTH glyph. The Neural_Hex set ships no heart (remake plan §5.1); this
+       is the EXACT path the owner's own mock (Downloads/ff-overlay-real-icons.html)
+       masks its health gauge with, lifted verbatim so the two renders match.
+       Solid and unfiltered: the art is used as a MASK, only its alpha matters. -->
+  <path d="M50 86 C20 64 10 46 10 31 A20 20 0 0 1 50 24 A20 20 0 0 1 90 31 C90 46 80 64 50 86 Z" fill="#000" />
+</svg>

@@ -1,6 +1,7 @@
 import { STEAM_TUTORIAL } from '../data/tutorialContent.js';
 import { communities } from '../data/serverDirectory.js';
 import { getLocaleBundle } from '../data/i18n.js';
+import { PLAYABLE_DINOSAURS, renderVideoGuideGrid } from '../data/survivalContent.js';
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -19,11 +20,17 @@ export class WelcomeStationController {
     this.onStartExpedition = onStartExpedition;
     this.onJumpToStation = onJumpToStation;
     this.container = null;
+    this.dinoFilter = 'all';
   }
 
   mount(containerElement) {
     this.container = containerElement;
     this.render();
+  }
+
+  _dinoFilterBtn(dietKey, label) {
+    const active = this.dinoFilter === dietKey ? 'active' : '';
+    return `<button type="button" class="lang-pill ${active}" data-dino-filter="${dietKey}">${escapeHtml(label)}</button>`;
   }
 
   render() {
@@ -32,6 +39,10 @@ export class WelcomeStationController {
     const lang = this.progress.getLanguage();
     const w = getLocaleBundle(lang).welcome;
     const reviewed = this.progress.isWelcomeReviewed();
+    const dinoUi = PLAYABLE_DINOSAURS.ui[lang] || PLAYABLE_DINOSAURS.ui.en;
+    const visibleDinos = PLAYABLE_DINOSAURS.roster.filter(
+      (d) => this.dinoFilter === 'all' || d.diet === this.dinoFilter
+    );
 
     const pcListHtml = w.pcItems.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
     const destCardsHtml = w.destinationCards
@@ -48,6 +59,21 @@ export class WelcomeStationController {
               ? `<button type="button" class="secondary-btn welcome-jump-btn" data-jump-dest="${escapeHtml(card.id)}">${escapeHtml(w.jumpBtn)}</button>`
               : ''
           }
+        </div>
+      `
+      )
+      .join('');
+
+    const dinoCardsHtml = visibleDinos
+      .map(
+        (d) => `
+        <div class="playable-dino-card diet-${escapeHtml(d.diet)}">
+          <div class="playable-dino-head">
+            <strong>${escapeHtml(d.name)}</strong>
+            <span class="dino-diet-tag ${escapeHtml(d.diet)}">${escapeHtml(dinoUi.dietLabels[d.diet])}</span>
+          </div>
+          <div class="playable-dino-tier">${escapeHtml(d.tier)}</div>
+          <p>${escapeHtml(d.summary[lang] || d.summary.en)}</p>
         </div>
       `
       )
@@ -80,6 +106,19 @@ export class WelcomeStationController {
         </section>
 
         <section class="step-card">
+          <div class="step-eyebrow">PLAYABLE ROSTER • THEISLE.INFO</div>
+          <h3>${escapeHtml(dinoUi.sectionTitle)}</h3>
+          <p class="step-summary">${escapeHtml(dinoUi.sectionSub)}</p>
+          <div class="community-filters" style="margin-bottom: 12px;" role="group">
+            ${this._dinoFilterBtn('all', dinoUi.filterAll)}
+            ${this._dinoFilterBtn('carnivore', dinoUi.filterCarnivore)}
+            ${this._dinoFilterBtn('herbivore', dinoUi.filterHerbivore)}
+            ${this._dinoFilterBtn('omnivore', dinoUi.filterOmnivore)}
+          </div>
+          <div class="playable-dino-grid">${dinoCardsHtml}</div>
+        </section>
+
+        <section class="step-card">
           <h3>${escapeHtml(w.destinationsTitle)}</h3>
           <div class="welcome-dest-grid">${destCardsHtml}</div>
         </section>
@@ -97,6 +136,13 @@ export class WelcomeStationController {
         </div>
       </div>
     `;
+
+    this.container.querySelectorAll('[data-dino-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        this.dinoFilter = btn.dataset.dinoFilter;
+        this.render();
+      });
+    });
 
     this.container.querySelectorAll('[data-jump-dest]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -196,6 +242,8 @@ export class CommunityDirectoryController {
         </div>
 
         <div class="community-grid">${cardsHtml}</div>
+
+        ${renderVideoGuideGrid(lang)}
 
         <div class="community-footer-bar">
           <button type="button" class="secondary-btn" id="btn-community-reviewed">

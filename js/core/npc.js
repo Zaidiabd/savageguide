@@ -157,6 +157,27 @@ const SPECIES_CATALOG = {
       claw: [0x54, 0x4e, 0x46],
       teeth: [0xa6, 0x92, 0x7a]
     }
+  },
+  carnotaurus: {
+    basePath: './models/carnotaurus',
+    glb: 'Carnotaurus.glb',
+    albedo: 'T_Carno_Default_New_Albedo.webp',
+    mask: 'T_Carno_Adult_Mouth-Claws-Teeth.webp',
+    patterns: {
+      adult1: 'T_Carno_Adult_Male_Pattern_1.webp',
+      adult2: 'T_Carno_Adult_Pattern_2.webp'
+    },
+    colors: {
+      red: [0xa6, 0x4b, 0x3b],
+      green: [0xd4, 0xb8, 0x9c],
+      blue: [0x6e, 0x5c, 0x53],
+      cyan: [0xb8, 0x95, 0x79],
+      magenta: [0x38, 0x2f, 0x2b],
+      yellow: [0x2a, 0x22, 0x20],
+      mouth: [0x98, 0x5d, 0x5a],
+      claw: [0x4c, 0x47, 0x41],
+      teeth: [0xa8, 0x95, 0x7d]
+    }
   }
 };
 
@@ -846,7 +867,7 @@ export function buildStationGuides(scene, collisionSystem, interactables, materi
       canvasSize: 512,
       phaseOffset: idx * 0.43,
       sittingPose: Boolean(guide.sittingPose),
-      paletteOverride: createRandomColorfulPalette(guide.id, idx)
+      paletteOverride: guide.customPalette || createRandomColorfulPalette(guide.id, idx)
     });
 
     updaters.push(mixerUpdater);

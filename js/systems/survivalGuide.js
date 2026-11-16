@@ -1,4 +1,4 @@
-import { SURVIVAL_MANUAL } from '../data/survivalContent.js';
+import { SURVIVAL_MANUAL, SURVIVAL_HUD_ICONS } from '../data/survivalContent.js';
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -56,6 +56,15 @@ export class SurvivalGuideController {
       )
       .join('');
 
+    const iconsHtml = SURVIVAL_HUD_ICONS.map(
+      (icon) => `
+      <div class="hud-icon-chip">
+        <img src="${escapeHtml(icon.src)}" alt="${escapeHtml(icon.label[lang] || icon.label.en)}" loading="lazy" />
+        <span>${escapeHtml(icon.label[lang] || icon.label.en)}</span>
+      </div>
+    `
+    ).join('');
+
     this.container.innerHTML = `
       <div class="tutorial-shell">
         <p class="welcome-desc" style="margin-bottom: 10px;">${escapeHtml(m.intro)}</p>
@@ -72,6 +81,12 @@ export class SurvivalGuideController {
         <div class="welcome-section-grid">
           ${cardsHtml}
         </div>
+
+        <section class="step-card" style="margin-top: 12px;">
+          <div class="step-eyebrow">HUD & α / β / γ ICONS</div>
+          <h3>${escapeHtml(m.iconsSectionTitle || 'Evrima HUD Status & Diet Symbols')}</h3>
+          <div class="hud-icon-grid">${iconsHtml}</div>
+        </section>
 
         <div class="welcome-station-cta">
           <button type="button" class="primary-btn" id="btn-survival-reviewed">${escapeHtml(m.markReviewedBtn)}</button>

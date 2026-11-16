@@ -37,7 +37,8 @@ const TRAIL_SEGMENTS = [
   [0, 0, 20, 18],    // Central Camp -> Companion Station
   [0, 0, 0, -36],    // Central Camp -> Expedition Departure
   [0, 0, -24, 2],    // Central Camp -> Training Camp Entrance
-  [-24, 2, -31, 2]   // Entrance -> Bonfire Core
+  [-24, 2, -31, 2],  // Entrance -> Bonfire Core
+  [0, -18, 11, -22]  // North Trail -> Cocomelon & J5 Carnotaurus Nest
 ];
 
 function minTrailDistance(x, z) {
@@ -105,6 +106,13 @@ export function getTerrainHeight(x, z) {
     flattenWeight = Math.max(flattenWeight, w * w);
   }
 
+  // Gently flatten Carnotaurus Courting & Nesting Clearing between S3/S4 and S5
+  const nestDist = Math.hypot(x - 11, z + 22);
+  if (nestDist < 8) {
+    const nw = Math.max(0, 1 - nestDist / 8);
+    flattenWeight = Math.max(flattenWeight, nw * nw);
+  }
+
   // Slight basin for stream/pond on southwest flank
   const pondDist = Math.hypot(x + 22, z - 20);
   const pondDip = pondDist < 11 ? (1 - pondDist / 11) * -0.95 : 0;
@@ -138,6 +146,7 @@ export function createPrehistoricWorld(scene, collisionSystem, options = {}) {
   buildCompanionStation(scene, materials, collisionSystem, interactables);
   const updatePortal = buildDepartureGate(scene, materials, collisionSystem, interactables);
   const updateBonfire = buildSurvivalTrainingGround(scene, materials, collisionSystem, interactables);
+  buildCarnotaurusNest(scene, materials, collisionSystem);
 
   // 4. Instanced Organic Prehistoric Forest, Cycads, Ferns, Grass & Boulders
   buildInstancedForest(scene, materials, collisionSystem, rand, isTouchDevice);
@@ -1523,6 +1532,96 @@ function buildSurvivalTrainingGround(scene, m, collision, interactables) {
 }
 
 /**
+ * Builds the Carnotaurus Courting & Nesting clearing between S4/S3 and S5 at (11, -22):
+ * layered earth & twig nest crater with 3 speckled eggs guarded by Cocomelon & J5.
+ */
+function buildCarnotaurusNest(scene, m, collision) {
+  const cx = 11;
+  const cz = -22;
+  const group = createStationRoot(scene, cx, cz);
+
+  // Compacted earth/mud bowl mound
+  const outerRim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.75, 0.36, 10, 26),
+    m.bark
+  );
+  outerRim.rotation.x = Math.PI / 2;
+  outerRim.scale.set(1, 1, 0.52);
+  outerRim.position.y = 0.12;
+  outerRim.castShadow = true;
+  outerRim.receiveShadow = true;
+  group.add(outerRim);
+
+  const innerBed = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.55, 1.85, 0.16, 20),
+    m.foliageDark
+  );
+  innerBed.position.y = 0.08;
+  innerBed.receiveShadow = true;
+  group.add(innerBed);
+
+  // Interwoven twig/branch ring around the rim
+  const twigGeo = new THREE.CylinderGeometry(0.035, 0.055, 1.15, 6);
+  for (let i = 0; i < 18; i++) {
+    const angle = (i / 18) * Math.PI * 2;
+    const twig = new THREE.Mesh(twigGeo, m.timberWeathered);
+    twig.position.set(
+      Math.cos(angle) * 1.72,
+      0.21 + (i % 3) * 0.03,
+      Math.sin(angle) * 1.72
+    );
+    twig.rotation.z = Math.PI / 2 + ((i % 2 === 0 ? 1 : -1) * 0.14);
+    twig.rotation.y = angle + 0.62;
+    twig.castShadow = true;
+    group.add(twig);
+  }
+
+  // 3 warm cream/speckled Carnotaurus eggs nestled in the hollow
+  const eggBaseMat = new THREE.MeshStandardMaterial({
+    color: 0xe8ddc6,
+    roughness: 0.72,
+    metalness: 0.04
+  });
+  const eggOffsets = [
+    { x: -0.34, z: 0.18, tiltX: 0.24, tiltZ: -0.18 },
+    { x: 0.36, z: 0.14, tiltX: 0.18, tiltZ: 0.22 },
+    { x: 0.0, z: -0.36, tiltX: -0.22, tiltZ: 0.08 }
+  ];
+  const eggGeo = new THREE.SphereGeometry(0.24, 14, 12);
+  eggGeo.scale(0.84, 1.24, 0.84);
+
+  eggOffsets.forEach((cfg) => {
+    const egg = new THREE.Mesh(eggGeo, eggBaseMat);
+    egg.position.set(cfg.x, 0.29, cfg.z);
+    egg.rotation.set(cfg.tiltX, 0, cfg.tiltZ);
+    egg.castShadow = true;
+    egg.receiveShadow = true;
+    group.add(egg);
+  });
+
+  // Small trailside signboard marking the Carnotaurus nesting clearing
+  const signTex = createGatewaySignTexture(
+    'CARNOTAURUS NESTING GROUND',
+    'Cocomelon & J5  •  Courting & 3-Egg Clutch'
+  );
+  const signMat = new THREE.MeshStandardMaterial({ map: signTex, roughness: 0.68 });
+  const signPost = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.075, 1.45, 8), m.timberDark);
+  signPost.position.set(0, 0.72, 2.35);
+  signPost.castShadow = true;
+  group.add(signPost);
+
+  const signBoard = new THREE.Mesh(
+    new THREE.BoxGeometry(2.35, 0.68, 0.1),
+    [m.timber, m.timber, m.timber, m.timber, signMat, signMat]
+  );
+  signBoard.position.set(0, 1.38, 2.35);
+  signBoard.castShadow = true;
+  group.add(signBoard);
+
+  collision.addCircleCollider(cx, cz, 1.9, 'carnotaurus-nest');
+}
+
+/**
  * Checks minimum clearance against all 6 stations (wide compound exclusion for Training Camp),
  * SavageZed, and all 8 station dinosaur guides so trees/rocks/logs stay out of paths & interiors.
  */
@@ -1532,6 +1631,9 @@ function isNearStation(x, z, minClearance) {
     if (Math.hypot(x - dest.position.x, z - dest.position.z) < clearance) {
       return true;
     }
+  }
+  if (Math.hypot(x - 11, z + 22) < Math.max(6.2, minClearance)) {
+    return true;
   }
   if (Math.hypot(x - SAVAGEZED_NPC.position.x, z - SAVAGEZED_NPC.position.z) < minClearance) {
     return true;

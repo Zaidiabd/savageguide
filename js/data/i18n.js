@@ -78,7 +78,7 @@ const LOCALES = {
           role: 'What Is The Isle: Evrima?',
           text:
             'In The Isle: Evrima, there are no quests, shops, or second chances—nature is your only arena, {name}:\n' +
-            '• Growth & Nutrients: Hatch as a Juvenile, hide in thick cover, and balance S / Dots / Lines diet icons to grow swiftly to Sub-Adult and Adult.\n' +
+            '• Growth & Nutrients: Hatch as a Juvenile, hide in thick cover, and balance Alpha (α), Beta (β), and Gamma (γ) diet symbols to grow swiftly to Sub-Adult and Adult.\n' +
             '• Instincts & Risks: Every drink from a river risks a Deinosuchus ambush; every sprint burns precious stamina; every wrong jump fractures bones.\n' +
             '• Primeval Malaysia Survival: Knowing the terrain via the Gateway Map and its Legends turns helpless hatchlings into apex survivors!',
           hint: 'Want to see the actual Gateway Map and learn why Legends save lives? Click "Gateway Map & Legends" below!'
@@ -598,7 +598,7 @@ const LOCALES = {
           role: 'Apakah The Isle: Evrima?',
           text:
             'Dalam The Isle: Evrima tiada misi automatik atau kedai—alam semula jadi ialah gelanggang sebenar anda, {name}:\n' +
-            '• Tumbesaran & Nutrien: Lahir sebagai Juvenile, bersembunyi di semak, dan lengkapkan ikon diet S / Titik / Garis supaya membesar pantas ke Sub-Adult dan Adult.\n' +
+            '• Tumbesaran & Nutrien: Lahir sebagai Juvenile, bersembunyi di semak, dan lengkapkan simbol diet Alpha (α), Beta (β), dan Gamma (γ) supaya membesar pantas ke Sub-Adult dan Adult.\n' +
             '• Risiko & Naluri: Minum di sungai mendedahkan anda kepada Deinosuchus; pecutan tanpa kawalan menghabiskan stamina; lompatan silap mematahkan kaki.\n' +
             '• Survival Primeval Malaysia: Menguasai Peta Gateway dan simbol Petunjuknya mengubah pemain baharu menjadi pemandiri sejati!',
           hint: 'Mahu lihat Peta Gateway sebenar dan fahami kepentingan Legends? Klik "Peta Gateway & Petunjuk" di bawah!'
@@ -1118,7 +1118,7 @@ const LOCALES = {
           role: 'Apa Benda The Isle: Evrima Ni?',
           text:
             'Kat The Isle: Evrima takde kedai atau quest auto—alam liar tu betul-betul arena korang, {name}:\n' +
-            '• Growth & Diet: Mula-mula jadi Juvenile menyorok dalam semak, campur ikon diet S / 3 Titik / 2 Garis biar laju naik Sub-Adult sampai Adult.\n' +
+            '• Growth & Diet: Mula-mula jadi Juvenile menyorok dalam semak, campur simbol diet Alpha (α), Beta (β), dengan Gamma (γ) biar laju naik Sub-Adult sampai Adult.\n' +
             '• Risiko Sebenar: Silap minum kat sungai kena ngap buaya Deinosuchus; sprint kering habis stamina; terjun gaung terus patah kaki.\n' +
             '• Survival Primeval Malaysia: Kalau korang master Peta Gateway dengan Legends dia, senang je survive lama!',
           hint: 'Nak tengok Peta Gateway sebenar & tahu kenapa Legends tu penting gila? Tekan "Peta Gateway & Legends" kat bawah!'

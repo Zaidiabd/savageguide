@@ -1724,3 +1724,156 @@ body.touch-device .hud-bottom-left {
     height: 40px;
   }
 }
+
+/* Evrima HUD & Diet Icons Reference Grid (Training Camp) */
+.hud-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hud-icon-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(11, 15, 13, 0.78);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.hud-icon-chip img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px;
+}
+
+/* Playable Dinosaurs Roster Grid (Destination 01) */
+.playable-dino-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+  gap: 10px;
+}
+
+.playable-dino-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: rgba(10, 14, 12, 0.72);
+  border: 1px solid var(--border-subtle);
+}
+
+.playable-dino-card.diet-carnivore {
+  border-left: 3px solid #d97757;
+}
+
+.playable-dino-card.diet-herbivore {
+  border-left: 3px solid #76b865;
+}
+
+.playable-dino-card.diet-omnivore {
+  border-left: 3px solid #5cb6d6;
+}
+
+.playable-dino-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.playable-dino-head strong {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.dino-diet-tag {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.dino-diet-tag.carnivore {
+  background: rgba(217, 119, 87, 0.2);
+  color: #f6b39b;
+}
+
+.dino-diet-tag.herbivore {
+  background: rgba(118, 184, 101, 0.2);
+  color: #b4e8a4;
+}
+
+.dino-diet-tag.omnivore {
+  background: rgba(92, 182, 214, 0.2);
+  color: #a6e3f7;
+}
+
+.playable-dino-tier {
+  font-size: 0.72rem;
+  color: var(--accent-sun);
+  font-weight: 600;
+}
+
+.playable-dino-card p {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.42;
+  color: var(--text-muted);
+}
+
+/* Setup Walkthrough Video Players (S2 & S3) */
+.video-walkthrough-panel {
+  margin-top: 14px;
+}
+
+.video-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.video-guide-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(9, 13, 11, 0.8);
+  border: 1px solid var(--border-subtle);
+}
+
+.video-guide-card h4 {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.video-guide-card p {
+  margin: 0 0 4px;
+  font-size: 0.77rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.setup-video-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
